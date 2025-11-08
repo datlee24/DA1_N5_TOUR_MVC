@@ -41,3 +41,20 @@ function deleteFile($file){
         unlink($pathDelete); // Hàm unlink dùng để xóa file
     }
 }
+// HÀm hỗ trợ hiển thị header, footer, sldebar cho admin hoặc hdv
+function headerAdmin(){
+    include PATH_ADMIN . "layout/header.php";
+}
+function footerAdmin(){
+    include PATH_ADMIN . "layout/footer.php";
+}
+// Kiểm Tra xem người dùng có phải quản trị hay không nếu là quản trị thì đi tiếp 
+function checkIsAdmin(){
+    if (isset($_SESSION['admin']) && $_SESSION['admin']['role'] === 'admin') {
+        return true;
+    } elseif (!isset($_SESSION['hvd']) || !isset($_SESSION['admin']) || $_SESSION['hvd']['role'] === 'hdv') {
+        // Nếu không phải admin, chuyển hướng về trang đăng nhập
+        header('Location: admin.php?act=login');
+        exit;
+    }
+}
