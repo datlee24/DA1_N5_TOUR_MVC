@@ -52,7 +52,7 @@ function footerAdmin(){
 function checkIsAdmin(){
     if (isset($_SESSION['admin']) && $_SESSION['admin']['role'] === 'admin') {
         return true;
-    } elseif (!isset($_SESSION['hvd']) || !isset($_SESSION['admin']) || $_SESSION['hvd']['role'] === 'hdv') {
+    } elseif (!isset($_SESSION['hdv']) || !isset($_SESSION['admin']) || $_SESSION['users']['role'] === 'hdv') {
         // Nếu không phải admin, chuyển hướng về trang đăng nhập
         header('Location: admin.php?act=login');
         exit;

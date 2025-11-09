@@ -11,7 +11,6 @@ require_once './commons/function.php'; // Hàm hỗ trợ
 foreach (glob('./controllers/admin/*.php') as $controllerFile) {
     require_once $controllerFile;
 }
-
 # Tải các model
 foreach (glob('./models/*.php') as $modelFile) {
     require_once $modelFile;
