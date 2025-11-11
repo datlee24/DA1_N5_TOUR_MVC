@@ -1,0 +1,27 @@
+<h2>Danh sách Tour</h2>
+<a href="index.php?act=tour_add">+ Thêm tour</a>
+<table border="1" cellpadding="8" cellspacing="0">
+    <tr>
+        <th>ID</th>
+        <th>Tên tour</th>
+        <th>Danh mục</th>
+        <th>Nhà cung cấp</th>
+        <th>Ảnh</th>
+        <th>Trạng thái</th>
+        <th>Hành động</th>
+    </tr>
+    <?php foreach ($tours as $tour): ?>
+    <tr>
+        <td><?= $tour['id'] ?></td>
+        <td><?= $tour['name'] ?></td>
+        <td><?= $tour['category_name'] ?></td>
+        <td><?= $tour['supplier'] ?></td>
+        <td><img src="<?= $tour['image'] ?>" width="100"></td>
+        <td><?= $tour['status'] ? 'Hiển thị' : 'Ẩn' ?></td>
+        <td>
+            <a href="index.php?act=tour_edit&id=<?= $tour['id'] ?>">Sửa</a> |
+            <a href="index.php?act=tour_delete&id=<?= $tour['id'] ?>" onclick="return confirm('Xóa tour này?')">Xóa</a>
+        </td>
+    </tr>
+    <?php endforeach; ?>
+</table>

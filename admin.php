@@ -26,7 +26,7 @@ match ($act) {
     'dashboard'=>(new AdminController())->dashboard(),
     'login'=>(new AuthController())->login(),
     'logout'=>(new AuthController())->logout(),
-    'tour_list'=>(new TourController())->tour_list(),
+    'list'=>(new TourController())->list(),
   
 
 };

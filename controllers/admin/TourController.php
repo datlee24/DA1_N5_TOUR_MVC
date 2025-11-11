@@ -5,11 +5,14 @@ class TourController{
     public function __construct(){
         $this->modelTour = new TourModel();
     }
-    //Hiển thị danh sách  tour theo danh mục```
-    public function tour_list(){
-        $categories = $this->modelTour-> getAllCategory();
-        
+   
+       //Danh sách tour
+    public function list(){
+        $tours =$this->conn->getAllTour();
+        require './views/tours/list.php'
     }
+        
+    
 
 }
 
