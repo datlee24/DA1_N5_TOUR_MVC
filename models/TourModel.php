@@ -30,26 +30,26 @@ class TourModel
         $sql = "INSERT INTO tour (category_id, name, description, policy, supplier, image, status)
                 VALUES (:category_id, :name, :description, :policy, :supplier, :image, :status)";
                   $stmt =$this->conn->prepare($sql);
-                 $stmt->execute($data);
+                return $stmt->execute($data);
     }
 
     //Lấy 1 tour
     public function getTourById($id){
         $sql="SELECT * FROM `tour` WHERE tour_id = :id";
                 $stmt =$this->conn->prepare($sql);
-        $stmt->execute(['id => $id']);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->execute(['id' => $id]);
+         return $stmt->fetch(PDO::FETCH_ASSOC);
 
     }
 
     //Cập nhật tour
-    public function updateTour(){
-        "UPDATE tour 
+    public function updateTour($data){
+       $sql= "UPDATE tour 
                 SET category_id=:category_id, name=:name, description=:description, 
                     policy=:policy, supplier=:supplier, image=:image, status=:status 
                 WHERE tour_id=:tour_id";
                  $stmt =$this->conn->prepare($sql);
-                 $stmt->execute($data);
+                return $stmt->execute($data);
 
     }
     //Xóa tour
