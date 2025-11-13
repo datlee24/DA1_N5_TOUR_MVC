@@ -32,6 +32,11 @@
             href="#"
             >Danh sách Tour</a
           >
+         <a
+            class="list-group-item list-group-item-action list-group-item-light p-3"
+            href="#"
+            >Booking</a
+          >
           <a
             class="list-group-item list-group-item-action list-group-item-light p-3"
             href="#"
