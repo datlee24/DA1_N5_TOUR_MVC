@@ -1,5 +1,9 @@
 <h2>Sửa tour</h2>
-<form method="POST" enctype="multipart/form-data">
+<form method="POST" enctype="multipart/form-data"action="admin.php?act=update_tour">
+
+    <input type="hidden" name="tour_id" value="<?= $tour['tour_id'] ?>">
+    <input type="hidden" name="old_image" value="<?= $tour['image'] ?>">
+
     <label>Danh mục ID:</label>
     <input type="number" name="category_id" value="<?= $tour['category_id'] ?>" required><br>
 
@@ -16,7 +20,7 @@
     <input type="text" name="supplier" value="<?= $tour['supplier'] ?>"><br>
 
     <label>Ảnh hiện tại:</label><br>
-    <img src="<?= $tour['image'] ?>" width="120"><br>
+    <img src="upload/tours/<?= $tour['image'] ?>" width="120">
 
     <label>Chọn ảnh mới (nếu muốn thay):</label>
     <input type="file" name="image"><br>

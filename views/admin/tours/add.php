@@ -1,5 +1,5 @@
 <h2>Thêm tour</h2>
-<form method="POST" enctype="multipart/form-data">
+<form method="POST" enctype="multipart/form-data"action="admin.php?act=add_tour">
     <label>Danh mục ID:</label>
     <input type="number" name="category_id" required><br>
 

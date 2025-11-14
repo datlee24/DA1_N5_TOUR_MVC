@@ -24,12 +24,12 @@
           >
           <a
             class="list-group-item list-group-item-action list-group-item-light p-3"
-            href="#"
+            href=""
             >Danh Mục Tour</a
           >
           <a
             class="list-group-item list-group-item-action list-group-item-light p-3"
-            href="#"
+            href="admin.php?act=tour_list"
             >Danh sách Tour</a
           >
           <a
