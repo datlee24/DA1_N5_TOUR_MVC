@@ -27,7 +27,12 @@ match ($act) {
     'login'=>(new AuthController())->login(),
     'logout'=>(new AuthController())->logout(),
 
-    // booking
+    // booking routes
+    'booking' => (new BookingController())->list(),
+    'booking-create' => (new BookingController())->create(),
+    'booking-edit' => (new BookingController())->edit_status(),
+    'booking-history' => (new BookingController())->history(),
+    
     
   
 
