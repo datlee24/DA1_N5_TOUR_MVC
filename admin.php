@@ -27,6 +27,15 @@ match ($act) {
     'login'=>(new AuthController())->login(),
     'logout'=>(new AuthController())->logout(),
     'list'=>(new TourController())->list(),
-  
+    // Danh mục
+  'category_list'=> (new CategoryController())->listCategory(),
+ 'category_add_form'=>(new CategoryController())->addCategoryForm(),
+  'category_add'=> (new CategoryController())->addCategory(),
+   'category_edit_form'=> (new CategoryController())->editCategoryForm(),
+    'category_update'=> (new CategoryController())->updateCategory(),
+    'category_delete'=> (new CategoryController())->deleteCategory(),
+
+
+
 
 };
