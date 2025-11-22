@@ -33,6 +33,15 @@ match ($act) {
     'delete_tour'=> (new TourController())->deleteTour(),
     'form_edit_tour'=> (new TourController())->FormEdit(),
     'update_tour'=> (new TourController())->updateTour(),
+    // category
+     'category_list'=> (new CategoryController())->listCategory(),
+ 'category_add_form'=>(new CategoryController())->addCategoryForm(),
+  'category_add'=> (new CategoryController())->addCategory(),
+   'category_edit_form'=> (new CategoryController())->editCategoryForm(),
+    'category_update'=> (new CategoryController())->updateCategory(),
+    'category_delete'=> (new CategoryController())->deleteCategory(),
+
+    
     'guide'=>(new GuideController())->index(),
         'guide-create'=>(new GuideController())->create(),
         'guide-store'=>(new GuideController())->store(),
