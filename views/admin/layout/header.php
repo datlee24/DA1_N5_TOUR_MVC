@@ -29,13 +29,18 @@
           >
           <a
             class="list-group-item list-group-item-action list-group-item-light p-3"
-            href="#"
+            href="admin.php?act=tour_list"
             >Danh sách Tour</a
           >
           <a
             class="list-group-item list-group-item-action list-group-item-light p-3"
-            href="#"
-            >Danh hưỡng dẫn viên</a
+            href="admin.php?act=guide"
+            >Danh sách hướng dẫn viên</a
+          >
+          <a
+            class="list-group-item list-group-item-action list-group-item-light p-3"
+            href="admin.php?act=tour-expense"
+            >Chi phí tour</a
           >
           <a
             class="list-group-item list-group-item-action list-group-item-light p-3"

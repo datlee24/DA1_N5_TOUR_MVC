@@ -44,10 +44,10 @@ class TourModel
 
     //Cập nhật tour
     public function updateTour($data){
-       $sql= "UPDATE tour 
-                SET category_id=:category_id, name=:name, description=:description, 
-                    policy=:policy, supplier=:supplier, image=:image, status=:status 
-                WHERE tour_id=:tour_id";
+        $sql = "UPDATE tour 
+            SET category_id=:category_id, name=:name, description=:description, 
+                policy=:policy, supplier=:supplier, image=:image, status=:status 
+            WHERE tour_id=:tour_id";
                  $stmt =$this->conn->prepare($sql);
                 return $stmt->execute($data);
 

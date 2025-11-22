@@ -10,7 +10,7 @@ class TourController{
     }
    
        //Danh sách tour
-    public function list(){
+    public function tour_list(){
         $tours =$this->modelTour->getAllTour();
         require './views/admin/tours/list.php';
     }
@@ -20,12 +20,13 @@ class TourController{
         $id = $_GET['id'];
         $tour =$this->modelTour->getTourById($id);
         $this->modelTour->deleteTour($id);
-         header('Location: index.php?act=tour_list');
+         header('Location:admin.php?act=tour_list');
+;
          exit;
     }
     // From add tour
 
-    public function FromAdd(){
+    public function FormAdd(){
         $categories = $this->modelCategory->getAllCategory();
        require './views/admin/tours/add.php';
 
@@ -53,7 +54,48 @@ class TourController{
                 'status' => $_POST['status']
              ];
              $this->modelTour->addTour($data);
-             header('Location: index.php?act=tour_list');
+            header('Location:admin.php?act=tour_list');
+
+        }
+
+    }
+
+        // Update tour
+    public function FormEdit(){
+        $id=$_GET['id'];
+        $tour = $this->modelTour->getTourById($id);
+        $categories=$this->modelCategory->getAllCategory();
+
+         require './views/admin/tours/edit.php';
+
+    }
+    // xử lý
+    public function updateTour(){
+       if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+        $imageName = $_POST['old_image'];
+
+        if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+
+            $targetDir = "upload/tours/";
+            if (!is_dir($targetDir)) mkdir($targetDir, 0777, true);
+
+            $imageName = time() . '_' . basename($_FILES['image']['name']);
+            move_uploaded_file($_FILES['image']['tmp_name'], $targetDir . $imageName);
+        }
+             $data = [
+                 'tour_id' => $_POST['tour_id'],    
+                 'category_id' => $_POST['category_id'],
+                'name' => $_POST['name'],
+                'description' => $_POST['description'],
+                'policy' => $_POST['policy'],
+                'supplier' => $_POST['supplier'],
+                'image' => $imageName,
+                'status' => $_POST['status']
+             ];
+             $this->modelTour->updateTour($data);
+            header('Location:admin.php?act=tour_list');
+
         }
 
     }
