@@ -1,7 +1,13 @@
 <h2>Thêm tour</h2>
 <form method="POST" enctype="multipart/form-data"action="admin.php?act=add_tour">
-    <label>Danh mục ID:</label>
-    <input type="number" name="category_id" required><br>
+    <label>Danh mục:</label>
+    <select name="category_id" required>
+        <?php foreach ($categories as $cate): ?>
+            <option value="<?= $cate['category_id'] ?>">
+                <?= $cate['name'] ?>
+            </option>
+        <?php endforeach; ?>
+    </select><br>
 
     <label>Tên tour:</label>
     <input type="text" name="name" required><br>

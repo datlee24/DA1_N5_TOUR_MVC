@@ -4,9 +4,15 @@
 
     <input type="hidden" name="tour_id" value="<?= $tour['tour_id'] ?>">
     <input type="hidden" name="old_image" value="<?= $tour['image'] ?>">
-
-    <label>Danh mục ID:</label>
-    <input type="number" name="category_id" value="<?= $tour['category_id'] ?>" required>
+ <label>Danh mục:</label>
+    <select name="category_id" required>
+        <?php foreach ($categories as $cate): ?>
+            <option value="<?= $cate['category_id'] ?>"
+                <?= ($cate['category_id'] == $tour['category_id']) ? 'selected' : '' ?>>
+                <?= $cate['name'] ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
 
     <label>Tên tour:</label>
     <input type="text" name="name" value="<?= $tour['name'] ?>" required>
