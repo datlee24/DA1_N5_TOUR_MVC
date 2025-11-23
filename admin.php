@@ -28,8 +28,13 @@ match ($act) {
     'logout'=>(new AuthController())->logout(),
 
     // booking routes
-    'booking' => (new BookingController())->list(),
-    'booking-add' => (new BookingController())->add(),
-    'booking-store' => (new BookingController())->store(),
+   'booking'               => (new BookingController())->list(),
+   'booking-add'           => (new BookingController())->add(),
+   'booking-store'         => (new BookingController())->store(),
+   'booking-view'          => (new BookingController())->view(),
+   'booking-cancel'        => (new BookingController())->cancel(),
 
+   'get-schedule'          => (new BookingController())->ajaxSchedule(),
+   'get-guides-by-tour'    => (new BookingController())->ajaxGuide(),
+   'customer-store-ajax'   => (new BookingController())->ajaxCreateCustomer(),
 };
