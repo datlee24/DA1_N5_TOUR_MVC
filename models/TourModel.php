@@ -1,11 +1,13 @@
 <?php
-class CustomerModel {
+class TourModel {
     protected $conn;
     public function __construct() {
         $this->conn = connectDB();
     }
 
     public function getAll() {
-        return $this->conn->query("SELECT * FROM customers")->fetchAll();
+        $stmt = $this->conn->prepare("SELECT * FROM tour");
+        $stmt->execute();
+        return $stmt->fetchAll();
     }
 }

@@ -29,9 +29,8 @@ match ($act) {
 
     // booking routes
     'booking' => (new BookingController())->list(),
-    'booking-create' => (new BookingController())->create(),
-    'booking-edit' => (new BookingController())->edit_status(),
-    'booking-history' => (new BookingController())->history(),
+    'booking-add' => (new BookingController())->add(),
+    'booking-store' => (new BookingController())->store(),
 
 
     'guide'=>(new GuideController())->index(),

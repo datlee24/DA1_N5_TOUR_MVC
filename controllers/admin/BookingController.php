@@ -1,137 +1,97 @@
 <?php
-// controllers/admin/BookingController.php
 class BookingController {
-    protected $bookingModel;
-    protected $customerModel;
-    protected $historyModel;
 
-    public function __construct(){
-        checkIsAdmin(); // function bạn đã có
+    protected $bookingModel;
+    protected $tourModel;
+    protected $scheduleModel;
+    protected $guideModel;
+    protected $customerModel;
+    protected $tourCustomerModel;
+
+    public function __construct() {
+        checkIsAdmin();
         $this->bookingModel = new BookingModel();
+        $this->tourModel = new TourModel();
+        $this->scheduleModel = new ScheduleModel();
+        $this->guideModel = new GuideModel();
         $this->customerModel = new CustomerModel();
-        $this->historyModel = new BookingHistoryModel();
+        $this->tourCustomerModel = new TourCustomerModel();
     }
 
-    // LIST
-    public function list(){
+    public function list() {
         $bookings = $this->bookingModel->getAll();
         require_once PATH_ADMIN . 'booking/list.php';
     }
 
-    // CREATE (form + xử lý)
-    public function create(){
-        if($_SERVER['REQUEST_METHOD'] === 'POST'){
-            // Lấy dữ liệu an toàn
-            $customer_id = intval($_POST['customer_id'] ?? 0);
-            $fullname    = trim($_POST['fullname'] ?? '');
-            $phone       = trim($_POST['phone'] ?? '');
-            $email       = trim($_POST['email'] ?? '');
-            $schedule_id = intval($_POST['schedule_id'] ?? 0);
-            $tour_id     = intval($_POST['tour_id'] ?? 0);
-            $num_people  = intval($_POST['num_people'] ?? 0);
-            $note        = trim($_POST['note'] ?? '');
-
-            if($num_people <= 0){
-                $_SESSION['error'] = "Số lượng người phải lớn hơn 0.";
-                header('Location: admin.php?act=booking-create');
-                exit;
-            }
-            if($schedule_id <= 0 || $tour_id <= 0){
-                $_SESSION['error'] = "Vui lòng chọn lịch khởi hành hợp lệ.";
-                header('Location: admin.php?act=booking-create');
-                exit;
-            }
-
-            // Nếu không chọn khách có sẵn, tạo mới
-            if(!$customer_id){
-                if(empty($fullname)){
-                    $_SESSION['error'] = "Vui lòng nhập tên khách hoặc chọn khách có sẵn.";
-                    header('Location: admin.php?act=booking-create');
-                    exit;
-                }
-                $customer_id = $this->customerModel->getOrCreate($fullname, $phone, $email, $note);
-            }
-
-            // Check capacity
-            $booked = $this->bookingModel->countBookedCustomers($schedule_id);
-            $capacity = $this->bookingModel->getTourCapacity($tour_id);
-            if ($booked + $num_people > $capacity) {
-                $_SESSION['error'] = "Không đủ chỗ cho lịch này. (Đã đặt: $booked / Sức chứa: $capacity)";
-                header('Location: admin.php?act=booking-create');
-                exit;
-            }
-
-            // Insert booking: chuẩn bị data (adult/children/baby mặc định 0 nếu không có form)
-            $data = [
-                'customer_id' => $customer_id,
-                'tour_id'     => $tour_id,
-                'schedule_id' => $schedule_id,
-                'num_people'  => $num_people,
-                'status'      => 'pending',
-                'note'        => $note,
-                'adult'       => intval($_POST['adult'] ?? 0),
-                'children'    => intval($_POST['children'] ?? 0),
-                'baby'        => intval($_POST['baby'] ?? 0),
-            ];
-
-            try {
-                $booking_id = $this->bookingModel->create($data);
-                // add history
-                $this->historyModel->add($booking_id, null, 'pending', $_SESSION['admin']['username'] ?? 'admin', 'Tạo booking');
-                $_SESSION['success'] = "Tạo booking thành công.";
-                header('Location: admin.php?act=booking');
-                exit;
-            } catch (Exception $e){
-                $_SESSION['error'] = "Lỗi khi tạo booking: " . $e->getMessage();
-                header('Location: admin.php?act=booking-create');
-                exit;
-            }
-        }
-
-        // Hiển thị form
-        $schedules = $this->bookingModel->getSchedulesWithTours();
+    public function add() {
+        $tours = $this->tourModel->getAll();
+        $guides = $this->guideModel->getAll();
         $customers = $this->customerModel->getAll();
         require_once PATH_ADMIN . 'booking/add.php';
     }
 
-    // Edit status (form + xử lý)
-    public function edit_status(){
-        $id = intval($_GET['id'] ?? 0);
-        $booking = $this->bookingModel->find($id);
-        if(!$booking){
-            $_SESSION['error'] = "Booking không tồn tại.";
-            header('Location: admin.php?act=booking');
+    public function store() {
+        $tour_id = $_POST['tour_id'];
+        $schedule_id = $_POST['schedule_id'];
+        $guide_id = $_POST['guide_id'] ?? null;
+        $customer_ids = $_POST['customer_ids'] ?? [];
+        $num_people = $_POST['num_people'];
+
+        $schedule = $this->scheduleModel->find($schedule_id);
+
+        if (!$schedule) {
+            $_SESSION['error'] = "Lịch khởi hành không tồn tại!";
+            header("Location: admin.php?act=booking-add");
             exit;
         }
 
-        if($_SERVER['REQUEST_METHOD'] === 'POST'){
-            $new_status = $_POST['new_status'] ?? $booking['status'];
-            $note = trim($_POST['note'] ?? '');
-            $old_status = $booking['status'];
+        $start = $schedule['start_date'];
+        $end = $schedule['end_date'];
 
-            if($new_status === $old_status){
-                $_SESSION['success'] = "Không có thay đổi trạng thái.";
-            } else {
-                // Cập nhật status
-                $ok = $this->bookingModel->updateStatus($id, $new_status);
-                if($ok){
-                    $this->historyModel->add($id, $old_status, $new_status, $_SESSION['admin']['username'] ?? 'admin', $note);
-                    $_SESSION['success'] = "Cập nhật trạng thái thành công.";
-                } else {
-                    $_SESSION['error'] = "Không thể cập nhật trạng thái.";
-                }
-            }
-            header('Location: admin.php?act=booking');
+        // Kiểm tra xung đột HDV
+        if ($guide_id && $this->guideModel->hasConflict($guide_id, $start, $end)) {
+            $_SESSION['error'] = "HDV đã bận tour khác trong thời gian này!";
+            header("Location: admin.php?act=booking-add");
             exit;
         }
 
-        require_once PATH_ADMIN . 'booking/edit_status.php';
-    }
+        // Kiểm tra capacity 40
+        $booked = $this->scheduleModel->getBookedSeats($schedule_id);
+        if ($booked + $num_people > 40) {
+            $_SESSION['error'] = "Tour đã đầy. Chỉ còn " . (40 - $booked) . " chỗ.";
+            header("Location: admin.php?act=booking-add");
+            exit;
+        }
 
-    // Lịch sử
-    public function history(){
-        $id = intval($_GET['id'] ?? 0);
-        $rows = $this->historyModel->getByBooking($id);
-        require_once PATH_ADMIN . 'booking/history.php';
+        // Tạo booking
+        $data = [
+            'customer_id' => $customer_ids[0], // người đại diện
+            'tour_id' => $tour_id,
+            'schedule_id' => $schedule_id,
+            'booking_date'=> date('Y-m-d H:i:s'),
+            'num_people'=> $num_people,
+            'total_price'=> $_POST['total_price'] ?? 0,
+            'status'=>'confirmed',
+            'payment_status'=>'unpaid',
+            'note'=>''
+        ];
+
+        $booking_id = $this->bookingModel->create($data);
+
+        // Gắn từng khách vào tour_customer
+        foreach ($customer_ids as $cid) {
+            $this->tourCustomerModel->addCustomer($schedule_id, $cid);
+        }
+
+        // Gắn HDV vào departure_schedule
+        if ($guide_id) {
+            $conn = connectDB();
+            $stmt = $conn->prepare("UPDATE departure_schedule SET guide_id = :gid WHERE schedule_id = :sid");
+            $stmt->execute(['gid'=>$guide_id, 'sid'=>$schedule_id]);
+        }
+
+        $_SESSION['success'] = "Tạo booking thành công!";
+        header("Location: admin.php?act=booking");
+        exit;
     }
 }
