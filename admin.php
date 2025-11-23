@@ -32,16 +32,4 @@ match ($act) {
     'booking-add' => (new BookingController())->add(),
     'booking-store' => (new BookingController())->store(),
 
-
-    'guide'=>(new GuideController())->index(),
-    'guide-create'=>(new GuideController())->create(),
-    'guide-store'=>(new GuideController())->store(),
-    'guide-edit'=>(new GuideController())->edit(),
-    'guide-update'=>(new GuideController())->update(),
-    'guide-delete'=>(new GuideController())->delete(),
-    'tour-expense'=>(new TourExpenseController())->index(),
-    
-    
-  
-
 };

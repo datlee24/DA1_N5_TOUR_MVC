@@ -6,6 +6,6 @@ class CustomerModel {
     }
 
     public function getAll() {
-        return $this->conn->query("SELECT * FROM customers")->fetchAll();
+        return $this->conn->query("SELECT * FROM customer")->fetchAll();
     }
 }
