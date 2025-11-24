@@ -16,7 +16,7 @@ foreach (glob('./models/*.php') as $modelFile) {
     require_once $modelFile;
 }
 // Route
-$act = $_GET['act'] ?? 'dashboard';
+$act = $_GET['act'] ?? '/';
 
 
 // Để bảo bảo tính chất chỉ gọi 1 hàm Controller để xử lý request thì mình sử dụng match
@@ -33,23 +33,11 @@ match ($act) {
     'delete_tour'=> (new TourController())->deleteTour(),
     'form_edit_tour'=> (new TourController())->FormEdit(),
     'update_tour'=> (new TourController())->updateTour(),
-    // category
-     'category_list'=> (new CategoryController())->listCategory(),
- 'category_add_form'=>(new CategoryController())->addCategoryForm(),
-  'category_add'=> (new CategoryController())->addCategory(),
-   'category_edit_form'=> (new CategoryController())->editCategoryForm(),
-    'category_update'=> (new CategoryController())->updateCategory(),
-    'category_delete'=> (new CategoryController())->deleteCategory(),
-
-    
     'guide'=>(new GuideController())->index(),
-        'guide-create'=>(new GuideController())->create(),
-        'guide-store'=>(new GuideController())->store(),
-        'guide-edit'=>(new GuideController())->edit(),
-        'guide-update'=>(new GuideController())->update(),
-        'guide-delete'=>(new GuideController())->delete(),
-        'tour-expense'=>(new TourExpenseController())->index(),
-     default => (new AdminController())->dashboard() 
-  
-   
+    'guide-create'=>(new GuideController())->create(),
+    'guide-store'=>(new GuideController())->store(),
+    'guide-edit'=>(new GuideController())->edit(),
+    'guide-update'=>(new GuideController())->update(),
+    'guide-delete'=>(new GuideController())->delete(),
+    'tour-expense'=>(new TourExpenseController())->index(),
 };
