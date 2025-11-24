@@ -2,7 +2,7 @@
 
 <h2 class="mt-4 mb-4">Danh sách Booking</h2>
 
-<a href="admin.php?act=booking-add" class="btn btn-primary mb-3">
+<a href="admin.php?act=booking-step1" class="btn btn-primary mb-3">
     <i class="fa fa-plus"></i> Tạo Booking
 </a>
 
@@ -11,8 +11,8 @@
         <tr>
             <th>ID</th>
             <th>Tour</th>
-            <th>Khách đại diện</th>
             <th>Ngày đi</th>
+            <th>Ngày về</th>
             <th>Số người</th>
             <th>Thanh toán</th>
             <th>Trạng thái</th>
@@ -27,11 +27,17 @@
 
             <td><?= $b['tour_name'] ?></td>
 
-            <td><?= $b['customer_name'] ?></td>
-
+            <!-- NGÀY ĐI -->
             <td>
                 <span class="badge bg-info text-dark">
                     <?= date("d/m/Y", strtotime($b['start_date'])) ?>
+                </span>
+            </td>
+
+            <!-- NGÀY VỀ -->
+            <td>
+                <span class="badge bg-primary">
+                    <?= date("d/m/Y", strtotime($b['end_date'])) ?>
                 </span>
             </td>
 

@@ -1,7 +1,6 @@
 <?php
 class ScheduleModel {
     protected $conn;
-
     public function __construct() { $this->conn = connectDB(); }
 
     public function getByTour($tour_id) {
@@ -27,4 +26,4 @@ class ScheduleModel {
         $stmt->execute(['gid'=>$guide_id, 'sid'=>$schedule_id]);
     }
 }
-
+?>

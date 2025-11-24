@@ -27,14 +27,29 @@ match ($act) {
     'login'=>(new AuthController())->login(),
     'logout'=>(new AuthController())->logout(),
 
-    // booking routes
-   'booking'               => (new BookingController())->list(),
-   'booking-add'           => (new BookingController())->add(),
-   'booking-store'         => (new BookingController())->store(),
-   'booking-view'          => (new BookingController())->view(),
-   'booking-cancel'        => (new BookingController())->cancel(),
+// Booking 
+'booking'               => (new BookingController)->list(),
 
-   'get-schedule'          => (new BookingController())->ajaxSchedule(),
-   'get-guides-by-tour'    => (new BookingController())->ajaxGuide(),
-   'customer-store-ajax'   => (new BookingController())->ajaxCreateCustomer(),
+'booking-step1'         => (new BookingController)->step1(),
+'booking-step1-save'    => (new BookingController)->step1Save(),
+
+'booking-step2'         => (new BookingController)->step2(),
+'booking-step2-save'    => (new BookingController)->step2Save(),
+
+'booking-step3'         => (new BookingController)->step3(),
+'booking-step3-save'    => (new BookingController)->step3Save(),
+
+'booking-step4'         => (new BookingController)->step4(),
+'booking-step4-save'    => (new BookingController)->step4Save(),
+
+'booking-step5'         => (new BookingController)->step5(),
+'booking-finish'        => (new BookingController)->finish(),
+
+'booking-view'          => (new BookingController)->view(),
+'booking-cancel'        => (new BookingController)->cancel(),
+
+'ajax-schedule'         => (new BookingController)->ajaxSchedule(),
+'ajax-guides'           => (new BookingController)->ajaxGuide(),
+'ajax-customer-create'  => (new BookingController)->ajaxCreateCustomer(),
+
 };
