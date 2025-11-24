@@ -58,6 +58,35 @@ class TourModel
         $stmt = $this->conn->prepare($sql);
         return $stmt->execute(['id' => $id]);
     }
+    // Lây lịch trình tour
+    public function getItineraryByTourId($tour_id){
+        $sql ="SELECT * FROM itinerary WHERE tour_id=:tour_id ORDER BY day_number ASC";
+         $stmt =$this->conn->prepare($sql);
+        $stmt->execute(['tour_id' => $tour_id]);
+         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    }
+    // Lấy lịch khởi hành
+    public function getScheduleWithGuideByTourId($tour_id){
+    $sql="SELECT 
+                    ds.schedule_id,
+                    ds.start_date,
+                    ds.end_date,
+                    ds.meeting_point,
+                    ds.driver,
+                    ds.notes,
+                    g.guide_id,
+                    g.language AS guide_language,
+                    g.certificate AS guide_certificate,
+                    g.experience AS guide_experience,
+                    g.specialization AS guide_specialization
+                FROM departure_schedule ds
+                LEFT JOIN guide g ON ds.guide_id = g.guide_id
+                WHERE ds.tour_id=:tour_id";
+                 $stmt =$this->conn->prepare($sql);
+        $stmt->execute(['tour_id' => $tour_id]);
+         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
 }
 ?>
