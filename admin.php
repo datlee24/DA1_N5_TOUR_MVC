@@ -27,6 +27,7 @@ match ($act) {
     'login'=>(new AuthController())->login(),
     'logout'=>(new AuthController())->logout(),
 
+
 // Booking 
 'booking'               => (new BookingController)->list(),
 
@@ -53,4 +54,29 @@ match ($act) {
 'ajax-guides'           => (new BookingController)->ajaxGuide(),
 'ajax-customer-create'  => (new BookingController)->ajaxCreateCustomer(),
 
+
+    //Tour
+    'tour_list' => (new TourController())->tour_list(),
+    'form_add_tour' => (new TourController())->FormAdd(),
+    'add_tour'=> (new TourController())->addTour(),
+    'delete_tour'=> (new TourController())->deleteTour(),
+    'form_edit_tour'=> (new TourController())->FormEdit(),
+    'update_tour'=> (new TourController())->updateTour(),
+    // category
+     'category_list'=> (new CategoryController())->listCategory(),
+ 'category_add_form'=>(new CategoryController())->addCategoryForm(),
+  'category_add'=> (new CategoryController())->addCategory(),
+   'category_edit_form'=> (new CategoryController())->editCategoryForm(),
+    'category_update'=> (new CategoryController())->updateCategory(),
+    'category_delete'=> (new CategoryController())->deleteCategory(),
+
+    
+
+    'guide'=>(new GuideController())->index(),
+    'guide-create'=>(new GuideController())->create(),
+    'guide-store'=>(new GuideController())->store(),
+    'guide-edit'=>(new GuideController())->edit(),
+    'guide-update'=>(new GuideController())->update(),
+    'guide-delete'=>(new GuideController())->delete(),
+    'tour-expense'=>(new TourExpenseController())->index(),
 };
