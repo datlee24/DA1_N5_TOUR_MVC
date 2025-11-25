@@ -48,6 +48,7 @@ match ($act) {
 
 'booking-view'          => (new BookingController)->view(),
 'booking-cancel'        => (new BookingController)->cancel(),
+'booking-confirm'        => (new BookingController)->confirm(),
 
 'ajax-schedule'         => (new BookingController)->ajaxSchedule(),
 'ajax-guides'           => (new BookingController)->ajaxGuide(),

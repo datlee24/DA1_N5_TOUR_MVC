@@ -32,8 +32,10 @@
                     <p><strong>Trạng thái:</strong>
                         <?php if ($booking['status'] == "confirmed"): ?>
                             <span class="badge bg-success">Đã xác nhận</span>
-                        <?php else: ?>
+                        <?php elseif ($booking['status'] == 'cancelled'): ?>
                             <span class="badge bg-danger">Đã hủy</span>
+                        <?php else: ?>
+                            <span class="badge bg-secondary">Chờ xử lý</span>
                         <?php endif; ?>
                     </p>
 
@@ -41,9 +43,23 @@
                         <?php if ($booking['payment_status'] == "paid"): ?>
                             <span class="badge bg-primary">Đã thanh toán</span>
                         <?php else: ?>
-                            <span class="badge bg-warning text-dark">Chưa thanh toán</span>
+                            <span class="badge bg-warning text-dark"><?= ucfirst($booking['payment_status']) ?></span>
                         <?php endif; ?>
                     </p>
+
+                    <p><strong>Ghi chú:</strong><br>
+                        <?= nl2br(htmlspecialchars($booking['note'] ?? '')) ?>
+                    </p>
+
+                    <div class="mt-3">
+                        <?php if ($booking['status'] !== 'confirmed'): ?>
+                            <a href="admin.php?act=booking-confirm&id=<?= $booking['booking_id'] ?>" class="btn btn-success">Xác nhận</a>
+                        <?php endif; ?>
+
+                        <?php if ($booking['status'] !== 'cancelled'): ?>
+                            <a onclick="return confirm('Bạn chắc chắn muốn hủy booking này?')" href="admin.php?act=booking-cancel&id=<?= $booking['booking_id'] ?>" class="btn btn-danger">Hủy</a>
+                        <?php endif; ?>
+                    </div>
                 </div>
             </div>
         </div>
@@ -55,8 +71,8 @@
                     <strong>Hướng dẫn viên</strong>
                 </div>
                 <div class="card-body">
-                    <p><strong>Tên HDV:</strong> <?= $booking['guide_name'] ?? "Chưa phân công" ?></p>
-                    <p><strong>SĐT:</strong> <?= $booking['guide_phone'] ?? "-" ?></p>
+                    <p><strong>Tên HDV:</strong> <?= $guide['fullname'] ?? "Chưa phân công" ?></p>
+                    <p><strong>SĐT:</strong> <?= $guide['phone'] ?? "-" ?></p>
                 </div>
             </div>
         </div>
@@ -81,9 +97,9 @@
                 <?php $i=1; foreach ($customers as $cus): ?>
                     <tr>
                         <td><?= $i++ ?></td>
-                        <td><?= $cus['fullname'] ?></td>
-                        <td><?= $cus['phone'] ?></td>
-                        <td><?= $cus['email'] ?></td>
+                        <td><?= htmlspecialchars($cus['fullname']) ?></td>
+                        <td><?= htmlspecialchars($cus['phone']) ?></td>
+                        <td><?= htmlspecialchars($cus['email']) ?></td>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>
