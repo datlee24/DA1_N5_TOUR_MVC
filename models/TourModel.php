@@ -66,7 +66,7 @@ class TourModel
          return $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     }
-    // Lấy lịch khởi hành
+    // Lấy lịch khởi hành và hướng dẫn viên
     public function getScheduleWithGuideByTourId($tour_id){
     $sql="SELECT 
                     ds.schedule_id,

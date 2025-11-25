@@ -34,6 +34,7 @@ match ($act) {
     'delete_tour'=> (new TourController())->deleteTour(),
     'form_edit_tour'=> (new TourController())->FormEdit(),
     'update_tour'=> (new TourController())->updateTour(),
+    'tour_detail' => (new TourController())->tour_detail(),
     // category
      'category_list'=> (new CategoryController())->listCategory(),
  'category_add_form'=>(new CategoryController())->addCategoryForm(),
