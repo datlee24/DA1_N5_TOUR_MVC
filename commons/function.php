@@ -42,6 +42,8 @@ function deleteFile($file){
     }
 }
 // HÀm hỗ trợ hiển thị header, footer, sldebar cho admin hoặc hdv
+// Giúp dễ dàng include phần header/footer chung mà không cần viết lại nhiều lần
+
 function headerAdmin(){
     include PATH_ADMIN . "layout/header.php";
 }
@@ -52,9 +54,11 @@ function footerAdmin(){
 function checkIsAdmin(){
     if (isset($_SESSION['admin']) && $_SESSION['admin']['role'] === 'admin') {
         return true;
+         // Ngược lại, nếu không có session admin hoặc là hướng dẫn viên (hdv) thì chặn lại
     } elseif (!isset($_SESSION['hdv']) || !isset($_SESSION['admin']) || $_SESSION['users']['role'] === 'hdv') {
         // Nếu không phải admin, chuyển hướng về trang đăng nhập
+                // Chuyển hướng người dùng về trang đăng nhập của admin
         header('Location: admin.php?act=login');
-        exit;
+        exit;// Dừng toàn bộ chương trình sau khi chuyển hướng
     }
 }

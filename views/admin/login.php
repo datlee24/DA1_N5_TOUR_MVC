@@ -92,7 +92,7 @@
 </head>
 <body>
     <header>
-        <h1>Quan Ly Tour du lich</h1>
+        <h1>Quản Lý Tour Du Lịch</h1>
     </header>   
     <main>
     <form class="login-form" action="admin.php?act=login" method="POST">

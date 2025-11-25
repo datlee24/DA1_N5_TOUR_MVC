@@ -32,6 +32,11 @@
             href="admin.php?act=tour_list"
             >Danh sách Tour</a
           >
+         <a
+            class="list-group-item list-group-item-action list-group-item-light p-3"
+            href="admin.php?act=booking"
+            >Booking</a
+          >
           <a
             class="list-group-item list-group-item-action list-group-item-light p-3"
             href="admin.php?act=guide"
@@ -97,9 +102,8 @@
                     aria-labelledby="navbarDropdown"
                   >
                     <a class="dropdown-item" href="#!">Action</a>
-                    <a class="dropdown-item" href="#!">Another action</a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">Đăng xuất</a>
+                    <a class="dropdown-item" href="admin.php?act=logout">Đăng xuất</a>
                   </div>
                 </li>
               </ul>
