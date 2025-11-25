@@ -4,7 +4,7 @@ class ScheduleModel {
     public function __construct() { $this->conn = connectDB(); }
 
     public function getByTour($tour_id) {
-        $stmt = $this->conn->prepare("SELECT * FROM departure_schedule WHERE tour_id=:id");
+        $stmt = $this->conn->prepare("SELECT * FROM departure_schedule WHERE tour_id=:id ORDER BY start_date ASC");
         $stmt->execute(['id'=>$tour_id]);
         return $stmt->fetchAll();
     }
@@ -24,6 +24,23 @@ class ScheduleModel {
     public function assignGuide($schedule_id, $guide_id) {
         $stmt = $this->conn->prepare("UPDATE departure_schedule SET guide_id=:gid WHERE schedule_id=:sid");
         $stmt->execute(['gid'=>$guide_id, 'sid'=>$schedule_id]);
+    }
+
+    // Tạo lịch mới (create)
+    public function create($data) {
+        $sql = "INSERT INTO departure_schedule (tour_id, start_date, end_date, meeting_point, guide_id, driver, notes)
+                VALUES (:tour_id, :start_date, :end_date, :meeting_point, :guide_id, :driver, :notes)";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([
+            'tour_id' => $data['tour_id'],
+            'start_date' => $data['start_date'],
+            'end_date' => $data['end_date'],
+            'meeting_point' => $data['meeting_point'] ?? null,
+            'guide_id' => $data['guide_id'] ?? null,
+            'driver' => $data['driver'] ?? null,
+            'notes' => $data['notes'] ?? null
+        ]);
+        return $this->conn->lastInsertId();
     }
 }
 ?>

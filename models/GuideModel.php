@@ -31,5 +31,13 @@ class GuideModel {
         $stmt->execute(['gid'=>$guide_id,'start'=>$start,'end'=>$end]);
         return $stmt->fetchColumn() > 0;
     }
+
+    // Lấy toàn bộ lịch của HDV
+    public function getSchedule($guide_id) {
+        $sql = "SELECT * FROM departure_schedule WHERE guide_id = :gid ORDER BY start_date ASC";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute(['gid' => $guide_id]);
+        return $stmt->fetchAll();
+    }
 }
 ?>
