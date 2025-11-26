@@ -7,10 +7,6 @@
 <p><strong>Chính sách:</strong> <?= $tour['policy'] ?></p>
 <p><strong>Nhà cung cấp:</strong> <?= $tour['supplier'] ?></p>
 
-<?php if ($tour['image']): ?>
-    <img src="upload/tours/<?= $tour['image'] ?>" width="300" style="border-radius:10px">
-<?php endif; ?>
-
 <hr>
 
 <h3>Lịch trình</h3>
