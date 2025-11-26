@@ -64,10 +64,10 @@ match ($act) {
     'update_tour'=> (new TourController())->updateTour(),
     'tour_detail' => (new TourController())->tour_detail(),
     // category
-     'category_list'=> (new CategoryController())->listCategory(),
- 'category_add_form'=>(new CategoryController())->addCategoryForm(),
-  'category_add'=> (new CategoryController())->addCategory(),
-   'category_edit_form'=> (new CategoryController())->editCategoryForm(),
+    'category_list'=> (new CategoryController())->listCategory(),
+    'category_add_form'=>(new CategoryController())->addCategoryForm(),
+    'category_add'=> (new CategoryController())->addCategory(),
+    'category_edit_form'=> (new CategoryController())->editCategoryForm(),
     'category_update'=> (new CategoryController())->updateCategory(),
     'category_delete'=> (new CategoryController())->deleteCategory(),
 
