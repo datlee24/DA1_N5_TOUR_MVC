@@ -3,7 +3,7 @@
 <form method="POST" enctype="multipart/form-data" action="admin.php?act=update_tour">
 
     <input type="hidden" name="tour_id" value="<?= $tour['tour_id'] ?>">
-    <input type="hidden" name="old_image" value="<?= $tour['image'] ?>">
+    
  <label>Danh mục:</label>
     <select name="category_id" required>
         <?php foreach ($categories as $cate): ?>
@@ -26,11 +26,6 @@
     <label>Nhà cung cấp:</label>
     <input type="text" name="supplier" value="<?= $tour['supplier'] ?>">
 
-    <label>Ảnh hiện tại:</label><br>
-    <img src="upload/tours/<?= $tour['image'] ?>" width="120" style="border-radius:6px; margin-bottom:10px;"><br>
-
-    <label>Chọn ảnh mới (nếu muốn thay):</label>
-    <input type="file" name="image">
 
     <label>Trạng thái:</label>
     <select name="status">
