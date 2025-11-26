@@ -9,7 +9,6 @@ headerAdmin();
         <th>Tên tour</th>
         <th>Danh mục</th>
         <th>Nhà cung cấp</th>
-        <th>Ảnh</th>
         <th>Trạng thái</th>
         <th>Hành động</th>
     </tr>
