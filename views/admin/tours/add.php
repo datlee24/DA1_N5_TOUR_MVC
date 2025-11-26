@@ -21,8 +21,7 @@
     <label>Nhà cung cấp:</label>
     <input type="text" name="supplier"><br>
 
-    <label>Ảnh:</label>
-    <input type="file" name="image"><br>
+
 
     <label>Trạng thái:</label>
     <select name="status">
