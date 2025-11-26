@@ -19,7 +19,7 @@ headerAdmin();
         <td><?= $tour['name'] ?></td>
         <td><?= $tour['category_name'] ?></td>
         <td><?= $tour['supplier'] ?></td>
-        <td><img src="upload/tours/<?= $tour['image'] ?>" width="100"></td>
+        
         <td><?= $tour['status'] ? 'Hiển thị' : 'Ẩn' ?></td>
         <td>
             <a class="detail" href="admin.php?act=tour_detail&id=<?= $tour['tour_id'] ?>">Chi tiết</a>
