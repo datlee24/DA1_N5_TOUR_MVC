@@ -61,11 +61,27 @@ match ($act) {
     'delete_tour'=> (new TourController())->deleteTour(),
     'form_edit_tour'=> (new TourController())->FormEdit(),
     'update_tour'=> (new TourController())->updateTour(),
+    'tour_detail' => (new TourController())->tour_detail(),
     // category
+
      'category_list'=> (new CategoryController())->listCategory(),
      'category_add_form'=>(new CategoryController())->addCategoryForm(),
+
+    'category_list'=> (new CategoryController())->listCategory(),
+    'category_add_form'=>(new CategoryController())->addCategoryForm(),
     'category_add'=> (new CategoryController())->addCategory(),
     'category_edit_form'=> (new CategoryController())->editCategoryForm(),
     'category_update'=> (new CategoryController())->updateCategory(),
     'category_delete'=> (new CategoryController())->deleteCategory(),
+
+    
+
+    'guide'=>(new GuideController())->index(),
+    'guide-create'=>(new GuideController())->create(),
+    'guide-store'=>(new GuideController())->store(),
+    'guide-edit'=>(new GuideController())->edit(),
+    'guide-update'=>(new GuideController())->update(),
+    'guide-delete'=>(new GuideController())->delete(),
+    'tour-expense'=>(new TourExpenseController())->index(),
+    'customer'=>(new CustomerController())->index(),
 };

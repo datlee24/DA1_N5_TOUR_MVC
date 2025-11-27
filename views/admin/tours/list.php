@@ -9,7 +9,6 @@ headerAdmin();
         <th>Tên tour</th>
         <th>Danh mục</th>
         <th>Nhà cung cấp</th>
-        <th>Ảnh</th>
         <th>Trạng thái</th>
         <th>Hành động</th>
     </tr>
@@ -19,9 +18,12 @@ headerAdmin();
         <td><?= $tour['name'] ?></td>
         <td><?= $tour['category_name'] ?></td>
         <td><?= $tour['supplier'] ?></td>
-        <td><img src="upload/tours/<?= $tour['image'] ?>" width="100"></td>
+        
         <td><?= $tour['status'] ? 'Hiển thị' : 'Ẩn' ?></td>
         <td>
+            <a class="detail" href="admin.php?act=tour_detail&id=<?= $tour['tour_id'] ?>">Chi tiết</a>
+
+
             <a class="edit" href="admin.php?act=form_edit_tour&id=<?= $tour['tour_id'] ?>">Sửa</a>
             <a class="delete" href="admin.php?act=delete_tour&id=<?= $tour['tour_id'] ?>" onclick="return confirm('Xóa tour này?')">Xóa</a>
         </td>
@@ -38,6 +40,21 @@ body {
     background-color: #f0f8ff;
     margin: 20px;
 }
+/* Nút Chi tiết */
+table a.detail {
+    text-decoration: none;
+    color: white;
+    background-color: #007bff; /* xanh dương */
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    margin-right: 5px;
+}
+
+table a.detail:hover {
+    background-color: #3399ff;
+}
+
 
 /* Tiêu đề */
 h2 {
