@@ -9,15 +9,17 @@ headerAdmin();
         <th>Tên tour</th>
         <th>Danh mục</th>
         <th>Nhà cung cấp</th>
+        <th>Giá tour/người</th>
         <th>Trạng thái</th>
         <th>Hành động</th>
     </tr>
-    <?php foreach ($tours as $tour): ?>
+    <?php foreach ($tours as $index=>$tour): ?>
     <tr>
-        <td><?= $tour['tour_id'] ?></td>
+        <td><?= $index+1 ?></td>
         <td><?= $tour['name'] ?></td>
         <td><?= $tour['category_name'] ?></td>
         <td><?= $tour['supplier'] ?></td>
+        <td><?= number_format($tour['price'], 0, ',', '.') . ' đ' ?></td>
         
         <td><?= $tour['status'] ? 'Hiển thị' : 'Ẩn' ?></td>
         <td>
