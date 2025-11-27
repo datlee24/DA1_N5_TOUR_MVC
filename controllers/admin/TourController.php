@@ -97,9 +97,6 @@ class TourController{
             header('Location:admin.php?act=tour_list');
 
         }
-
-
-    }  
     }
     public function tour_detail(){
         $tour_id =$_GET['id'];
@@ -113,6 +110,18 @@ class TourController{
         require './views/admin/tours/detail.php';
     }
 
-}
+    }  
+    // }
+    // public function tour_detail(){
+    //     $tour_id =$_GET['id'];
+    //     // Lấy tour
+    //     $tour=$this->modelTour->getTourById($tour_id);
+    //     // Lấy lịch trình
+    //     $itineraries =$this->modelTour->getItineraryByTourId($tour_id);
+    //     // Lấy lịch khởi hành và hướng dẫn viên
+    //     $schedules=$this->modelTour->getScheduleWithGuideByTourId($tour_id);
+
+    //     require './views/admin/tours/detail.php';
+    // }
 
 ?>
