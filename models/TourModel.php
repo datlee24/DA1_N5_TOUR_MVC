@@ -72,6 +72,25 @@ class TourModel { protected $conn; public function __construct(){ $this->conn=co
          return $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     }
+    // Tìm kiếm
+    public function searchTourByName($key){
+        $sql="SELECT 
+                tour.tour_id,
+                tour.name,
+                tour.description,
+                tour.policy,
+                tour.supplier,
+                tour.price,
+                tour.image,
+                tour.status,
+                category.name AS category_name
+            FROM tour
+            JOIN category ON tour.category_id = category.category_id
+            WHERE tour.name LIKE :key";
+              $stmt = $this->conn->prepare($sql);
+                $stmt->execute(['key' => "%$key%"]);
+                  return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
    
 
