@@ -50,6 +50,7 @@ class TourController{
                 'description' => $_POST['description'],
                 'policy' => $_POST['policy'],
                 'supplier' => $_POST['supplier'],
+                'price' => $_POST['price'],
                 'image' => $imageName,
                 'status' => $_POST['status']
              ];
@@ -90,6 +91,7 @@ class TourController{
                 'description' => $_POST['description'],
                 'policy' => $_POST['policy'],
                 'supplier' => $_POST['supplier'],
+                'price' => $_POST['price'], 
                 'image' => $imageName,
                 'status' => $_POST['status']
              ];
@@ -104,9 +106,6 @@ class TourController{
         $tour=$this->modelTour->getTourById($tour_id);
         // Lấy lịch trình
         $itineraries =$this->modelTour->getItineraryByTourId($tour_id);
-        // Lấy lịch khởi hành và hướng dẫn viên
-        $schedules=$this->modelTour->getScheduleWithGuideByTourId($tour_id);
-
         require './views/admin/tours/detail.php';
     }
 
