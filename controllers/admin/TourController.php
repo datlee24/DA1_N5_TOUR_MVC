@@ -98,6 +98,8 @@ class TourController{
 
         }
 
+
+    }  
     }
     public function tour_detail(){
         $tour_id =$_GET['id'];
@@ -110,10 +112,6 @@ class TourController{
 
         require './views/admin/tours/detail.php';
     }
-
-
-        
-    
 
 }
 

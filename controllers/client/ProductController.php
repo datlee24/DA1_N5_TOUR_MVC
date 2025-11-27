@@ -15,4 +15,5 @@ class ProductController
         $thoiTiet = "Hôm nay trời có vẻ là mưa";
         require_once './views/trangchu.php';
     }
+    
 }

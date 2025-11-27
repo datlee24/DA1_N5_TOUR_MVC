@@ -54,7 +54,6 @@ match ($act) {
 'ajax-guides'           => (new BookingController)->ajaxGuide(),
 'ajax-customer-create'  => (new BookingController)->ajaxCreateCustomer(),
 
-
     //Tour
     'tour_list' => (new TourController())->tour_list(),
     'form_add_tour' => (new TourController())->FormAdd(),
@@ -64,6 +63,10 @@ match ($act) {
     'update_tour'=> (new TourController())->updateTour(),
     'tour_detail' => (new TourController())->tour_detail(),
     // category
+
+     'category_list'=> (new CategoryController())->listCategory(),
+     'category_add_form'=>(new CategoryController())->addCategoryForm(),
+
     'category_list'=> (new CategoryController())->listCategory(),
     'category_add_form'=>(new CategoryController())->addCategoryForm(),
     'category_add'=> (new CategoryController())->addCategory(),
