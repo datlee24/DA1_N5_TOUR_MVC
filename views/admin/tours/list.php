@@ -3,6 +3,14 @@ headerAdmin();
 ?>
 <h2>Danh sách Tour</h2>
 <a href="admin.php?act=form_add_tour">+ Thêm tour</a>
+<form action="admin.php" method="GET" style="margin-bottom: 15px;">
+    <input type="hidden" name="act" value="tour_list">
+    <input type="text" name="q" placeholder="Tìm tour ..." value="<?= isset($_GET['q']) ? htmlspecialchars($_GET['q']) : '' ?>">
+    <button type="submit">Tìm kiếm</button>
+    
+</form>
+
+
 <table>
     <tr>
         <th>ID</th>

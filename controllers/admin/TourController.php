@@ -10,10 +10,18 @@ class TourController{
     }
    
        //Danh sách tour
-    public function tour_list(){
-        $tours =$this->modelTour->getAllTour();
-        require './views/admin/tours/list.php';
+   public function tour_list(){
+    $tours = []; 
+    if(isset($_GET['q']) && !empty($_GET['q'])){
+        $key= $_GET['q'];
+        $tours = $this->modelTour->searchTourByName($key); // gán vào $tours
+    } else {
+        $tours = $this->modelTour->getAllTour();
     }
+  
+    require './views/admin/tours/list.php';
+}
+
 
     // Xóa tour
     public function deleteTour(){
