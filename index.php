@@ -1,4 +1,3 @@
-
 <?php 
 // Require toàn bộ các file khai báo môi trường, thực thi,...(không require view)
 

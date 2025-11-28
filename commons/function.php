@@ -1,7 +1,8 @@
 <?php
 
 // Kết nối CSDL qua PDO
-function connectDB() {
+function connectDB()
+{
     // Kết nối CSDL
     $host = DB_HOST;
     $port = DB_PORT;
@@ -15,14 +16,15 @@ function connectDB() {
 
         // cài đặt chế độ trả dữ liệu
         $conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-    
+
         return $conn;
     } catch (PDOException $e) {
         echo ("Connection failed: " . $e->getMessage());
     }
 }
 
-function uploadFile($file, $folderSave){
+function uploadFile($file, $folderSave)
+{
     $file_upload = $file;
     $pathStorage = $folderSave . rand(10000, 99999) . $file_upload['name'];
 
@@ -35,7 +37,8 @@ function uploadFile($file, $folderSave){
     return null;
 }
 
-function deleteFile($file){
+function deleteFile($file)
+{
     $pathDelete = PATH_ROOT . $file;
     if (file_exists($pathDelete)) {
         unlink($pathDelete); // Hàm unlink dùng để xóa file
@@ -44,21 +47,36 @@ function deleteFile($file){
 // HÀm hỗ trợ hiển thị header, footer, sldebar cho admin hoặc hdv
 // Giúp dễ dàng include phần header/footer chung mà không cần viết lại nhiều lần
 
-function headerAdmin(){
+function headerAdmin()
+{
     include PATH_ADMIN . "layout/header.php";
 }
-function footerAdmin(){
+function footerAdmin()
+{
     include PATH_ADMIN . "layout/footer.php";
 }
 // Kiểm Tra xem người dùng có phải quản trị hay không nếu là quản trị thì đi tiếp 
-function checkIsAdmin(){
+function checkIsAdmin()
+{
     if (isset($_SESSION['admin']) && $_SESSION['admin']['role'] === 'admin') {
         return true;
-         // Ngược lại, nếu không có session admin hoặc là hướng dẫn viên (hdv) thì chặn lại
+        // Ngược lại, nếu không có session admin hoặc là hướng dẫn viên (hdv) thì chặn lại
     } elseif (!isset($_SESSION['hdv']) || !isset($_SESSION['admin']) || $_SESSION['users']['role'] === 'hdv') {
         // Nếu không phải admin, chuyển hướng về trang đăng nhập
-                // Chuyển hướng người dùng về trang đăng nhập của admin
+        // Chuyển hướng người dùng về trang đăng nhập của admin
         header('Location: admin.php?act=login');
-        exit;// Dừng toàn bộ chương trình sau khi chuyển hướng
+        exit; // Dừng toàn bộ chương trình sau khi chuyển hướng
     }
+}
+
+// Kiểm tra session cho hướng dẫn viên
+function checkIsHdv()
+{
+    if (isset($_SESSION['hdv']) && $_SESSION['hdv']['role'] === 'hdv') {
+        return true;
+    }
+
+    // Nếu chưa đăng nhập hdv thì chuyển về form đăng nhập hdv
+    header('Location: admin.php?act=hdv-login');
+    exit;
 }
