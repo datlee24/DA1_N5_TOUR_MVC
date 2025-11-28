@@ -64,14 +64,7 @@ class TourModel { protected $conn; public function __construct(){ $this->conn=co
         $stmt = $this->conn->prepare($sql);
         return $stmt->execute(['id' => $id]);
     }
-    // Lây lịch trình tour
-    public function getItineraryByTourId($tour_id){
-        $sql ="SELECT * FROM itinerary WHERE tour_id=:tour_id ORDER BY day_number ASC";
-         $stmt =$this->conn->prepare($sql);
-        $stmt->execute(['tour_id' => $tour_id]);
-         return $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    }
+    
     // Tìm kiếm
     public function searchTourByName($key){
         $sql="SELECT 
@@ -92,7 +85,48 @@ class TourModel { protected $conn; public function __construct(){ $this->conn=co
                   return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-   
+    // Lấy lịch trình tour
+    public function getItineraryByTourId($tour_id){
+        $sql ="SELECT * FROM itinerary WHERE tour_id=:tour_id ORDER BY day_number ASC";
+         $stmt =$this->conn->prepare($sql);
+        $stmt->execute(['tour_id' => $tour_id]);
+         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    }
+// Lấy 1 lịch trình theo id
+public function getItineraryById($id){
+    $sql="SELECT * FROM itinerary WHERE itinerary_id=:id";
+    $stmt=$this->conn->prepare($sql);
+    $stmt->execute([
+        ':id'=>$id
+    ]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+
+}
+// Thêm lịch trình
+public function addItinerary($data){
+    $sql="INSERT INTO itinerary (tour_id, day_number, title, description,   location, time_start, time_end)
+                VALUES (:tour_id, :day_number, :title, :description, :location, :time_start, :time_end)";
+                $stmt=$this->conn->prepare($sql);
+                return $stmt->execute($data);
+}
+// Cập nhật lịch tour
+public function updateItinerary($data){
+    $sql="UPDATE itinerary SET 
+                    day_number=:day_number, title=:title, description=:description,
+                    location=:location, time_start=:time_start, time_end=:time_end
+                WHERE itinerary_id=:itinerary_id";
+                $stmt=$this->conn->prepare($sql);
+                return $stmt->execute($data);
+}
+//    Xóa lịch trình
+public function deleteItinerary($id){
+    $sql="DELETE FROM itinerary WHERE itinerary_id=:id";
+     $stmt=$this->conn->prepare($sql);
+        return  $stmt->execute([
+        ':id'=>$id
+    ]);
+}
 
 }
 ?>

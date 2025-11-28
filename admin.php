@@ -62,11 +62,17 @@ match ($act) {
     'form_edit_tour'=> (new TourController())->FormEdit(),
     'update_tour'=> (new TourController())->updateTour(),
     'tour_detail' => (new TourController())->tour_detail(),
+
+    // Lịch trình tour itinerary
+    'add_itinerary_form' => (new TourController())->addItineraryForm(),
+    'add_itinerary' => (new TourController())->addItinerary(),
+    'edit_itinerary_form'=> (new TourController())->editItineraryForm(),
+    'update_itinerary'      => (new TourController())->updateItinerary(),
+    'delete_itinerary'=> (new TourController())->deleteItinerary(),
+   
+
+
     // category
-
-     'category_list'=> (new CategoryController())->listCategory(),
-     'category_add_form'=>(new CategoryController())->addCategoryForm(),
-
     'category_list'=> (new CategoryController())->listCategory(),
     'category_add_form'=>(new CategoryController())->addCategoryForm(),
     'category_add'=> (new CategoryController())->addCategory(),
