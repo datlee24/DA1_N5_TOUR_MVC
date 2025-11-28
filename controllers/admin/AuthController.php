@@ -90,12 +90,75 @@ class AuthController
      * Hàm xử lý đăng xuất
      * - Xóa session admin và chuyển về trang đăng nhập
      */
-        public function logout()
+    public function logout()
     {
         // Xóa session người dùng
         unset($_SESSION['admin']);
         // Chuyển hướng về trang đăng nhập
         header('Location: index.php');
+        exit;
+    }
+
+    /**
+     * Hàm xử lý đăng nhập cho hướng dẫn viên (role = 'hdv')
+     */
+    public function hdvLogin()
+    {
+        // Nếu hướng dẫn viên đã đăng nhập rồi thì chuyển tới dashboard hdv
+        if (isset($_SESSION['hdv'])) {
+            $_SESSION['success'] = "Bạn đã đăng nhập rồi!";
+            header('Location: admin.php?act=hdv-dashboard');
+            exit;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $email = $_POST['email'] ?? '';
+            $password = $_POST['password'] ?? '';
+
+            if (empty($email) || empty($password)) {
+                $_SESSION['error'] = "Email và mật khẩu không được để trống";
+                header('Location: admin.php?act=hdv-login');
+                exit;
+            }
+
+            $user = $this->userModel->checkEmail($email);
+            if ($user) {
+                if ($password === $user['password']) {
+                    // Chỉ cho phép role = 'hdv' đăng nhập vào cổng hdv
+                    if ($user['role'] !== 'hdv') {
+                        $_SESSION['error'] = "Tài khoản không phải hướng dẫn viên";
+                        header('Location: admin.php?act=hdv-login');
+                        exit;
+                    }
+
+                    // Đăng nhập thành công cho hdv
+                    $_SESSION['hdv'] = $user;
+                    $_SESSION['success'] = "Đăng nhập thành công!";
+                    header('Location: admin.php?act=hdv-dashboard');
+                    exit;
+                } else {
+                    $_SESSION['error'] = "Sai mật khẩu";
+                    header('Location: admin.php?act=hdv-login');
+                    exit;
+                }
+            } else {
+                $_SESSION['error'] = "Tài khoản không tồn tại";
+                header('Location: admin.php?act=hdv-login');
+                exit;
+            }
+        }
+
+        // Hiển thị form đăng nhập cho hướng dẫn viên
+        require_once PATH_ROOT . 'views/hdv/login.php';
+    }
+
+    /**
+     * Đăng xuất hướng dẫn viên
+     */
+    public function hdvLogout()
+    {
+        unset($_SESSION['hdv']);
+        header('Location: admin.php?act=hdv-login');
         exit;
     }
 }
