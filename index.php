@@ -6,13 +6,11 @@
 require_once './commons/env.php'; // Khai báo biến môi trường
 require_once './commons/function.php'; // Hàm hỗ trợ
 
-foreach (glob('./controllers/guide/*.php') as $controllerFile) {
-    require_once $controllerFile;
-}
-# Tải các model
-foreach (glob('./models/*.php') as $modelFile) {
-    require_once $modelFile;
-}
+// Require toàn bộ file Controllers
+require_once './controllers/ProductController.php';
+
+// Require toàn bộ file Models
+require_once './models/ProductModel.php';
 
 
 // Route
