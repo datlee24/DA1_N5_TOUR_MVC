@@ -68,15 +68,12 @@ function checkIsAdmin()
         exit; // Dừng toàn bộ chương trình sau khi chuyển hướng
     }
 }
-
-// Kiểm tra session cho hướng dẫn viên
-function checkIsHdv()
+function checkGuide()
 {
-    if (isset($_SESSION['hdv']) && $_SESSION['hdv']['role'] === 'hdv') {
-        return true;
+    if (!isset($_SESSION['guide'])) {
+        header("Location: index.php?act=login");
+        exit;
     }
-
-    // Nếu chưa đăng nhập hdv thì chuyển về form đăng nhập hdv
-    header('Location: admin.php?act=hdv-login');
-    exit;
 }
+
+

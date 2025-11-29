@@ -39,4 +39,31 @@ class UserModel
             return null; // Không tìm thấy người dùng
         }
     }
+        // Lấy thông tin user theo email
+    public function findByEmail($email)
+    {
+        $sql = "SELECT * FROM users WHERE email = :email LIMIT 1";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute(['email' => $email]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    public function updateProfile($user_id, $data)
+{
+    $sql = "UPDATE users 
+            SET fullname = :fullname,
+                phone    = :phone,
+                email    = :email,
+                password = :password
+            WHERE user_id = :id";
+
+    $stmt = $this->conn->prepare($sql);
+    return $stmt->execute([
+        'fullname' => $data['fullname'],
+        'phone'    => $data['phone'],
+        'email'    => $data['email'],
+        'password' => $data['password'],
+        'id'       => $user_id
+    ]);
+}
+
 }
