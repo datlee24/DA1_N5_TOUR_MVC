@@ -14,3 +14,5 @@ define('DB_NAME'    , 'duan1');  // Tên database
 define('PATH_ROOT'    , __DIR__ . '/../');
 //Cấu hình thư mục phần giao diện của quản trị tour
 define('PATH_ADMIN', PATH_ROOT . '/views/admin/');
+//Cấu hình thư mục phần giao diện hường dẫn viên 
+define('PATH_GUIDE', PATH_ROOT . '/views/guide/');
