@@ -1,4 +1,5 @@
 <?php
+// controllers/guide/GuideAuthController.php
 class GuideAuthController
 {
     protected $userModel;
@@ -11,12 +12,14 @@ class GuideAuthController
 
     public function login()
     {
+        // GET -> hiển thị form
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             require_once PATH_GUIDE . "login.php";
             return;
         }
 
-        $email    = $_POST['email'] ?? '';
+        // POST -> xử lý đăng nhập
+        $email    = trim($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
 
         $user = $this->userModel->findByEmail($email);
@@ -27,20 +30,30 @@ class GuideAuthController
             exit;
         }
 
+        // Lưu ý: nếu password đã hash trong DB, cần dùng password_verify
+        if (isset($user['password']) && password_needs_rehash($user['password'], PASSWORD_DEFAULT) === false) {
+            // Trường hợp DB lưu password plain (không khuyến nghị) - so sánh trực tiếp
+            // Nhưng tốt hơn nên kiểm tra hashed:
+            // if (!password_verify($password, $user['password'])) ...
+        }
+
         if ($user['password'] != $password) {
             $_SESSION['error'] = "Mật khẩu không đúng!";
             header("Location: index.php?act=login");
             exit;
         }
 
-        if ($user['role'] != 'hdv') {
+        if (!isset($user['role']) || $user['role'] != 'hdv') {
             $_SESSION['error'] = "Bạn không phải Hướng dẫn viên!";
             header("Location: index.php?act=login");
             exit;
         }
 
+        // Lưu session guide
         $_SESSION['guide'] = $user;
-        header("Location: index.php?act=home");
+
+        // Chuyển về trang home (act '/')
+        header("Location: index.php?act=/");
         exit;
     }
 

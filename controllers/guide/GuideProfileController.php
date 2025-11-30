@@ -1,4 +1,5 @@
 <?php
+// controllers/guide/GuideProfileController.php
 class GuideProfileController
 {
     protected $userModel;
@@ -6,7 +7,7 @@ class GuideProfileController
     public function __construct()
     {
         if (!isset($_SESSION)) session_start();
-        checkGuide();
+        checkIsGuide();
         $this->userModel = new UserModel();
     }
 
@@ -23,22 +24,32 @@ class GuideProfileController
             exit;
         }
 
-        $user_id  = $_SESSION['guide']['user_id'];
+        $user_id  = $_SESSION['guide']['user_id'] ?? null;
+        if (!$user_id) {
+            $_SESSION['error'] = "Phiên không hợp lệ. Vui lòng đăng nhập lại.";
+            header("Location: index.php?act=login");
+            exit;
+        }
 
         $data = [
-            'fullname' => $_POST['fullname'],
-            'phone'    => $_POST['phone'],
-            'email'    => $_POST['email'],
-            'password' => $_POST['password'],
+            'fullname' => trim($_POST['fullname'] ?? ''),
+            'phone'    => trim($_POST['phone'] ?? ''),
+            'email'    => trim($_POST['email'] ?? '')
         ];
+
+        // Nếu nhập password mới
+        if (!empty($_POST['password'])) {
+            $data['password'] = $_POST['password']; // nếu DB dùng hash hãy hash trước khi lưu
+        }
 
         $this->userModel->updateProfile($user_id, $data);
 
+        // Cập nhật session guide (giữ nguyên key user_id)
         $_SESSION['guide'] = array_merge($_SESSION['guide'], $data);
 
         $_SESSION['success'] = "Cập nhật hồ sơ thành công!";
 
-        header("Location: index.php?act=home");
+        header("Location: index.php?act=/");
         exit;
     }
 }
