@@ -1,78 +1,39 @@
-<?php
-headerAdmin();
-$errors = $_SESSION['errors'] ?? [];
-$old = $_SESSION['old'] ?? [];
-unset($_SESSION['errors'], $_SESSION['old']);
+<?php headerAdmin(); ?>
 
-$formData = [
-    'user_id' => $old['user_id'] ?? $guide['user_id'],
-    'language' => $old['language'] ?? $guide['language'],
-    'certificate' => $old['certificate'] ?? $guide['certificate'],
-    'specialization' => $old['specialization'] ?? $guide['specialization'],
-    'base_fee' => $old['base_fee'] ?? $guide['base_fee'],
-];
-?>
+<h2 class="mt-4">Cập nhật Hướng dẫn viên</h2>
 
-<div class="d-flex justify-content-between align-items-center mt-4">
-    <h1 class="h3">Cập nhật hướng dẫn viên</h1>
-    <a href="admin.php?act=guide" class="btn btn-secondary">Quay lại danh sách</a>
-</div>
-
-<div class="card mt-4">
+<div class="card mt-3">
     <div class="card-body">
         <form action="admin.php?act=guide-update&id=<?= $guide['guide_id']; ?>" method="POST">
+
             <div class="mb-3">
-                <label for="user_id" class="form-label">Nhân sự</label>
-                <select class="form-select <?= isset($errors['user_id']) ? 'is-invalid' : ''; ?>" id="user_id" name="user_id">
-                    <option value="">-- Chọn người dùng --</option>
-                    <?php foreach ($users as $user): ?>
-                        <option value="<?= $user['user_id']; ?>"
-                            <?= ((int)$formData['user_id'] === (int)$user['user_id']) ? 'selected' : ''; ?>>
-                            <?= htmlspecialchars($user['username'] ?? $user['email']); ?> (ID: <?= $user['user_id']; ?>)
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-                <?php if (isset($errors['user_id'])): ?>
-                    <div class="invalid-feedback"><?= $errors['user_id']; ?></div>
-                <?php endif; ?>
+                <label>Họ và tên</label>
+                <input type="text" name="fullname" class="form-control" value="<?= $guide['fullname']; ?>" required>
             </div>
 
             <div class="mb-3">
-                <label for="language" class="form-label">Ngôn ngữ</label>
-                <input type="text" class="form-control <?= isset($errors['language']) ? 'is-invalid' : ''; ?>" id="language" name="language" value="<?= htmlspecialchars($formData['language']); ?>">
-                <?php if (isset($errors['language'])): ?>
-                    <div class="invalid-feedback"><?= $errors['language']; ?></div>
-                <?php endif; ?>
+                <label>Ngôn ngữ</label>
+                <input type="text" name="language" class="form-control" value="<?= $guide['language']; ?>" required>
             </div>
 
             <div class="mb-3">
-                <label for="certificate" class="form-label">Số giấy phép hành nghề</label>
-                <input type="text" class="form-control <?= isset($errors['certificate']) ? 'is-invalid' : ''; ?>" id="certificate" name="certificate" value="<?= htmlspecialchars($formData['certificate']); ?>">
-                <?php if (isset($errors['certificate'])): ?>
-                    <div class="invalid-feedback"><?= $errors['certificate']; ?></div>
-                <?php endif; ?>
+                <label>Giấy phép hành nghề</label>
+                <input type="text" name="certificate" class="form-control" value="<?= $guide['certificate']; ?>" required>
             </div>
 
             <div class="mb-3">
-                <label for="specialization" class="form-label">Chuyên môn/Khu vực</label>
-                <input type="text" class="form-control <?= isset($errors['specialization']) ? 'is-invalid' : ''; ?>" id="specialization" name="specialization" value="<?= htmlspecialchars($formData['specialization']); ?>">
-                <?php if (isset($errors['specialization'])): ?>
-                    <div class="invalid-feedback"><?= $errors['specialization']; ?></div>
-                <?php endif; ?>
+                <label>Kinh nghiệm</label>
+                <textarea name="experience" class="form-control" required><?= $guide['experience']; ?></textarea>
             </div>
 
             <div class="mb-3">
-                <label for="base_fee" class="form-label">Thù lao cơ bản (đ/ngày)</label>
-                <input type="number" min="0" step="0.01" class="form-control <?= isset($errors['base_fee']) ? 'is-invalid' : ''; ?>" id="base_fee" name="base_fee" value="<?= htmlspecialchars($formData['base_fee']); ?>">
-                <?php if (isset($errors['base_fee'])): ?>
-                    <div class="invalid-feedback"><?= $errors['base_fee']; ?></div>
-                <?php endif; ?>
+                <label>Chuyên môn</label>
+                <input type="text" name="specialization" class="form-control" value="<?= $guide['specialization']; ?>" required>
             </div>
 
-            <button type="submit" class="btn btn-primary">Cập nhật</button>
+            <button class="btn btn-primary">Cập nhật</button>
         </form>
     </div>
 </div>
 
 <?php footerAdmin(); ?>
-
