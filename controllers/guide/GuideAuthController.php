@@ -9,7 +9,6 @@ class GuideAuthController
         $this->userModel = new UserModel();
     }
 
-    // Hiển thị form login
     public function login()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -17,7 +16,6 @@ class GuideAuthController
             return;
         }
 
-        // Xử lý POST
         $email    = $_POST['email'] ?? '';
         $password = $_POST['password'] ?? '';
 
@@ -41,9 +39,7 @@ class GuideAuthController
             exit;
         }
 
-        // Đăng nhập thành công
         $_SESSION['guide'] = $user;
-
         header("Location: index.php?act=home");
         exit;
     }

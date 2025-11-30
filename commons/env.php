@@ -11,7 +11,8 @@ define('DB_USERNAME', 'root');
 define('DB_PASSWORD', '');
 define('DB_NAME'    , 'duan1');  // Tên database
 
-define('PATH_ROOT'    , __DIR__ . '/../');
+// PATH ROOT – trỏ đúng về thư mục gốc dự án
+define('PATH_ROOT', dirname(__DIR__) . '/');
 //Cấu hình thư mục phần giao diện của quản trị tour
 define('PATH_ADMIN', PATH_ROOT . '/views/admin/');
 //Cấu hình thư mục phần giao diện hường dẫn viên 
