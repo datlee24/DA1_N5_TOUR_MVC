@@ -88,5 +88,5 @@ match ($act) {
     'guide-edit'=>(new GuideController())->edit(),
     'guide-update'=>(new GuideController())->update(),
     'guide-delete'=>(new GuideController())->delete(),
-    'tour-expense'=>(new TourExpenseController())->index(),
+    // 'tour-expense'=>(new TourExpenseController())->index(),
 };

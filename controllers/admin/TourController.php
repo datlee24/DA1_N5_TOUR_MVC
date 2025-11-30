@@ -109,18 +109,88 @@ class TourController{
         }
 
     }  
-    //     public function tour_detail(){
-    // }
-    // public function tour_detail(){
+    public function tour_detail(){
 
+        $tour_id =$_GET['id'];
+        // Lấy tour
+        $tour=$this->modelTour->getTourById($tour_id);
+        // Lấy lịch trình
+        $itineraries =$this->modelTour->getItineraryByTourId($tour_id);
+        require './views/admin/tours/detail.php';
+    }
+    // Xóa lịch trình
+    public function deleteItinerary(){
+        $id=$_GET['id'];
+        $tour_id=$_GET['tour_id'];
+        $this->modelTour->deleteItinerary($id);
+        header("Location: admin.php?act=tour_detail&id=$tour_id");
+        exit;
+    }
+    // form thêm
+    public function addItineraryForm(){
+        $tour_id=$_GET['tour_id'];
+        require './views/admin/tours/itinerary_add.php';
+    }
+    // Xử lý thêm
+    public function addItinerary(){
+        if($_SERVER['REQUEST_METHOD'] == 'POST'){
+            $time_start = $_POST['time_start'] . ":00";  // '08:30' -> '08:30:00'
+            $time_end   = $_POST['time_end'] . ":00";
+            $data=[
+                'tour_id'=>$_POST['tour_id'],
+                'day_number'=>$_POST['day_number'],
+                'title'=>$_POST['title'],
+                'description'=>$_POST['description'],
+                'location'=>$_POST['location'],
+                'time_start'=>$_POST['time_start'],
+                'time_end'=>$_POST['time_end']
+
+            ];
+                        if($this->modelTour->addItinerary($data)){
+                            $_SESSION['success'] = "Thêm lịch trình thành công!";
+                        } else {
+                            $_SESSION['error'] = "Thêm lịch trình thất bại!";
+                        }
+            header('Location:admin.php?act=tour_detail&id='.$_POST['tour_id']);
+        }
+    }
+    // Sửa lịch trình tour
+    public function editItineraryForm(){
+            $id = $_GET['id'];
+            $itinerary = $this->modelTour->getItineraryById($id);
+            $tour_id = $itinerary['tour_id'];
+            require './views/admin/tours/itinerary_edit.php';
+
+    }
+     public function updateItinerary(){
+        if($_SERVER['REQUEST_METHOD'] == 'POST'){
+            $data=[
+                'itinerary_id' => $_POST['itinerary_id'],
+                'day_number'=>$_POST['day_number'],
+                'title'=>$_POST['title'],
+                'description'=>$_POST['description'],
+                'location'=>$_POST['location'],
+                'time_start'=>$_POST['time_start'],
+                'time_end'=>$_POST['time_end']
+
+            ];
+            $this->modelTour->updateItinerary($data);
+            header('Location:admin.php?act=tour_detail&id='.$_POST['tour_id']);
+        }
+    }
+
+
+    }
+        // public function tour_detail(){
     //     $tour_id =$_GET['id'];
     //     // Lấy tour
     //     $tour=$this->modelTour->getTourById($tour_id);
     //     // Lấy lịch trình
     //     $itineraries =$this->modelTour->getItineraryByTourId($tour_id);
-    //     require './views/admin/tours/detail.php';
-    // }
+    //     // Lấy lịch khởi hành và hướng dẫn viên
+    //     $schedules=$this->modelTour->getScheduleWithGuideByTourId($tour_id);
 
+    //     require './views/admin/tours/detail.php';
     // }
 
 //   // Xóa lịch trình
@@ -185,22 +255,16 @@ class TourController{
 //     }
 
       
-    // }
-    // public function tour_detail(){
-    //     $tour_id =$_GET['id'];
-    //     // Lấy tour
-    //     $tour=$this->modelTour->getTourById($tour_id);
-    //     // Lấy lịch trình
-    //     $itineraries =$this->modelTour->getItineraryByTourId($tour_id);
-    //     // Lấy lịch khởi hành và hướng dẫn viên
-    //     $schedules=$this->modelTour->getScheduleWithGuideByTourId($tour_id);
+//     public function tour_detail(){
+//         $tour_id =$_GET['id'];
+//         // Lấy tour
+//         $tour=$this->modelTour->getTourById($tour_id);
+//         // Lấy lịch trình
+//         $itineraries =$this->modelTour->getItineraryByTourId($tour_id);
+//         // Lấy lịch khởi hành và hướng dẫn viên
+//         $schedules=$this->modelTour->getScheduleWithGuideByTourId($tour_id);
 
-    //     require './views/admin/tours/detail.php';
-    // }
-
-// 
-    //  Lịch trình tour
-
-  }
+//         require './views/admin/tours/detail.php';
+//     }
 
 ?>
