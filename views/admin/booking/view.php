@@ -13,15 +13,14 @@
                     <strong>Thông tin Booking</strong>
                 </div>
                 <div class="card-body">
-                    <p><strong>Mã booking:</strong> #<?= $booking['booking_id'] ?></p>
-                    <p><strong>Tour:</strong> <?= $booking['tour_name'] ?></p>
+                    <p><strong>Mã booking:</strong> #<?= htmlspecialchars($booking['booking_id']) ?></p>
+                    <p><strong>Tour:</strong> <?= htmlspecialchars($booking['tour_name']) ?></p>
 
                     <p><strong>Lịch khởi hành:</strong>
-                        <?= date("d/m/Y", strtotime($booking['start_date'])) ?> →
-                        <?= date("d/m/Y", strtotime($booking['end_date'])) ?>
+                        <?= date("d/m/Y", strtotime($booking['start_date'])) ?> → <?= date("d/m/Y", strtotime($booking['end_date'])) ?>
                     </p>
 
-                    <p><strong>Số lượng khách:</strong> <?= $booking['num_people'] ?></p>
+                    <p><strong>Số lượng khách:</strong> <?= htmlspecialchars($booking['num_people']) ?></p>
 
                     <p><strong>Tổng tiền:</strong>
                         <span class="text-danger fw-bold fs-5">
@@ -71,8 +70,8 @@
                     <strong>Hướng dẫn viên</strong>
                 </div>
                 <div class="card-body">
-                    <p><strong>Tên HDV:</strong> <?= $guide['fullname'] ?? "Chưa phân công" ?></p>
-                    <p><strong>SĐT:</strong> <?= $guide['phone'] ?? "-" ?></p>
+                    <p><strong>Tên HDV:</strong> <?= htmlspecialchars($guide['fullname'] ?? "Chưa phân công") ?></p>
+                    <p><strong>SĐT:</strong> <?= htmlspecialchars($guide['phone'] ?? "-") ?></p>
                 </div>
             </div>
         </div>
@@ -91,6 +90,8 @@
                         <th>Họ tên</th>
                         <th>SĐT</th>
                         <th>Email</th>
+                        <th>Phòng</th>
+                        <th>Check-in</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -100,6 +101,14 @@
                         <td><?= htmlspecialchars($cus['fullname']) ?></td>
                         <td><?= htmlspecialchars($cus['phone']) ?></td>
                         <td><?= htmlspecialchars($cus['email']) ?></td>
+                        <td><?= htmlspecialchars($cus['room_number'] ?? '-') ?></td>
+                        <td>
+                            <?php if (!empty($cus['checkin_status']) && $cus['checkin_status'] === 'checked_in'): ?>
+                                <span class="badge bg-success">Đã nhận phòng</span>
+                            <?php else: ?>
+                                <span class="badge bg-secondary">Chưa nhận</span>
+                            <?php endif; ?>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>

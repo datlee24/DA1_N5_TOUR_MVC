@@ -107,8 +107,13 @@ class TourController{
             header('Location:admin.php?act=tour_list');
 
         }
+
+    }  
+        public function tour_detail(){
+=======
     }
     public function tour_detail(){
+
         $tour_id =$_GET['id'];
         // Lấy tour
         $tour=$this->modelTour->getTourById($tour_id);
@@ -116,6 +121,9 @@ class TourController{
         $itineraries =$this->modelTour->getItineraryByTourId($tour_id);
         require './views/admin/tours/detail.php';
     }
+
+    }
+
   // Xóa lịch trình
     public function deleteItinerary(){
         $id=$_GET['id'];
@@ -191,6 +199,8 @@ class TourController{
     //     require './views/admin/tours/detail.php';
     // }
 
+// }
+=======
     //  Lịch trình tour
 
   

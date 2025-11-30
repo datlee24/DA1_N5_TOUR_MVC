@@ -41,7 +41,7 @@ class BookingController {
         exit;
     }
 
-    // Step 2: CHO PHÉP CHỌN SCHEDULE TỪ DANH SÁCH HOẶC TẠO LỊCH MỚI
+    // Step 2
     public function step2() {
         $tour_id = $_SESSION['booking']['tour_id'] ?? null;
         if (!$tour_id) {
@@ -57,13 +57,11 @@ class BookingController {
         $tour_id = $_SESSION['booking']['tour_id'] ?? null;
         if (!$tour_id) { header("Location: admin.php?act=booking-step1"); exit; }
 
-        // Nếu người dùng gửi start_date + end_date -> tạo lịch mới
         $start = trim($_POST['start_date'] ?? '');
         $end   = trim($_POST['end_date'] ?? '');
         $schedule_id = intval($_POST['schedule_id'] ?? 0);
 
         if ($start && $end) {
-            // tạo schedule mới
             $sid = $this->scheduleModel->create([
                 'tour_id' => $tour_id,
                 'start_date' => $start,
@@ -95,7 +93,7 @@ class BookingController {
         exit;
     }
 
-    // Step3: chọn HDV, hiển thị lịch bận của từng HDV
+    // Step3: chọn HDV
     public function step3() {
         $schedule_id = $_SESSION['booking']['schedule_id'] ?? null;
         if (!$schedule_id) {
@@ -106,11 +104,12 @@ class BookingController {
         $schedule = $this->scheduleModel->find($schedule_id);
         $guides = $this->guideModel->getAllWithUser();
 
-        // Thu thêm lịch của từng hdv để hiển thị
+        // Thu thêm lịch của từng hdv để hiển thị và xác định rảnh/bận
         foreach ($guides as &$g) {
             $g['schedules'] = $this->guideModel->getSchedule($g['guide_id']);
             $g['available'] = !$this->guideModel->isBusy($g['guide_id'], $schedule['start_date'], $schedule['end_date']);
         }
+        unset($g);
 
         require_once PATH_ADMIN . "booking/step3.php";
     }
@@ -130,10 +129,25 @@ class BookingController {
         exit;
     }
 
+    // Step4: chọn khách hàng (loại bỏ khách đã trùng lịch)
     public function step4() {
-        $schedule_id = $_SESSION['booking']['schedule_id'];
+        $schedule_id = $_SESSION['booking']['schedule_id'] ?? null;
+        if (!$schedule_id) {
+            header("Location: admin.php?act=booking-step2");
+            exit;
+        }
+
         $schedule = $this->scheduleModel->find($schedule_id);
         $customers = $this->customerModel->getAll();
+
+        // Lấy danh sách customer_id đã bận trong khoảng schedule để ẩn khỏi danh sách
+        $busyIds = $this->customerModel->getBusyCustomers($schedule['start_date'], $schedule['end_date']);
+
+        // Lọc khách: nếu đã bận thì không hiển thị
+        $filteredCustomers = array_values(array_filter($customers, function($c) use ($busyIds) {
+            return !in_array($c['customer_id'], $busyIds);
+        }));
+
         require_once PATH_ADMIN . "booking/step4.php";
     }
 
@@ -186,6 +200,11 @@ class BookingController {
     }
 
     public function finish() {
+        if (empty($_SESSION['booking'])) {
+            $_SESSION['error'] = "Không có thông tin booking.";
+            header("Location: admin.php?act=booking-step1");
+            exit;
+        }
         $b = $_SESSION['booking'];
 
         $data = [
@@ -220,7 +239,6 @@ class BookingController {
         $id = intval($_GET['id'] ?? 0);
         $booking = $this->bookingModel->find($id);
 
-        // nếu booking rỗng, chuyển về list
         if (!$booking) {
             $_SESSION['error'] = "Booking không tồn tại";
             header("Location: admin.php?act=booking");
@@ -232,13 +250,13 @@ class BookingController {
         if (!empty($schedule['guide_id'])) {
             $guide = $this->guideModel->findWithUser($schedule['guide_id']);
         } elseif (!empty($booking['guide_id'])) {
-            // fallback: booking row might contain guide fields from join
             $guide = [
                 'fullname' => $booking['guide_name'] ?? null,
                 'phone' => $booking['guide_phone'] ?? null
             ];
         }
 
+        // Lấy danh sách khách theo schedule (trong tour_customer) — đã có room/checkin nếu tồn tại
         $customers = $this->tourCustomerModel->getBySchedule($booking['schedule_id']);
 
         require_once PATH_ADMIN . "booking/view.php";
@@ -252,7 +270,6 @@ class BookingController {
         exit;
     }
 
-    // Mới: xác nhận booking
     public function confirm() {
         $id = intval($_GET['id'] ?? 0);
         $this->bookingModel->updateStatus($id, 'confirmed');
@@ -271,7 +288,6 @@ class BookingController {
 
     public function ajaxGuide() {
         header("Content-Type: application/json; charset=utf-8");
-
         $schedule_id = intval($_GET['schedule_id'] ?? 0);
         $schedule = $this->scheduleModel->find($schedule_id);
 
@@ -283,6 +299,7 @@ class BookingController {
                 $schedule['end_date']
             );
         }
+        unset($g);
 
         echo json_encode(['ok' => true, 'data' => $guides]);
         exit;
