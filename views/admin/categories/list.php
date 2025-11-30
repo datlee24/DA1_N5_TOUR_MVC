@@ -1,5 +1,7 @@
 <?php headerAdmin() ?>
-<h2>Danh sách danh mục</h2>
+
+<h2 class="page-title">Danh sách danh mục</h2>
+
 <?php 
 if(isset($_SESSION['success'])){
     echo '<div class="alert alert-success">'.$_SESSION['success'].'</div>';
@@ -12,128 +14,93 @@ if(isset($_SESSION['error'])){
 }
 ?>
 
-<a href="admin.php?act=category_add_form">Thêm danh mục</a>
-<table border="1" cellpadding="10">
+<a class="btn-add" href="admin.php?act=category_add_form">+ Thêm danh mục</a>
+
+<table class="admin-table">
     <tr>
         <th>ID</th>
         <th>Tên danh mục</th>
         <th>Mô tả</th>
         <th>Hành động</th>
     </tr>
-    <?php  foreach($categories as $index=> $cate):?>
+
+    <?php foreach($categories as $index => $cate): ?>
         <tr>
-            <td><?=$index +1 ?></td>
-            <td><?=$cate['name'] ?></td>
-            <td><?=$cate['description']?></td>
+            <td><?= $index+1 ?></td>
+            <td><?= $cate['name'] ?></td>
+            <td><?= $cate['description'] ?></td>
             <td>
-                <a href="admin.php?act=category_edit_form&id=<?= $cate['category_id']?>">Sửa</a>
-                <a href="admin.php?act=category_delete&id=<?= $cate['category_id']?>"onclick="return confirm('Xóa danh mục này?')">Xóa</a>
+                <a class="btn-edit" href="admin.php?act=category_edit_form&id=<?= $cate['category_id'] ?>">Sửa</a>
+                <a class="btn-delete" href="admin.php?act=category_delete&id=<?= $cate['category_id'] ?>" onclick="return confirm('Xóa danh mục này?')">Xóa</a>
             </td>
         </tr>
-         <?php endforeach; ?>
+    <?php endforeach; ?>
 </table>
+
 <?php footerAdmin() ?>
+
 <style>
-    /* Background & text */
+/* Giao diện chung (giống tour list) */
 body {
-    background-color: #f8faff; /* trắng xanh nhạt */
-    color: #333;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: Arial, sans-serif;
+    background-color: #f0f8ff;
 }
 
-/* Header */
-header, h2 {
-    color: #0d6efd; /* xanh Bootstrap */
+/* Tiêu đề */
+.page-title {
+    text-align: center;
+    color: #1e90ff;
+    margin-bottom: 20px;
 }
 
-/* Buttons */
-.btn-primary {
-    background-color: #0d6efd;
-    border-color: #0d6efd;
+/* Nút thêm */
+.btn-add {
+    display: inline-block;
+    margin-bottom: 15px;
+    padding: 8px 15px;
+    background: #1e90ff;
+    color: #fff;
+    border-radius: 8px;
+    text-decoration: none;
 }
-.btn-primary:hover {
-    background-color: #0b5ed7;
-    border-color: #0a58ca;
-}
+.btn-add:hover { background: #63b3ff; }
 
-.btn-success {
-    background-color: #198754;
-    border-color: #198754;
-}
-.btn-success:hover {
-    background-color: #157347;
-    border-color: #146c43;
-}
-
-.btn-secondary {
-    background-color: #6c757d;
-    border-color: #6c757d;
-}
-.btn-secondary:hover {
-    background-color: #5c636a;
-    border-color: #565e64;
-}
-
-/* Form inputs */
-input.form-control, textarea.form-control {
-    border: 1px solid #0d6efd;
-    border-radius: 5px;
-}
-
-input.form-control:focus, textarea.form-control:focus {
-    border-color: #0b5ed7;
-    box-shadow: 0 0 5px rgba(13, 110, 253, 0.3);
-}
-
-/* Table */
-table {
+/* Bảng chung */
+.admin-table {
     width: 100%;
     border-collapse: collapse;
-    background-color: #ffffff;
+    background: #fff;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
-
-table th, table td {
-    border: 1px solid #0d6efd;
-    padding: 10px;
-    text-align: left;
-}
-
-table th {
-    background-color: #0d6efd;
+.admin-table th {
+    padding: 12px;
+    background: #1e90ff;
     color: #fff;
 }
-
-table tr:nth-child(even) {
-    background-color: #e9f2ff;
-}
-
-/* Alerts */
-.alert-success {
-    background-color: #d1e7dd;
-    color: #0f5132;
-    border-color: #badbcc;
+.admin-table td {
     padding: 10px;
-    border-radius: 5px;
-    margin-bottom: 15px;
+    border-bottom: 1px solid #cce7ff;
 }
 
-.alert-danger {
-    background-color: #f8d7da;
-    color: #842029;
-    border-color: #f5c2c7;
-    padding: 10px;
+/* Nút sửa */
+.btn-edit {
+    background: #28a745;
+    color: #fff;
+    padding: 6px 10px;
     border-radius: 5px;
-    margin-bottom: 15px;
-}
-
-/* Links in table */
-table a {
     text-decoration: none;
-    color: #0d6efd;
 }
+.btn-edit:hover { background: #63d168; }
 
-table a:hover {
-    text-decoration: underline;
+/* Nút xóa */
+.btn-delete {
+    background: #dc3545;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 5px;
+    text-decoration: none;
 }
-
+.btn-delete:hover { background: #e86c75; }
 </style>
