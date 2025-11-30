@@ -82,11 +82,17 @@ match ($act) {
 
 
 
-    'guide'=>(new GuideController())->index(),
-    'guide-create'=>(new GuideController())->create(),
-    'guide-store'=>(new GuideController())->store(),
-    'guide-edit'=>(new GuideController())->edit(),
-    'guide-update'=>(new GuideController())->update(),
-    'guide-delete'=>(new GuideController())->delete(),
+'guide'        => (new GuideController())->index(),
+'guide-create' => (new GuideController())->create(),
+'guide-store'  => (new GuideController())->store(),
+'guide-edit'   => (new GuideController())->edit(),
+'guide-update' => (new GuideController())->update(),
     // 'tour-expense'=>(new TourExpenseController())->index(),
+
+  // Customer
+'customer'         => (new CustomerController())->index(),
+'customer-create'  => (new CustomerController())->create(),
+'customer-store'   => (new CustomerController())->store(),
+
+
 };

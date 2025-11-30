@@ -3,9 +3,19 @@ class GuideModel {
     protected $conn;
     public function __construct() { $this->conn = connectDB(); }
 
-    public function getAll() {
-        return $this->conn->query("SELECT * FROM guide")->fetchAll();
-    }
+public function getAll() {
+    $sql = "SELECT 
+                g.*,
+                u.fullname,
+                u.email,
+                u.phone
+            FROM guide g
+            JOIN users u ON g.user_id = u.user_id
+            ORDER BY g.guide_id DESC";
+
+    return $this->conn->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+}
+
 
     public function getAllWithUser() {
         $sql = "SELECT g.guide_id, g.user_id, u.fullname, u.phone, u.email
@@ -52,5 +62,45 @@ class GuideModel {
         $stmt = $this->conn->prepare($sql);
         $stmt->execute(['uid' => $user_id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+public function findById($id) {
+    $sql = "SELECT 
+                g.*,
+                u.fullname,
+                u.email,
+                u.phone
+            FROM guide g
+            JOIN users u ON g.user_id = u.user_id
+            WHERE g.guide_id = :id";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->execute(['id' => $id]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+    public function create($data) {
+        $sql = "INSERT INTO guide (user_id, language, certificate, experience, specialization)
+                VALUES (:user_id, :language, :certificate, :experience, :specialization)";
+        $stmt = $this->conn->prepare($sql);
+        return $stmt->execute($data);
+    }
+
+    public function update($id, $data) {
+        $data['id'] = $id;
+        $sql = "UPDATE guide 
+                SET user_id = :user_id,
+                    language = :language,
+                    certificate = :certificate,
+                    experience = :experience,
+                    specialization = :specialization
+                WHERE guide_id = :id";
+        $stmt = $this->conn->prepare($sql);
+        return $stmt->execute($data);
+    }
+
+    public function delete($id) {
+        $sql = "DELETE FROM guide WHERE guide_id = :id";
+        $stmt = $this->conn->prepare($sql);
+        return $stmt->execute(['id' => $id]);
     }
 }

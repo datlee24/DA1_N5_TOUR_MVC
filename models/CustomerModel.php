@@ -13,6 +13,20 @@ class CustomerModel {
         $stmt->execute(['id'=>$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+    public function search($keyword)
+{
+    $sql = "SELECT * FROM customer 
+            WHERE fullname LIKE :kw 
+               OR phone LIKE :kw 
+               OR email LIKE :kw
+            ORDER BY fullname ASC";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->execute(['kw' => "%$keyword%"]);
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
 
     public function create($data) {
         $sql = "INSERT INTO customer (fullname,phone,email) VALUES (:fullname,:phone,:email)";
