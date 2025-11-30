@@ -102,7 +102,6 @@ $guide = $_SESSION['guide'];
 
             <div>
                 <a href="#" class="btn btn-primary">Lịch hôm nay</a>
-                <a href="index.php?act=profile-view" class="btn btn-outline-secondary">Hồ sơ</a>
             </div>
         </div>
 

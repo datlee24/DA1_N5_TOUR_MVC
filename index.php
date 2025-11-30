@@ -31,7 +31,6 @@ match ($act) {
     'logout' => (new GuideAuthController())->logout(),
 
      // Hồ sơ HDV
-    'profile-view' => (new GuideProfileController())->view(),
     'profile'         => (new GuideProfileController())->edit(),
     'update-profile'  => (new GuideProfileController())->update(),
 
