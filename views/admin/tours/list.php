@@ -3,21 +3,31 @@ headerAdmin();
 ?>
 <h2>Danh sách Tour</h2>
 <a href="admin.php?act=form_add_tour">+ Thêm tour</a>
+<form action="admin.php" method="GET" style="margin-bottom: 15px;">
+    <input type="hidden" name="act" value="tour_list">
+    <input type="text" name="q" placeholder="Tìm tour ..." value="<?= isset($_GET['q']) ? htmlspecialchars($_GET['q']) : '' ?>">
+    <button type="submit">Tìm kiếm</button>
+    
+</form>
+
+
 <table>
     <tr>
         <th>ID</th>
         <th>Tên tour</th>
         <th>Danh mục</th>
         <th>Nhà cung cấp</th>
+        <th>Giá tour/người</th>
         <th>Trạng thái</th>
         <th>Hành động</th>
     </tr>
-    <?php foreach ($tours as $tour): ?>
+    <?php foreach ($tours as $index=>$tour): ?>
     <tr>
-        <td><?= $tour['tour_id'] ?></td>
+        <td><?= $index+1 ?></td>
         <td><?= $tour['name'] ?></td>
         <td><?= $tour['category_name'] ?></td>
         <td><?= $tour['supplier'] ?></td>
+        <td><?= number_format($tour['price'], 0, ',', '.') . ' đ' ?></td>
         
         <td><?= $tour['status'] ? 'Hiển thị' : 'Ẩn' ?></td>
         <td>

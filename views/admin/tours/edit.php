@@ -26,6 +26,8 @@
     <label>Nhà cung cấp:</label>
     <input type="text" name="supplier" value="<?= $tour['supplier'] ?>">
 
+    <label>Giá tiền:</label>
+    <input type="number" name="price" value="<?= $tour['price'] ?? '' ?>" required step="1000">
 
     <label>Trạng thái:</label>
     <select name="status">

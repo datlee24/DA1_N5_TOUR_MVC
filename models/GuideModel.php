@@ -32,12 +32,25 @@ class GuideModel {
         return $stmt->fetchColumn() > 0;
     }
 
-    // Lấy toàn bộ lịch của HDV
     public function getSchedule($guide_id) {
         $sql = "SELECT * FROM departure_schedule WHERE guide_id = :gid ORDER BY start_date ASC";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute(['gid' => $guide_id]);
         return $stmt->fetchAll();
     }
+
+    public function getFullProfile($user_id)
+    {
+        $sql = "SELECT 
+                    u.user_id, u.fullname, u.phone, u.email, u.role,
+                    g.guide_id, g.language, g.certificate, g.experience, g.specialization
+                FROM users u
+                LEFT JOIN guide g ON u.user_id = g.user_id
+                WHERE u.user_id = :uid
+                LIMIT 1";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute(['uid' => $user_id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 }
-?>

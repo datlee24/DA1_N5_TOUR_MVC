@@ -1,17 +1,21 @@
-
 <?php 
 // Require toàn bộ các file khai báo môi trường, thực thi,...(không require view)
 
+// Khởi tạo session
+session_start();
 // Require file Common
 require_once './commons/env.php'; // Khai báo biến môi trường
 require_once './commons/function.php'; // Hàm hỗ trợ
 
-// Require toàn bộ file Controllers
-require_once './controllers/ProductController.php';
+# Tải các controller hưỡng dẫn viên (trong thư mục controllers/guide)
+foreach (glob('./controllers/guide/*.php') as $controllerFile) {
+    require_once $controllerFile;
+}
 
-// Require toàn bộ file Models
-require_once './models/ProductModel.php';
-
+# Tải các model (sử dụng chung cho cả HDV và quản trị)
+foreach (glob('./models/*.php') as $modelFile) {
+    require_once $modelFile;
+}
 
 // Route
 $act = $_GET['act'] ?? '/';
@@ -21,6 +25,14 @@ $act = $_GET['act'] ?? '/';
 
 match ($act) {
     // Trang chủ
-    '/'=>(new ProductController())->Home(),
+    '/'=>(new GuideController())->Home(),
+    // Đăng nhập HDV
+    'login' => (new GuideAuthController())->login(),
+    'logout' => (new GuideAuthController())->logout(),
 
+     // Hồ sơ HDV
+    'profile'         => (new GuideProfileController())->edit(),
+    'update-profile'  => (new GuideProfileController())->update(),
+
+    default     => (new GuideController())->Home()
 };
