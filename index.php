@@ -39,6 +39,9 @@ match ($act) {
     'today'          => (new GuideScheduleController())->today(),   // lịch hôm nay
     'my-tours'       => (new GuideScheduleController())->myToursMonth(), // tour của tôi trong tháng
 
+     // DANH SÁCH KHÁCH HÀNG
+    'customers'       => (new GuideCustomerController())->index(),
+
      // ĐIỂM DANH KHÁCH HÀNG
     'attendance'        => (new GuideAttendanceController())->index(), // giao diện điểm danh
     'attendance-save'   => (new GuideAttendanceController())->save(),  // xử lý lưu điểm danh (POST)
