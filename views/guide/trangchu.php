@@ -83,7 +83,7 @@
     <a href="index.php?act=schedule-month">📅 Lịch làm việc</a>
     <a href="index.php?act=my-tours">🧭 Tour của tôi</a>
     <a href="index.php?act=today">⏳ Lịch hôm nay</a>
-    <a href="index.php?act=messages">💬 Tin nhắn</a>
+    <a href="index.php?act=customers">👥 Danh sách khách hàng</a>
     <a href="index.php?act=profile">👤 Hồ sơ cá nhân</a>
 
     <a href="index.php?act=logout" style="color:#f87171;">🚪 Đăng xuất</a>
