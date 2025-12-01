@@ -196,15 +196,6 @@
 
 </html>
 </div>
-
-<div class="card">
-    <h4 class="h6">Tùy chọn nhanh</h4>
-    <div class="d-grid gap-2">
-        <a class="btn btn-sm btn-success" href="?controller=guide&action=startTour">Bắt đầu chuyến</a>
-        <a class="btn btn-sm btn-warning" href="?controller=guide&action=report">Báo cáo</a>
-        <a class="btn btn-sm btn-secondary" href="?controller=guide&action=messages">Tin nhắn</a>
-    </div>
-</div>
 </aside>
 </div>
 </div>

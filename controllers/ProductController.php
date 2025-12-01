@@ -13,7 +13,6 @@ class ProductController
     {
         $title = "Đây là trang chủ nhé hahaa";
         $thoiTiet = "Hôm nay trời có vẻ là mưa";
-        require_once './views/trangchu.php';
+        require_once './views/guide/trangchu.php';
     }
-    
 }
