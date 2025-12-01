@@ -34,5 +34,16 @@ match ($act) {
     'profile'         => (new GuideProfileController())->edit(),
     'update-profile'  => (new GuideProfileController())->update(),
 
+     // LỊCH LÀM VIỆC
+    'schedule-month' => (new GuideScheduleController())->month(),   // lịch 1 tháng
+    'today'          => (new GuideScheduleController())->today(),   // lịch hôm nay
+    'my-tours'       => (new GuideScheduleController())->myToursMonth(), // tour của tôi trong tháng
+
+     // ĐIỂM DANH KHÁCH HÀNG
+    'attendance'        => (new GuideAttendanceController())->index(), // giao diện điểm danh
+    'attendance-save'   => (new GuideAttendanceController())->save(),  // xử lý lưu điểm danh (POST)
+
+
+
     default     => (new GuideController())->Home()
 };

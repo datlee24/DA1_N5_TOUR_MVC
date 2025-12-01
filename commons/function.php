@@ -1,4 +1,5 @@
 <?php
+// commons/function.php
 
 // Kết nối CSDL qua PDO
 function connectDB()
@@ -9,7 +10,7 @@ function connectDB()
     $dbname = DB_NAME;
 
     try {
-        $conn = new PDO("mysql:host=$host;port=$port;dbname=$dbname", DB_USERNAME, DB_PASSWORD);
+        $conn = new PDO("mysql:host=$host;port=$port;dbname=$dbname;charset=utf8mb4", DB_USERNAME, DB_PASSWORD);
 
         // cài đặt chế độ báo lỗi là xử lý ngoại lệ
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -19,7 +20,9 @@ function connectDB()
 
         return $conn;
     } catch (PDOException $e) {
+        // Ghi log hoặc hiển thị thông báo ngắn gọn
         echo ("Connection failed: " . $e->getMessage());
+        exit;
     }
 }
 
@@ -41,12 +44,11 @@ function deleteFile($file)
 {
     $pathDelete = PATH_ROOT . $file;
     if (file_exists($pathDelete)) {
-        unlink($pathDelete); // Hàm unlink dùng để xóa file
+        unlink($pathDelete);
     }
 }
-// HÀm hỗ trợ hiển thị header, footer, sldebar cho admin hoặc hdv
-// Giúp dễ dàng include phần header/footer chung mà không cần viết lại nhiều lần
 
+// Include header/footer helper (admin)
 function headerAdmin()
 {
     include PATH_ADMIN . "layout/header.php";
@@ -55,25 +57,29 @@ function footerAdmin()
 {
     include PATH_ADMIN . "layout/footer.php";
 }
-// Kiểm Tra xem người dùng có phải quản trị hay không nếu là quản trị thì đi tiếp 
+
+/*
+ * Kiểm tra quyền - Admin
+ * Nếu không phải admin -> redirect về trang admin login
+ */
 function checkIsAdmin()
 {
-    if (isset($_SESSION['admin']) && $_SESSION['admin']['role'] === 'admin') {
+    if (isset($_SESSION['admin']) && isset($_SESSION['admin']['role']) && $_SESSION['admin']['role'] === 'admin') {
         return true;
-        // Ngược lại, nếu không có session admin hoặc là hướng dẫn viên (hdv) thì chặn lại
-    } elseif (!isset($_SESSION['hdv']) || !isset($_SESSION['admin']) || $_SESSION['users']['role'] === 'hdv') {
-        // Nếu không phải admin, chuyển hướng về trang đăng nhập
-        // Chuyển hướng người dùng về trang đăng nhập của admin
-        header('Location: admin.php?act=login');
-        exit; // Dừng toàn bộ chương trình sau khi chuyển hướng
     }
+    header('Location: admin.php?act=login');
+    exit;
 }
-function checkGuide()
+
+/*
+ * Kiểm tra quyền - Guide (Hướng dẫn viên)
+ * Nếu không login as guide -> redirect về guide login
+ */
+function checkIsGuide()
 {
-    if (!isset($_SESSION['guide'])) {
-        header("Location: index.php?act=login");
-        exit;
+    if (isset($_SESSION['guide']) && !empty($_SESSION['guide'])) {
+        return true;
     }
+    header("Location: index.php?act=login");
+    exit;
 }
-
-
