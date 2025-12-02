@@ -20,9 +20,6 @@
     <label>Mô tả:</label>
     <textarea name="description"><?= $tour['description'] ?></textarea>
 
-    <label>Chính sách:</label>
-    <textarea name="policy"><?= $tour['policy'] ?></textarea>
-
     <label>Nhà cung cấp:</label>
     <input type="text" name="supplier" value="<?= $tour['supplier'] ?>">
 

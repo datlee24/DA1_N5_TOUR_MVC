@@ -14,10 +14,7 @@
 
     <label>Mô tả:</label>
     <textarea name="description"></textarea><br>
-
-    <label>Chính sách:</label>
-    <textarea name="policy"></textarea><br>
-
+    
     <label>Nhà cung cấp:</label>
     <input type="text" name="supplier"><br>
 
