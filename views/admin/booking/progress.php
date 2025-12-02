@@ -1,24 +1,19 @@
-<div class="steps mb-4">
-    <div class="step <?= $step >= 1 ? 'active' : '' ?>">1. Chọn Tour</div>
-    <div class="step <?= $step >= 2 ? 'active' : '' ?>">2. Lịch khởi hành</div>
-    <div class="step <?= $step >= 3 ? 'active' : '' ?>">3. Hướng dẫn viên</div>
-    <div class="step <?= $step >= 4 ? 'active' : '' ?>">4. Khách hàng</div>
-    <div class="step <?= $step >= 5 ? 'active' : '' ?>">5. Xác nhận</div>
+<?php
+// views/admin/booking/progress.php
+// expects $step (1..5)
+?>
+<div class="mb-4">
+  <div class="d-flex align-items-center gap-3">
+    <?php for ($i=1;$i<=5;$i++): 
+        $labels = [1=>'Chọn Tour',2=>'Lịch',3=>'HDV',4=>'Khách',5=>'Xác nhận'];
+        $active = $step >= $i ? 'bg-primary text-white' : 'bg-light text-muted';
+    ?>
+      <div class="p-2 rounded <?= $active ?>" style="min-width:130px; text-align:center; font-weight:600;">
+        <?= $i ?>. <?= $labels[$i] ?>
+      </div>
+      <?php if ($i<5): ?>
+        <div style="flex:1; height:2px; background:#e9ecef;"></div>
+      <?php endif; ?>
+    <?php endfor; ?>
+  </div>
 </div>
-
-<style>
-.steps {
-    display: flex;
-    gap: 10px;
-}
-.step {
-    padding: 8px 16px;
-    border-radius: 6px;
-    background: #e9ecef;
-    font-weight: 500;
-}
-.step.active {
-    background: #0d6efd;
-    color: white;
-}
-</style>
