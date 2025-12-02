@@ -11,27 +11,41 @@ class TourController{
    
        //Danh sách tour
    public function tour_list(){
-    $tours = []; 
-    if(isset($_GET['q']) && !empty($_GET['q'])){
-        $key= $_GET['q'];
-        $tours = $this->modelTour->searchTourByName($key); // gán vào $tours
-    } else {
-        $tours = $this->modelTour->getAllTour();
+        $tours = []; 
+        if(isset($_GET['q']) && !empty($_GET['q'])){
+            $key= $_GET['q'];
+            $tours = $this->modelTour->searchTourByName($key); // gán vào $tours
+        } else {
+            $tours = $this->modelTour->getAllTour();
+        }
+    
+        require './views/admin/tours/list.php';
     }
-  
-    require './views/admin/tours/list.php';
-}
 
 
     // Xóa tour
-    public function deleteTour(){
+    public function deleteTour() {
+        if(!isset($_GET['id'])){
+            $_SESSION['error'] = "ID tour không hợp lệ!";
+            header('Location: admin.php?act=tour_list');
+            exit;
+        }
+
         $id = $_GET['id'];
-        $tour =$this->modelTour->getTourById($id);
-        $this->modelTour->deleteTour($id);
-         header('Location:admin.php?act=tour_list');
-;
-         exit;
+
+        // Kiểm tra tour có booking không
+        if($this->modelTour->countBookingByTour($id) > 0){
+            $_SESSION['error'] = "Tour đang có booking, không thể xóa!";
+        } else if($this->modelTour->deleteTour($id)) {
+            $_SESSION['success'] = "Xóa tour thành công!";
+        } else {
+            $_SESSION['error'] = "Xóa tour thất bại!";
+        }
+
+        header('Location: admin.php?act=tour_list');
+        exit;
     }
+
     // From add tour
 
     public function FormAdd(){

@@ -57,8 +57,19 @@ public function updateCategory(){
 // Xóa danh mục
 public function deleteCategory(){
     $id=$_GET['id'];
+    // Kiểm tra xem có tour liên quan tới categry không
+    $tourModel= new TourModel();
+    $tourCount = $tourModel->countTourByCategory($id);
+    if($tourCount > 0){
+         $_SESSION['error'] = "Danh mục đang có tour.Không thể xóa!";
+         header("Location: admin.php?act=category_list");
+         exit();
+    }
+    // Không có tour liên quan tới đc phép xóa
     $this->modelCategory->deleteCategory($id);
+      $_SESSION['success'] = "Xóa danh mục thành công!";
      header("Location:admin.php?act=category_list");
+      exit();
 }
 
    
