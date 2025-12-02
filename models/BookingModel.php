@@ -67,13 +67,6 @@ class BookingModel {
         return $stmt->execute(['ps'=>$pstatus, 'id'=>$id]);
     }
 
-    /**
-     * Auto update booking.status using departure_schedule dates
-     * - If schedule.start_date > today => upcoming
-     * - If start_date <= today <= end_date => ongoing
-     * - If end_date < today => completed
-     * Keep cancelled untouched.
-     */
     public function autoUpdateStatus() {
         $today = date('Y-m-d');
 

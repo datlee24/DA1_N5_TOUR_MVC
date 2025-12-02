@@ -11,4 +11,10 @@ class HotelModel {
         $stmt->execute(['tour_id' => $tourId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function find($id) {
+        $stmt = $this->conn->prepare("SELECT * FROM hotel WHERE hotel_id = :id");
+        $stmt->execute(['id' => $id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 }

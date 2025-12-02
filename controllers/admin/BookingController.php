@@ -369,4 +369,41 @@ class BookingController {
         echo json_encode(['ok' => true, 'data' => $customer]);
         exit;
     }
+    // 1) AJAX: Lấy hotels theo tour (dùng ở step1 khi chọn tour)
+public function ajaxHotels() {
+    header("Content-Type: application/json; charset=utf-8");
+    $tour_id = intval($_GET['tour_id'] ?? 0);
+    if (!$tour_id) {
+        echo json_encode(['ok'=>false,'data'=>[]]);
+        exit;
+    }
+    $hotels = $this->hotelModel->getByTour($tour_id);
+    echo json_encode(['ok'=>true,'data'=>$hotels]);
+    exit;
+}
+// POST AJAX: thêm khách (customer_id) vào schedule/booking hiện tại
+public function addCustomerToBooking() {
+    header("Content-Type: application/json; charset=utf-8");
+    $schedule_id = intval($_POST['schedule_id'] ?? 0);
+    $customer_id = intval($_POST['customer_id'] ?? 0);
+
+    if (!$schedule_id || !$customer_id) {
+        echo json_encode(['ok'=>false,'msg'=>'Thiếu tham số']);
+        exit;
+    }
+
+    // kiểm tra trùng lịch cho khách
+    $schedule = $this->scheduleModel->find($schedule_id);
+    if ($this->customerModel->customerIsBusy($customer_id, $schedule['start_date'], $schedule['end_date'])) {
+        echo json_encode(['ok'=>false,'msg'=>'Khách đã có lịch trùng.']);
+        exit;
+    }
+
+    $this->tourCustomerModel->addCustomer($schedule_id, $customer_id);
+    // trả về danh sách khách cập nhật
+    $customers = $this->tourCustomerModel->getBySchedule($schedule_id);
+    echo json_encode(['ok'=>true,'data'=>$customers]);
+    exit;
+}
+
 }

@@ -55,6 +55,8 @@ match ($act) {
 
     // AJAX booking
     'ajax-schedule'        => (new BookingController())->ajaxSchedule(),
+    'booking-add-customer' => (new BookingController())->addCustomerToBooking(),
+    'booking-update-payment' => (new BookingController())->updatePaymentStatus(),
     // 'ajax-guides'          => (new BookingController())->ajaxGuide(),
     'ajax-customer-create' => (new BookingController())->ajaxCreateCustomer(),
 

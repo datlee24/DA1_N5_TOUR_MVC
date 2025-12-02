@@ -47,4 +47,10 @@ class ScheduleModel {
         ]);
         return $this->conn->lastInsertId();
     }
+    
+public function assignHotel($schedule_id, $hotel_id) {
+    $stmt = $this->conn->prepare("UPDATE departure_schedule SET hotel_id=:hid WHERE schedule_id=:sid");
+    return $stmt->execute(['hid'=>$hotel_id, 'sid'=>$schedule_id]);
+}
+
 }
