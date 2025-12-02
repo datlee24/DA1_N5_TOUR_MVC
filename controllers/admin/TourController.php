@@ -70,7 +70,6 @@ class TourController{
                  'category_id' => $_POST['category_id'],
                 'name' => $_POST['name'],
                 'description' => $_POST['description'],
-                'policy' => $_POST['policy'],
                 'supplier' => $_POST['supplier'],
                 'price' => $_POST['price'],
                 'image' => $imageName,
@@ -111,7 +110,6 @@ class TourController{
                  'category_id' => $_POST['category_id'],
                 'name' => $_POST['name'],
                 'description' => $_POST['description'],
-                'policy' => $_POST['policy'],
                 'supplier' => $_POST['supplier'],
                 'price' => $_POST['price'], 
                 'image' => $imageName,
@@ -148,26 +146,41 @@ class TourController{
     // Xử lý thêm
     public function addItinerary(){
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
-            $time_start = $_POST['time_start'] . ":00";  // '08:30' -> '08:30:00'
-            $time_end   = $_POST['time_end'] . ":00";
-            $data=[
-                'tour_id'=>$_POST['tour_id'],
-                'day_number'=>$_POST['day_number'],
-                'title'=>$_POST['title'],
-                'description'=>$_POST['description'],
-                'location'=>$_POST['location'],
-                'time_start'=>$_POST['time_start'],
-                'time_end'=>$_POST['time_end']
+            $tour_id = $_POST['tour_id'];
+            $day_number = $_POST['day_number'];
+            $titles = $_POST['title'];
+            $descriptions = $_POST['description'];
+            $locations = $_POST['location'];
 
-            ];
-                        if($this->modelTour->addItinerary($data)){
-                            $_SESSION['success'] = "Thêm lịch trình thành công!";
-                        } else {
-                            $_SESSION['error'] = "Thêm lịch trình thất bại!";
-                        }
-            header('Location:admin.php?act=tour_detail&id='.$_POST['tour_id']);
+            $success = 0;
+            foreach($titles as $i => $title){
+                if(!empty($title)){
+                    $data = [
+                        'tour_id' => $tour_id,
+                        'day_number' => $day_number,
+                        'title' => $title,
+                        'description' => $descriptions[$i],
+                        'location' => $locations[$i],
+                        'time_start' => null,
+                        'time_end' => null
+                    ];
+                    if($this->modelTour->addItinerary($data)){
+                        $success++;
+                    }
+                }
+            }
+
+            if($success > 0){
+                $_SESSION['success'] = "Thêm $success hoạt động thành công!";
+            } else {
+                $_SESSION['error'] = "Thêm lịch trình thất bại!";
+            }
+
+            header('Location:admin.php?act=tour_detail&id='.$tour_id);
+            exit;
         }
     }
+
     // Sửa lịch trình tour
     public function editItineraryForm(){
             $id = $_GET['id'];

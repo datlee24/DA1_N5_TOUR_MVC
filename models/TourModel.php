@@ -16,7 +16,6 @@ class TourModel { protected $conn; public function __construct(){ $this->conn=co
                     tour.tour_id,
                     tour.name,
                     tour.description,
-                    tour.policy,
                     tour.supplier,
                      tour.price,
                     tour.image,
@@ -32,8 +31,8 @@ class TourModel { protected $conn; public function __construct(){ $this->conn=co
     // Thêm tour
 
     public function addTour($data){
-        $sql = "INSERT INTO tour (category_id, name, description, policy, supplier, price, image, status)
-        VALUES (:category_id, :name, :description, :policy, :supplier, :price, :image, :status)";
+        $sql = "INSERT INTO tour (category_id, name, description, supplier, price, image, status)
+        VALUES (:category_id, :name, :description, :supplier, :price, :image, :status)";
 
                   $stmt =$this->conn->prepare($sql);
                 return $stmt->execute($data);
@@ -52,7 +51,7 @@ class TourModel { protected $conn; public function __construct(){ $this->conn=co
     public function updateTour($data){
         $sql = "UPDATE tour 
             SET category_id=:category_id, name=:name, description=:description, 
-                policy=:policy, supplier=:supplier, image=:image, price =:price, status=:status 
+             supplier=:supplier, image=:image, price =:price, status=:status 
             WHERE tour_id=:tour_id";
                  $stmt =$this->conn->prepare($sql);
                 return $stmt->execute($data);
@@ -71,7 +70,6 @@ class TourModel { protected $conn; public function __construct(){ $this->conn=co
                 tour.tour_id,
                 tour.name,
                 tour.description,
-                tour.policy,
                 tour.supplier,
                 tour.price,
                 tour.image,

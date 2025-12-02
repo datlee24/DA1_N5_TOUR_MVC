@@ -23,17 +23,6 @@
             <label>Địa điểm</label>
             <input type="text" name="location" class="form-control" value="<?= $itinerary['location'] ?>">
         </div>
-
-        <div class="mb-3">
-            <label>Giờ bắt đầu</label>
-            <input type="time" name="time_start" class="form-control" value="<?= $itinerary['time_start'] ?>">
-        </div>
-
-        <div class="mb-3">
-            <label>Giờ kết thúc</label>
-            <input type="time" name="time_end" class="form-control" value="<?= $itinerary['time_end'] ?>">
-        </div>
-
         <button class="btn btn-primary">Cập nhật lịch trình</button>
         <a href="admin.php?act=tour_detail&id=<?= $tour_id ?>" class="btn btn-secondary">Hủy</a>
     </form>
