@@ -10,8 +10,8 @@
         <p>Ngày đi: <?= $s['start_date'] ?></p>
         <p>Ngày về: <?= $s['end_date'] ?></p>
 
-        <a href="/?url=guide/attendance/index&schedule_id=<?= $s['schedule_id'] ?>"
-           class="btn btn-primary">
+        <a href="?act=attendance&schedule_id=<?= $s['schedule_id'] ?>"
+            class="btn btn-primary">
             Điểm danh khách hàng
         </a>
     </div>

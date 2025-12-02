@@ -76,7 +76,7 @@ match ($act) {
 
     'add_itinerary_form' => (new TourController())->addItineraryForm(),
     'add_itinerary'      => (new TourController())->addItinerary(),
-    'edit_itinerary_form'=> (new TourController())->editItineraryForm(),
+    'edit_itinerary_form' => (new TourController())->editItineraryForm(),
     'update_itinerary'   => (new TourController())->updateItinerary(),
     'delete_itinerary'   => (new TourController())->deleteItinerary(),
 
@@ -101,7 +101,11 @@ match ($act) {
     'guide-edit'   => (new GuideController())->edit(),
     'guide-update' => (new GuideController())->update(),
 
+    /* ===============================
+        ATTENDANCE (Admin)
+    =============================== */
+    'attendance'   => (new AttendanceController())->index(),
+
 
     default        => (new AdminController())->dashboard()
 };
-?>

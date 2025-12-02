@@ -1,7 +1,8 @@
 
 <?php
 // controllers/BookingController.php
-class BookingController {
+class BookingController
+{
     protected $bookingModel;
     protected $tourModel;
     protected $scheduleModel;
@@ -11,7 +12,8 @@ class BookingController {
     protected $tourCustomerModel;
     protected $hotelModel;
 
-    public function __construct() {
+    public function __construct()
+    {
         checkIsAdmin();
         if (!isset($_SESSION)) session_start();
 
@@ -28,24 +30,28 @@ class BookingController {
         $this->bookingModel->autoUpdateStatus();
     }
 
-    public function list() {
+    public function list()
+    {
         $bookings = $this->bookingModel->getAll();
         require_once PATH_ADMIN . "booking/list.php";
     }
 
-    protected function resetWizard() {
+    protected function resetWizard()
+    {
         unset($_SESSION['booking']);
     }
 
     // STEP1: chọn tour (và có thể chọn driver ban đầu)
-    public function step1() {
+    public function step1()
+    {
         $this->resetWizard();
         $tours = $this->tourModel->getAllActive();
         $drivers = $this->driverModel->getAll();
         require_once PATH_ADMIN . "booking/step1.php";
     }
 
-    public function step1Save() {
+    public function step1Save()
+    {
         $tour_id = intval($_POST['tour_id'] ?? 0);
         $driver_id = intval($_POST['driver_id'] ?? 0);
         $hotel_id = intval($_POST['hotel_id'] ?? 0); // mới
@@ -65,7 +71,8 @@ class BookingController {
     }
 
     // STEP2
-    public function step2() {
+    public function step2()
+    {
         $tour_id = $_SESSION['booking']['tour_id'] ?? null;
         if (!$tour_id) {
             header("Location: admin.php?act=booking-step1");
@@ -75,9 +82,13 @@ class BookingController {
         require_once PATH_ADMIN . "booking/step2.php";
     }
 
-    public function step2Save() {
+    public function step2Save()
+    {
         $tour_id = $_SESSION['booking']['tour_id'] ?? null;
-        if (!$tour_id) { header("Location: admin.php?act=booking-step1"); exit; }
+        if (!$tour_id) {
+            header("Location: admin.php?act=booking-step1");
+            exit;
+        }
 
         $schedule_id = intval($_POST['schedule_id'] ?? 0);
         $driver_id = intval($_POST['driver_id'] ?? ($_SESSION['booking']['driver_id'] ?? 0));
@@ -150,9 +161,13 @@ class BookingController {
     }
 
     // STEP3
-    public function step3() {
+    public function step3()
+    {
         $schedule_id = $_SESSION['booking']['schedule_id'] ?? null;
-        if (!$schedule_id) { header("Location: admin.php?act=booking-step2"); exit; }
+        if (!$schedule_id) {
+            header("Location: admin.php?act=booking-step2");
+            exit;
+        }
 
         $schedule = $this->scheduleModel->find($schedule_id);
         $guides = $this->guideModel->getAllWithUser();
@@ -167,7 +182,8 @@ class BookingController {
         require_once PATH_ADMIN . "booking/step3.php";
     }
 
-    public function step3Save() {
+    public function step3Save()
+    {
         $guide_id = intval($_POST['guide_id'] ?? 0);
         $schedule = $this->scheduleModel->find($_SESSION['booking']['schedule_id']);
 
@@ -186,22 +202,27 @@ class BookingController {
     }
 
     // STEP4
-    public function step4() {
+    public function step4()
+    {
         $schedule_id = $_SESSION['booking']['schedule_id'] ?? null;
-        if (!$schedule_id) { header("Location: admin.php?act=booking-step2"); exit; }
+        if (!$schedule_id) {
+            header("Location: admin.php?act=booking-step2");
+            exit;
+        }
 
         $schedule = $this->scheduleModel->find($schedule_id);
         $customers = $this->customerModel->getAll();
 
         $busyIds = $this->customerModel->getBusyCustomers($schedule['start_date'], $schedule['end_date']);
-        $filteredCustomers = array_values(array_filter($customers, function($c) use ($busyIds) {
+        $filteredCustomers = array_values(array_filter($customers, function ($c) use ($busyIds) {
             return !in_array($c['customer_id'], $busyIds);
         }));
 
         require_once PATH_ADMIN . "booking/step4.php";
     }
 
-    public function step4Save() {
+    public function step4Save()
+    {
         $customer_ids = array_map('intval', $_POST['customer_ids'] ?? []);
         $num_people   = count($customer_ids);
 
@@ -242,7 +263,8 @@ class BookingController {
     }
 
     // STEP5
-    public function step5() {
+    public function step5()
+    {
         $booking = $_SESSION['booking'] ?? [];
 
         $tour     = $this->tourModel->find($booking['tour_id']);
@@ -272,7 +294,8 @@ class BookingController {
         require_once PATH_ADMIN . "booking/step5.php";
     }
 
-    public function finish() {
+    public function finish()
+    {
         if (empty($_SESSION['booking'])) {
             $_SESSION['error'] = "Không có thông tin booking.";
             header("Location: admin.php?act=booking-step1");
@@ -291,7 +314,7 @@ class BookingController {
             'num_people'    => $b['num_people'],
             'total_price'   => floatval($_POST['total_price'] ?? $b['total_price'] ?? 0),
             'status'        => 'upcoming',
-            'payment_status'=> $_POST['payment_status'] ?? 'unpaid',
+            'payment_status' => $_POST['payment_status'] ?? 'unpaid',
             'note'          => $_POST['note'] ?? ""
         ];
 
@@ -321,7 +344,8 @@ class BookingController {
     }
 
     // view booking detail
-    public function view() {
+    public function view()
+    {
         $id = intval($_GET['id'] ?? 0);
         $booking = $this->bookingModel->find($id);
 
@@ -352,7 +376,8 @@ class BookingController {
     }
 
     // AJAX endpoints
-    public function ajaxSchedule() {
+    public function ajaxSchedule()
+    {
         header("Content-Type: application/json; charset=utf-8");
         $tour_id = intval($_GET['tour_id'] ?? 0);
         $data = $this->scheduleModel->getByTour($tour_id);
@@ -360,21 +385,23 @@ class BookingController {
         exit;
     }
 
-    public function ajaxDriverAvailability() {
+    public function ajaxDriverAvailability()
+    {
         header("Content-Type: application/json; charset=utf-8");
         $driver_id = intval($_GET['driver_id'] ?? 0);
         $start = $_GET['start'] ?? null;
         $end = $_GET['end'] ?? null;
         if (!$driver_id || !$start || !$end) {
-            echo json_encode(['ok'=>false,'msg'=>'Thiếu tham số']);
+            echo json_encode(['ok' => false, 'msg' => 'Thiếu tham số']);
             exit;
         }
         $busy = $this->driverModel->isBusy($driver_id, $start, $end);
-        echo json_encode(['ok'=>true,'busy'=>$busy]);
+        echo json_encode(['ok' => true, 'busy' => $busy]);
         exit;
     }
 
-    public function ajaxCreateCustomer() {
+    public function ajaxCreateCustomer()
+    {
         header("Content-Type: application/json; charset=utf-8");
 
         $fullname = trim($_POST['fullname'] ?? "");
@@ -397,38 +424,40 @@ class BookingController {
     }
 
     // AJAX: Lấy hotels theo tour (dùng ở step1 khi chọn tour)
-    public function ajaxHotels() {
+    public function ajaxHotels()
+    {
         header("Content-Type: application/json; charset=utf-8");
         $tour_id = intval($_GET['tour_id'] ?? 0);
         if (!$tour_id) {
-            echo json_encode(['ok'=>false,'data'=>[]]);
+            echo json_encode(['ok' => false, 'data' => []]);
             exit;
         }
         $hotels = $this->hotelModel->getByTour($tour_id);
-        echo json_encode(['ok'=>true,'data'=>$hotels]);
+        echo json_encode(['ok' => true, 'data' => $hotels]);
         exit;
     }
 
     // POST AJAX: thêm khách (customer_id) vào schedule/booking hiện tại
-    public function addCustomerToBooking() {
+    public function addCustomerToBooking()
+    {
         header("Content-Type: application/json; charset=utf-8");
         $schedule_id = intval($_POST['schedule_id'] ?? 0);
         $customer_id = intval($_POST['customer_id'] ?? 0);
 
         if (!$schedule_id || !$customer_id) {
-            echo json_encode(['ok'=>false,'msg'=>'Thiếu tham số']);
+            echo json_encode(['ok' => false, 'msg' => 'Thiếu tham số']);
             exit;
         }
 
         // kiểm tra trùng lịch cho khách
         $schedule = $this->scheduleModel->find($schedule_id);
         if (!$schedule) {
-            echo json_encode(['ok'=>false,'msg'=>'Lịch không tồn tại']);
+            echo json_encode(['ok' => false, 'msg' => 'Lịch không tồn tại']);
             exit;
         }
 
         if ($this->customerModel->customerIsBusy($customer_id, $schedule['start_date'], $schedule['end_date'])) {
-            echo json_encode(['ok'=>false,'msg'=>'Khách đã có lịch trùng.']);
+            echo json_encode(['ok' => false, 'msg' => 'Khách đã có lịch trùng.']);
             exit;
         }
 
@@ -439,24 +468,24 @@ class BookingController {
 
         // trả về danh sách khách cập nhật
         $customers = $this->tourCustomerModel->getBySchedule($schedule_id);
-        echo json_encode(['ok'=>true,'data'=>$customers]);
+        echo json_encode(['ok' => true, 'data' => $customers]);
         exit;
     }
 
     // AJAX endpoint: update payment status (used in booking view)
-    public function updatePaymentStatus() {
+    public function updatePaymentStatus()
+    {
         header("Content-Type: application/json; charset=utf-8");
         $booking_id = intval($_POST['booking_id'] ?? 0);
         $ps = $_POST['payment_status'] ?? '';
 
         if (!$booking_id || !$ps) {
-            echo json_encode(['ok'=>false,'msg'=>'Thiếu tham số']);
+            echo json_encode(['ok' => false, 'msg' => 'Thiếu tham số']);
             exit;
         }
 
         $ok = $this->bookingModel->updatePaymentStatus($booking_id, $ps);
-        echo json_encode(['ok'=> $ok]);
+        echo json_encode(['ok' => $ok]);
         exit;
     }
-
 }
