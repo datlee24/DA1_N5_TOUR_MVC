@@ -1,98 +1,109 @@
 <?php
-// Require toàn bộ các file khai báo môi trường, thực thi,...(không require view)
-
-// Khởi tạo session
+// KHỞI TẠO SESSION
 session_start();
-// Require file Common
-require_once './commons/env.php'; // Khai báo biến môi trường
-require_once './commons/function.php'; // Hàm hỗ trợ
 
-# Tải các controller admin
-foreach (glob('./controllers/admin/*.php') as $controllerFile) {
-    require_once $controllerFile;
+// REQUIRE COMMON
+require_once './commons/env.php';
+require_once './commons/function.php';
+
+// AUTO-LOAD CONTROLLER (Admin)
+foreach (glob('./controllers/admin/*.php') as $file) {
+    require_once $file;
 }
-# Tải các model
-foreach (glob('./models/*.php') as $modelFile) {
-    require_once $modelFile;
+
+// AUTO-LOAD MODELS
+foreach (glob('./models/*.php') as $file) {
+    require_once $file;
 }
-// Route
+
+// LẤY ACTION
 $act = $_GET['act'] ?? '/';
 
-
-// Để bảo bảo tính chất chỉ gọi 1 hàm Controller để xử lý request thì mình sử dụng match
+// ROUTE XỬ LÝ
 match ($act) {
-    // Trang chủ
-    '/' => (new AdminController())->dashboard(),
+
+    /* ===============================
+        AUTH
+       =============================== */
+    '/'         => (new AdminController())->dashboard(),
     'dashboard' => (new AdminController())->dashboard(),
-    'login' => (new AuthController())->login(),
-    'logout' => (new AuthController())->logout(),
-
-    // Booking 
-    'booking'               => (new BookingController)->list(),
-
-    'booking-step1'         => (new BookingController)->step1(),
-    'booking-step1-save'    => (new BookingController)->step1Save(),
-
-    'booking-step2'         => (new BookingController)->step2(),
-    'booking-step2-save'    => (new BookingController)->step2Save(),
-
-    'booking-step3'         => (new BookingController)->step3(),
-    'booking-step3-save'    => (new BookingController)->step3Save(),
-
-    'booking-step4'         => (new BookingController)->step4(),
-    'booking-step4-save'    => (new BookingController)->step4Save(),
-
-    'booking-step5'         => (new BookingController)->step5(),
-    'booking-finish'        => (new BookingController)->finish(),
-
-    'booking-view'          => (new BookingController)->view(),
-    'booking-cancel'        => (new BookingController)->cancel(),
-    'booking-confirm'        => (new BookingController)->confirm(),
-
-    'ajax-schedule'         => (new BookingController)->ajaxSchedule(),
-    'ajax-guides'           => (new BookingController)->ajaxGuide(),
-    'ajax-customer-create'  => (new BookingController)->ajaxCreateCustomer(),
+    'login'     => (new AuthController())->login(),
+    'logout'    => (new AuthController())->logout(),
 
 
-    //Tour
-    'tour_list' => (new TourController())->tour_list(),
-    'form_add_tour' => (new TourController())->FormAdd(),
-    'add_tour' => (new TourController())->addTour(),
-    'delete_tour' => (new TourController())->deleteTour(),
-    'form_edit_tour' => (new TourController())->FormEdit(),
-    'update_tour' => (new TourController())->updateTour(),
-    'tour_detail' => (new TourController())->tour_detail(),
+    /* ===============================
+        BOOKING
+       =============================== */
+    'booking'            => (new BookingController())->list(),
 
-    // Lịch trình tour itinerary
+    'booking-step1'      => (new BookingController())->step1(),
+    'booking-step1-save' => (new BookingController())->step1Save(),
+
+    'booking-step2'      => (new BookingController())->step2(),
+    'booking-step2-save' => (new BookingController())->step2Save(),
+
+    'booking-step3'      => (new BookingController())->step3(),
+    'booking-step3-save' => (new BookingController())->step3Save(),
+
+    'booking-step4'      => (new BookingController())->step4(),
+    'booking-step4-save' => (new BookingController())->step4Save(),
+
+    'booking-step5'      => (new BookingController())->step5(),
+    'booking-finish'     => (new BookingController())->finish(),
+
+    'booking-view'       => (new BookingController())->view(),
+
+    // AJAX booking
+    'ajax-schedule'        => (new BookingController())->ajaxSchedule(),
+    // 'ajax-guides'          => (new BookingController())->ajaxGuide(),
+    'ajax-customer-create' => (new BookingController())->ajaxCreateCustomer(),
+
+
+    /* ===============================
+        TOUR
+       =============================== */
+    'tour_list'       => (new TourController())->tour_list(),
+    'form_add_tour'   => (new TourController())->FormAdd(),
+    'add_tour'        => (new TourController())->addTour(),
+    'delete_tour'     => (new TourController())->deleteTour(),
+    'form_edit_tour'  => (new TourController())->FormEdit(),
+    'update_tour'     => (new TourController())->updateTour(),
+    'tour_detail'     => (new TourController())->tour_detail(),
+
+    // Itinerary
     'add_itinerary_form' => (new TourController())->addItineraryForm(),
-    'add_itinerary' => (new TourController())->addItinerary(),
+    'add_itinerary'      => (new TourController())->addItinerary(),
     'edit_itinerary_form'=> (new TourController())->editItineraryForm(),
-    'update_itinerary'      => (new TourController())->updateItinerary(),
-    'delete_itinerary'=> (new TourController())->deleteItinerary(),
-   
+    'update_itinerary'   => (new TourController())->updateItinerary(),
+    'delete_itinerary'   => (new TourController())->deleteItinerary(),
 
 
-    // category
-     'category_list'=> (new CategoryController())->listCategory(),
-     'category_add_form'=>(new CategoryController())->addCategoryForm(),
-     'category_add'=> (new CategoryController())->addCategory(),
-     'category_edit_form'=> (new CategoryController())->editCategoryForm(),
-     'category_update'=> (new CategoryController())->updateCategory(),
-     'category_delete'=> (new CategoryController())->deleteCategory(),
+    /* ===============================
+        CATEGORY
+       =============================== */
+    'category_list'       => (new CategoryController())->listCategory(),
+    'category_add_form'   => (new CategoryController())->addCategoryForm(),
+    'category_add'        => (new CategoryController())->addCategory(),
+    'category_edit_form'  => (new CategoryController())->editCategoryForm(),
+    'category_update'     => (new CategoryController())->updateCategory(),
+    'category_delete'     => (new CategoryController())->deleteCategory(),
 
 
+    /* ===============================
+        GUIDE
+       =============================== */
+    'guide'        => (new GuideController())->index(),
+    'guide-create' => (new GuideController())->create(),
+    'guide-store'  => (new GuideController())->store(),
+    'guide-edit'   => (new GuideController())->edit(),
+    'guide-update' => (new GuideController())->update(),
 
-'guide'        => (new GuideController())->index(),
-'guide-create' => (new GuideController())->create(),
-'guide-store'  => (new GuideController())->store(),
-'guide-edit'   => (new GuideController())->edit(),
-'guide-update' => (new GuideController())->update(),
-    // 'tour-expense'=>(new TourExpenseController())->index(),
 
-  // Customer
-'customer'         => (new CustomerController())->index(),
-'customer-create'  => (new CustomerController())->create(),
-'customer-store'   => (new CustomerController())->store(),
-
+    /* ===============================
+        CUSTOMER
+       =============================== */
+    'customer'        => (new CustomerController())->index(),
+    'customer-create' => (new CustomerController())->create(),
+    'customer-store'  => (new CustomerController())->store(),
 
 };
