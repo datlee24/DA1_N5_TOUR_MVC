@@ -1,9 +1,10 @@
+
 <?php
 class CustomerModel {
     protected $conn;
     public function __construct() { $this->conn = connectDB(); }
 
-    public function getAll() { 
+    public function getAll() {
         $stmt = $this->conn->query("SELECT * FROM customer ORDER BY fullname ASC");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -13,25 +14,44 @@ class CustomerModel {
         $stmt->execute(['id'=>$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-    public function search($keyword)
-{
-    $sql = "SELECT * FROM customer 
-            WHERE fullname LIKE :kw 
-               OR phone LIKE :kw 
-               OR email LIKE :kw
-            ORDER BY fullname ASC";
 
-    $stmt = $this->conn->prepare($sql);
-    $stmt->execute(['kw' => "%$keyword%"]);
+    public function search($keyword) {
+        $keyword = trim($keyword);
+        $sql = "SELECT * FROM customer 
+                WHERE fullname LIKE :kw 
+                   OR phone LIKE :kw 
+                   OR email LIKE :kw
+                ORDER BY fullname ASC";
 
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
-
-
-    public function create($data) {
-        $sql = "INSERT INTO customer (fullname,phone,email) VALUES (:fullname,:phone,:email)";
         $stmt = $this->conn->prepare($sql);
-        $stmt->execute($data);
+        $stmt->execute(['kw' => "%$keyword%"]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // create accepts array with fields; only inserts provided fields (safe defaults)
+    public function create($data) {
+        // normalize
+        $fullname = $data['fullname'] ?? '';
+        $phone = $data['phone'] ?? null;
+        $email = $data['email'] ?? null;
+        $gender = $data['gender'] ?? null;
+        $birthdate = $data['birthdate'] ?? null;
+        $id_number = $data['id_number'] ?? null;
+        $notes = $data['notes'] ?? null;
+
+        $sql = "INSERT INTO customer (fullname, gender, birthdate, phone, email, id_number, notes)
+                VALUES (:fullname, :gender, :birthdate, :phone, :email, :id_number, :notes)";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([
+            'fullname' => $fullname,
+            'gender' => $gender,
+            'birthdate' => $birthdate,
+            'phone' => $phone,
+            'email' => $email,
+            'id_number' => $id_number,
+            'notes' => $notes
+        ]);
         return $this->conn->lastInsertId();
     }
 
@@ -51,10 +71,6 @@ class CustomerModel {
         return $stmt->fetchColumn() > 0;
     }
 
-    /**
-     * Trả về mảng các customer_id đã có booking/trong tour_customer trùng với khoảng thời gian start..end
-     * Dùng để ẩn / disable khách khi chọn.
-     */
     public function getBusyCustomers($start, $end) {
         $sql = "SELECT DISTINCT tc.customer_id 
                 FROM tour_customer tc

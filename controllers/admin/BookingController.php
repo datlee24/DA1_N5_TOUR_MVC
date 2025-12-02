@@ -1,3 +1,4 @@
+
 <?php
 // controllers/BookingController.php
 class BookingController {
@@ -47,6 +48,7 @@ class BookingController {
     public function step1Save() {
         $tour_id = intval($_POST['tour_id'] ?? 0);
         $driver_id = intval($_POST['driver_id'] ?? 0);
+        $hotel_id = intval($_POST['hotel_id'] ?? 0); // mới
 
         if (!$tour_id) {
             $_SESSION['error'] = "Vui lòng chọn tour.";
@@ -56,12 +58,13 @@ class BookingController {
 
         $_SESSION['booking']['tour_id'] = $tour_id;
         if ($driver_id) $_SESSION['booking']['driver_id'] = $driver_id;
+        if ($hotel_id) $_SESSION['booking']['hotel_id'] = $hotel_id; // lưu hotel
 
         header("Location: admin.php?act=booking-step2");
         exit;
     }
 
-    // STEP2: chọn lịch (schedule) hoặc tạo lịch mới. Nếu driver đã chọn ở step1 -> gán driver cho lịch mới.
+    // STEP2
     public function step2() {
         $tour_id = $_SESSION['booking']['tour_id'] ?? null;
         if (!$tour_id) {
@@ -78,6 +81,7 @@ class BookingController {
 
         $schedule_id = intval($_POST['schedule_id'] ?? 0);
         $driver_id = intval($_POST['driver_id'] ?? ($_SESSION['booking']['driver_id'] ?? 0));
+        $hotel_id = $_SESSION['booking']['hotel_id'] ?? null;
 
         if ($schedule_id) {
             $s = $this->scheduleModel->find($schedule_id);
@@ -96,6 +100,11 @@ class BookingController {
                 // gán driver vào schedule
                 $this->scheduleModel->assignDriver($schedule_id, $driver_id);
             }
+            // nếu step1 có chọn hotel, gán vào schedule
+            if (!empty($hotel_id)) {
+                $this->scheduleModel->assignHotel($schedule_id, $hotel_id);
+            }
+
             $_SESSION['booking']['schedule_id'] = $schedule_id;
         } else {
             // tạo lịch mới
@@ -123,6 +132,7 @@ class BookingController {
                 'meeting_point' => $_POST['meeting_point'] ?? null,
                 'guide_id' => null,
                 'driver_id' => $driver_id,
+                'hotel_id' => $hotel_id,
                 'notes' => $_POST['notes'] ?? null
             ]);
             $_SESSION['booking']['schedule_id'] = $sid;
@@ -139,7 +149,7 @@ class BookingController {
         exit;
     }
 
-    // STEP3: chọn HDV
+    // STEP3
     public function step3() {
         $schedule_id = $_SESSION['booking']['schedule_id'] ?? null;
         if (!$schedule_id) { header("Location: admin.php?act=booking-step2"); exit; }
@@ -149,6 +159,8 @@ class BookingController {
 
         foreach ($guides as &$g) {
             $g['available'] = !$this->guideModel->isBusy($g['guide_id'], $schedule['start_date'], $schedule['end_date']);
+            // load guide schedules optionally
+            $g['schedules'] = $this->guideModel->getSchedule($g['guide_id']);
         }
         unset($g);
 
@@ -173,7 +185,7 @@ class BookingController {
         exit;
     }
 
-    // STEP4: chọn khách hàng
+    // STEP4
     public function step4() {
         $schedule_id = $_SESSION['booking']['schedule_id'] ?? null;
         if (!$schedule_id) { header("Location: admin.php?act=booking-step2"); exit; }
@@ -229,7 +241,7 @@ class BookingController {
         exit;
     }
 
-    // STEP5: summary + edit note + payment status
+    // STEP5
     public function step5() {
         $booking = $_SESSION['booking'] ?? [];
 
@@ -250,6 +262,12 @@ class BookingController {
         $total_price = $booking['total_price'] ?? ($price_per * $num_people);
 
         $hotels = $this->hotelModel->getByTour($tour['tour_id']);
+        $assignedHotel = null;
+        if (!empty($schedule['hotel_id'])) {
+            $assignedHotel = $this->hotelModel->find($schedule['hotel_id']);
+        } elseif (!empty($booking['hotel_id'])) {
+            $assignedHotel = $this->hotelModel->find($booking['hotel_id']);
+        }
 
         require_once PATH_ADMIN . "booking/step5.php";
     }
@@ -291,6 +309,10 @@ class BookingController {
         if (!empty($b['driver_id'])) {
             $this->scheduleModel->assignDriver($b['schedule_id'], $b['driver_id']);
         }
+        // assign hotel if present
+        if (!empty($b['hotel_id'])) {
+            $this->scheduleModel->assignHotel($b['schedule_id'], $b['hotel_id']);
+        }
 
         unset($_SESSION['booking']);
         $_SESSION['success'] = "Tạo booking thành công!";
@@ -321,6 +343,10 @@ class BookingController {
         }
 
         $customers = $this->tourCustomerModel->getBySchedule($booking['schedule_id']);
+        $assignedHotel = null;
+        if (!empty($schedule['hotel_id'])) {
+            $assignedHotel = $this->hotelModel->find($schedule['hotel_id']);
+        }
 
         require_once PATH_ADMIN . "booking/view.php";
     }
@@ -369,41 +395,68 @@ class BookingController {
         echo json_encode(['ok' => true, 'data' => $customer]);
         exit;
     }
-    // 1) AJAX: Lấy hotels theo tour (dùng ở step1 khi chọn tour)
-public function ajaxHotels() {
-    header("Content-Type: application/json; charset=utf-8");
-    $tour_id = intval($_GET['tour_id'] ?? 0);
-    if (!$tour_id) {
-        echo json_encode(['ok'=>false,'data'=>[]]);
-        exit;
-    }
-    $hotels = $this->hotelModel->getByTour($tour_id);
-    echo json_encode(['ok'=>true,'data'=>$hotels]);
-    exit;
-}
-// POST AJAX: thêm khách (customer_id) vào schedule/booking hiện tại
-public function addCustomerToBooking() {
-    header("Content-Type: application/json; charset=utf-8");
-    $schedule_id = intval($_POST['schedule_id'] ?? 0);
-    $customer_id = intval($_POST['customer_id'] ?? 0);
 
-    if (!$schedule_id || !$customer_id) {
-        echo json_encode(['ok'=>false,'msg'=>'Thiếu tham số']);
+    // AJAX: Lấy hotels theo tour (dùng ở step1 khi chọn tour)
+    public function ajaxHotels() {
+        header("Content-Type: application/json; charset=utf-8");
+        $tour_id = intval($_GET['tour_id'] ?? 0);
+        if (!$tour_id) {
+            echo json_encode(['ok'=>false,'data'=>[]]);
+            exit;
+        }
+        $hotels = $this->hotelModel->getByTour($tour_id);
+        echo json_encode(['ok'=>true,'data'=>$hotels]);
         exit;
     }
 
-    // kiểm tra trùng lịch cho khách
-    $schedule = $this->scheduleModel->find($schedule_id);
-    if ($this->customerModel->customerIsBusy($customer_id, $schedule['start_date'], $schedule['end_date'])) {
-        echo json_encode(['ok'=>false,'msg'=>'Khách đã có lịch trùng.']);
+    // POST AJAX: thêm khách (customer_id) vào schedule/booking hiện tại
+    public function addCustomerToBooking() {
+        header("Content-Type: application/json; charset=utf-8");
+        $schedule_id = intval($_POST['schedule_id'] ?? 0);
+        $customer_id = intval($_POST['customer_id'] ?? 0);
+
+        if (!$schedule_id || !$customer_id) {
+            echo json_encode(['ok'=>false,'msg'=>'Thiếu tham số']);
+            exit;
+        }
+
+        // kiểm tra trùng lịch cho khách
+        $schedule = $this->scheduleModel->find($schedule_id);
+        if (!$schedule) {
+            echo json_encode(['ok'=>false,'msg'=>'Lịch không tồn tại']);
+            exit;
+        }
+
+        if ($this->customerModel->customerIsBusy($customer_id, $schedule['start_date'], $schedule['end_date'])) {
+            echo json_encode(['ok'=>false,'msg'=>'Khách đã có lịch trùng.']);
+            exit;
+        }
+
+        // check nếu đã tồn tại trong tour_customer -> ignore
+        if (!$this->tourCustomerModel->exists($schedule_id, $customer_id)) {
+            $this->tourCustomerModel->addCustomer($schedule_id, $customer_id);
+        }
+
+        // trả về danh sách khách cập nhật
+        $customers = $this->tourCustomerModel->getBySchedule($schedule_id);
+        echo json_encode(['ok'=>true,'data'=>$customers]);
         exit;
     }
 
-    $this->tourCustomerModel->addCustomer($schedule_id, $customer_id);
-    // trả về danh sách khách cập nhật
-    $customers = $this->tourCustomerModel->getBySchedule($schedule_id);
-    echo json_encode(['ok'=>true,'data'=>$customers]);
-    exit;
-}
+    // AJAX endpoint: update payment status (used in booking view)
+    public function updatePaymentStatus() {
+        header("Content-Type: application/json; charset=utf-8");
+        $booking_id = intval($_POST['booking_id'] ?? 0);
+        $ps = $_POST['payment_status'] ?? '';
+
+        if (!$booking_id || !$ps) {
+            echo json_encode(['ok'=>false,'msg'=>'Thiếu tham số']);
+            exit;
+        }
+
+        $ok = $this->bookingModel->updatePaymentStatus($booking_id, $ps);
+        echo json_encode(['ok'=> $ok]);
+        exit;
+    }
 
 }

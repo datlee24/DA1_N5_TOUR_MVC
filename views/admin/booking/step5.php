@@ -70,21 +70,17 @@
       </div>
 
       <div class="card p-3">
-        <h6>Khách sạn (theo tour)</h6>
-        <?php if (!empty($hotels)): ?>
-          <ul class="list-unstyled small">
-            <?php foreach ($hotels as $h): ?>
-              <li class="mb-2">
-                <strong><?= htmlspecialchars($h['name']) ?></strong><br>
-                <span class="text-muted"><?= htmlspecialchars($h['address'] ?? '') ?></span><br>
-                <small>Người phụ trách: <?= htmlspecialchars($h['manager_name'] ?? '-') ?> — <?= htmlspecialchars($h['manager_phone'] ?? '-') ?></small>
-              </li>
-            <?php endforeach; ?>
-          </ul>
-        <?php else: ?>
-          <div class="text-muted small">Chưa có khách sạn cho tour này.</div>
-        <?php endif; ?>
-      </div>
+  <h6>Khách sạn được chọn</h6>
+  <?php if (!empty($assignedHotel)): ?>
+    <div class="small">
+      <strong><?= htmlspecialchars($assignedHotel['name']) ?></strong><br>
+      <?= htmlspecialchars($assignedHotel['address'] ?? '') ?><br>
+      Người đại diện: <?= htmlspecialchars($assignedHotel['manager_name'] ?? '-') ?> — <?= htmlspecialchars($assignedHotel['manager_phone'] ?? '-') ?>
+    </div>
+  <?php else: ?>
+    <div class="text-muted small">Chưa chọn khách sạn cho lịch này.</div>
+  <?php endif; ?>
+</div>
     </div>
   </div>
 </div>

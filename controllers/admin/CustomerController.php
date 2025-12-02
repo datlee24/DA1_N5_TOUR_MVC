@@ -1,5 +1,5 @@
-<?php
 
+<?php
 class CustomerController
 {
     protected $customerModel;
@@ -10,9 +10,20 @@ class CustomerController
         $this->customerModel = new CustomerModel();
     }
 
-    // === Danh sách + tìm kiếm ===
+    // index: nếu có param `query` -> trả JSON cho ajax search; ngược lại hiển thị view list
     public function index()
     {
+        $isAjaxQuery = isset($_GET['query']) && trim($_GET['query']) !== '';
+
+        if ($isAjaxQuery) {
+            header("Content-Type: application/json; charset=utf-8");
+            $q = trim($_GET['query']);
+            $rows = $this->customerModel->search($q);
+            echo json_encode($rows);
+            exit;
+        }
+
+        // legacy: normal listing
         $keyword = $_GET['keyword'] ?? '';
 
         if ($keyword !== '') {
@@ -24,13 +35,11 @@ class CustomerController
         require_once PATH_ADMIN . "customer/index.php";
     }
 
-    // === Form thêm khách hàng ===
     public function create()
     {
         require_once PATH_ADMIN . "customer/create.php";
     }
 
-    // === Lưu khách hàng ===
     public function store()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -55,3 +64,4 @@ class CustomerController
         exit;
     }
 }
+?>

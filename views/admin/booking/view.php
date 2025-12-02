@@ -165,18 +165,35 @@ document.getElementById('btnUpdatePayment').addEventListener('click', ()=>{
 let selectedCustomerToAdd = null;
 
 document.getElementById('searchAddCustomer').addEventListener('input', function(){
-    const q = this.value.trim();
-    const results = document.getElementById('searchResults');
+  const q = this.value.trim();
+  const results = document.getElementById('searchResults');
 
-    results.innerHTML = '';
-    if (q.length < 2) return;
+  results.innerHTML = '';
+  if (q.length < 2) return;
 
-    // SỬA ĐƯỜNG DẪN TẠI ĐÂY: Dùng 'customer-search' thay vì 'customer'
-    fetch('admin.php?act=customer-search&query=' + encodeURIComponent(q)) 
-      .then(r=>r.json())
-      .then(data=>{
-        // ... (phần xử lý kết quả giữ nguyên)
-      }).catch(()=> results.innerHTML = '<small>Lỗi</small>');
+  fetch('admin.php?act=customer&query=' + encodeURIComponent(q))
+    .then(r=>r.json())
+    .then(data=>{
+      if (!Array.isArray(data)) return results.innerHTML = '<small>Không có kết quả</small>';
+
+      let html = '<div class="list-group">';
+      data.forEach(c=>{
+        html += `<button type="button" class="list-group-item list-group-item-action" data-id="${c.customer_id}">
+                   ${escapeHtml(c.fullname)} — ${escapeHtml(c.phone)}
+                 </button>`;
+      });
+      html += '</div>';
+      results.innerHTML = html;
+
+      results.querySelectorAll('.list-group-item').forEach(btn=>{
+        btn.addEventListener('click', function(){
+          results.querySelectorAll('.list-group-item').forEach(x=>x.classList.remove('active'));
+          this.classList.add('active');
+          selectedCustomerToAdd = this.getAttribute('data-id');
+        });
+      });
+
+    }).catch(()=> results.innerHTML = '<small>Lỗi</small>');
 });
 
 /* ADD CUSTOMER */

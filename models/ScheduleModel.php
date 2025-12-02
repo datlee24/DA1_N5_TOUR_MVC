@@ -1,3 +1,4 @@
+
 <?php
 // models/ScheduleModel.php
 class ScheduleModel {
@@ -33,8 +34,9 @@ class ScheduleModel {
     }
 
     public function create($data) {
-        $sql = "INSERT INTO departure_schedule (tour_id, start_date, end_date, meeting_point, guide_id, driver_id, notes)
-                VALUES (:tour_id, :start_date, :end_date, :meeting_point, :guide_id, :driver_id, :notes)";
+        $sql = "INSERT INTO departure_schedule 
+                (tour_id, start_date, end_date, meeting_point, guide_id, driver_id, hotel_id, notes)
+                VALUES (:tour_id, :start_date, :end_date, :meeting_point, :guide_id, :driver_id, :hotel_id, :notes)";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([
             'tour_id' => $data['tour_id'],
@@ -43,14 +45,15 @@ class ScheduleModel {
             'meeting_point' => $data['meeting_point'] ?? null,
             'guide_id' => $data['guide_id'] ?? null,
             'driver_id' => $data['driver_id'] ?? null,
+            'hotel_id' => $data['hotel_id'] ?? null,
             'notes' => $data['notes'] ?? null
         ]);
         return $this->conn->lastInsertId();
     }
-    
-public function assignHotel($schedule_id, $hotel_id) {
-    $stmt = $this->conn->prepare("UPDATE departure_schedule SET hotel_id=:hid WHERE schedule_id=:sid");
-    return $stmt->execute(['hid'=>$hotel_id, 'sid'=>$schedule_id]);
-}
 
+    public function assignHotel($schedule_id, $hotel_id) {
+        $stmt = $this->conn->prepare("UPDATE departure_schedule SET hotel_id=:hid WHERE schedule_id=:sid");
+        return $stmt->execute(['hid'=>$hotel_id, 'sid'=>$schedule_id]);
+    }
 }
+?>
