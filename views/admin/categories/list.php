@@ -1,13 +1,13 @@
 <?php headerAdmin() ?>
-<h2>Danh sách danh mục</h2>
+<h2 class="">Danh sách danh mục</h2>
 <?php 
 if(isset($_SESSION['success'])){
-    echo '<div class="alert alert-success">'.$_SESSION['success'].'</div>';
+    echo '<div class="alert alert-success" id="flash-message">'.$_SESSION['success'].'</div>';
     unset($_SESSION['success']);
 }
 
 if(isset($_SESSION['error'])){
-    echo '<div class="alert alert-danger">'.$_SESSION['error'].'</div>';
+    echo '<div class="alert alert-danger" id="flash-message">'.$_SESSION['error'].'</div>';
     unset($_SESSION['error']);
 }
 ?>
@@ -137,3 +137,13 @@ table a:hover {
 }
 
 </style>
+<script>
+    const flash = document.getElementById('flash-message');
+    if(flash){
+        setTimeout(() => {
+            flash.style.transition = "opacity 0.5s ease";
+            flash.style.opacity = "0";
+            setTimeout(() => flash.remove(), 500); // xóa khỏi DOM
+        }, 2000); // 2000ms = 2s
+    }
+</script>

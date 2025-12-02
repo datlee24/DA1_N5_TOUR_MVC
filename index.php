@@ -25,7 +25,7 @@ $act = $_GET['act'] ?? '/';
 
 match ($act) {
     // Trang chủ
-    '/'=>(new GuideController())->Home(),
+    '/'=>(new ProductController())->Home(),
     // Đăng nhập HDV
     'login' => (new GuideAuthController())->login(),
     'logout' => (new GuideAuthController())->logout(),
@@ -48,5 +48,5 @@ match ($act) {
 
 
 
-    default     => (new GuideController())->Home()
+    default     =>(new ProductController())->Home(),
 };

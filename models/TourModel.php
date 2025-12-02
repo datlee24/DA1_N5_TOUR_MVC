@@ -128,5 +128,24 @@ public function deleteItinerary($id){
     ]);
 }
 
+// Đếm số tour đang dùng category(nếu có thì không xóa đc category hoặc ngược lại)
+public function countTourByCategory($category_id){
+    $sql="SELECT COUNT(*) FROM tour WHERE category_id = :category_id";
+     $stmt=$this->conn->prepare($sql);
+     $stmt->execute([
+        ':category_id'=>$category_id
+    ]);
+     return $stmt->fetchColumn();
+}
+// Đếm số booking theo tour
+public function countBookingByTour($tour_id){
+    $sql="SELECT COUNT(*) FROM booking WHERE tour_id = :tour_id";
+     $stmt=$this->conn->prepare($sql);
+     $stmt->execute([
+        ':tour_id'=>$tour_id
+    ]);
+     return $stmt->fetchColumn();
+}
+
 }
 ?>

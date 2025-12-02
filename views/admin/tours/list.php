@@ -1,16 +1,25 @@
 <?php 
 headerAdmin(); 
 ?>
+<br>
 <h2>Danh sách Tour</h2>
+<?php 
+if(isset($_SESSION['success'])){
+    echo '<div class="alert alert-success" id="flash-message">'.$_SESSION['success'].'</div>';
+    unset($_SESSION['success']);
+}
+
+if(isset($_SESSION['error'])){
+    echo '<div class="alert alert-danger" id="flash-message">'.$_SESSION['error'].'</div>';
+    unset($_SESSION['error']);
+}
+?>
 <a href="admin.php?act=form_add_tour">+ Thêm tour</a>
 <form action="admin.php" method="GET" style="margin-bottom: 15px;">
     <input type="hidden" name="act" value="tour_list">
     <input type="text" name="q" placeholder="Tìm tour ..." value="<?= isset($_GET['q']) ? htmlspecialchars($_GET['q']) : '' ?>">
     <button type="submit">Tìm kiếm</button>
-    
 </form>
-
-
 <table>
     <tr>
         <th>ID</th>
@@ -153,3 +162,13 @@ table tr:last-child td {
     border-bottom: none;
 }
 </style>
+<script>
+    const flash = document.getElementById('flash-message');
+    if(flash){
+        setTimeout(() => {
+            flash.style.transition = "opacity 0.5s ease";
+            flash.style.opacity = "0";
+            setTimeout(() => flash.remove(), 500); // xóa khỏi DOM
+        }, 2000); // 2000ms = 2s
+    }
+</script>
