@@ -1,10 +1,15 @@
 <?php
 // models/BookingModel.php
-class BookingModel {
+class BookingModel
+{
     protected $conn;
-    public function __construct() { $this->conn = connectDB(); }
+    public function __construct()
+    {
+        $this->conn = connectDB();
+    }
 
-    public function getAll() {
+    public function getAll()
+    {
         // Join để lấy thông tin schedule, tour, customer
         $sql = "SELECT b.*, c.fullname AS customer_name,
                        t.name AS tour_name, ds.start_date, ds.end_date,
@@ -20,7 +25,8 @@ class BookingModel {
         return $this->conn->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function find($id) {
+    public function find($id)
+    {
         $sql = "SELECT b.*, c.fullname AS customer_name, t.name AS tour_name,
                        ds.start_date, ds.end_date, ds.meeting_point, ds.driver_id, ds.guide_id,
                        u.fullname as guide_name, u.phone as guide_phone,
@@ -34,11 +40,12 @@ class BookingModel {
                 LEFT JOIN driver dr ON ds.driver_id = dr.driver_id
                 WHERE b.booking_id = :id";
         $stmt = $this->conn->prepare($sql);
-        $stmt->execute(['id'=>$id]);
+        $stmt->execute(['id' => $id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function create($data) {
+    public function create($data)
+    {
         $sql = "INSERT INTO booking
                 (customer_id,tour_id,schedule_id,booking_date,num_people,total_price,status,payment_status,note)
                 VALUES
@@ -48,26 +55,30 @@ class BookingModel {
         return $this->conn->lastInsertId();
     }
 
-    public function cancel($id) {
+    public function cancel($id)
+    {
         $stmt = $this->conn->prepare("UPDATE booking SET status='cancelled' WHERE booking_id=:id");
-        $stmt->execute(['id'=>$id]);
+        $stmt->execute(['id' => $id]);
     }
 
-    public function updateStatus($id, $status) {
-        $allowed = ['upcoming','ongoing','completed','cancelled'];
+    public function updateStatus($id, $status)
+    {
+        $allowed = ['upcoming', 'ongoing', 'completed', 'cancelled'];
         if (!in_array($status, $allowed)) return false;
         $stmt = $this->conn->prepare("UPDATE booking SET status=:status WHERE booking_id=:id");
-        return $stmt->execute(['status'=>$status, 'id'=>$id]);
+        return $stmt->execute(['status' => $status, 'id' => $id]);
     }
 
-    public function updatePaymentStatus($id, $pstatus) {
-        $allowed = ['unpaid','deposit','paid'];
+    public function updatePaymentStatus($id, $pstatus)
+    {
+        $allowed = ['unpaid', 'deposit', 'paid'];
         if (!in_array($pstatus, $allowed)) return false;
         $stmt = $this->conn->prepare("UPDATE booking SET payment_status=:ps WHERE booking_id=:id");
-        return $stmt->execute(['ps'=>$pstatus, 'id'=>$id]);
+        return $stmt->execute(['ps' => $pstatus, 'id' => $id]);
     }
 
-    public function autoUpdateStatus() {
+    public function autoUpdateStatus()
+    {
         $today = date('Y-m-d');
 
         // Ongoing: start <= today <= end

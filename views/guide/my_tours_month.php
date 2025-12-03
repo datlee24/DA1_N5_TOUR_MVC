@@ -14,7 +14,7 @@
             <td><?= $s['end_date'] ?></td>
             <td><?= $s['tour_name'] ?></td>
             <td>
-                <a href="/?url=guide/attendance/index&schedule_id=<?= $s['schedule_id'] ?>">
+                <a href="?act=attendance&schedule_id=<?= $s['schedule_id'] ?>">
                     Điểm danh
                 </a>
             </td>

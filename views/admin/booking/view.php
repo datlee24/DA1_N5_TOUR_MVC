@@ -21,10 +21,10 @@
           <p><strong>Tổng tiền:</strong> <?= number_format($booking['total_price']) ?>₫</p>
 
           <p><strong>Trạng thái:</strong>
-            <?php if ($booking['status']=='upcoming') echo '<span class="badge bg-primary">Chưa diễn ra</span>';
-              elseif ($booking['status']=='ongoing') echo '<span class="badge bg-warning text-dark">Đang diễn ra</span>';
-              elseif ($booking['status']=='completed') echo '<span class="badge bg-success">Kết thúc</span>';
-              elseif ($booking['status']=='cancelled') echo '<span class="badge bg-danger">Đã hủy</span>';
+            <?php if ($booking['status'] == 'upcoming') echo '<span class="badge bg-primary">Chưa diễn ra</span>';
+            elseif ($booking['status'] == 'ongoing') echo '<span class="badge bg-warning text-dark">Đang diễn ra</span>';
+            elseif ($booking['status'] == 'completed') echo '<span class="badge bg-success">Kết thúc</span>';
+            elseif ($booking['status'] == 'cancelled') echo '<span class="badge bg-danger">Đã hủy</span>';
             ?>
           </p>
 
@@ -33,9 +33,9 @@
             <label class="form-label">Cập nhật trạng thái thanh toán</label>
             <div class="d-flex gap-2">
               <select id="paymentStatus" class="form-select w-auto">
-                <option value="unpaid" <?= $booking['payment_status']=='unpaid'?'selected':'' ?>>Chưa thanh toán</option>
-                <option value="deposit" <?= $booking['payment_status']=='deposit'?'selected':'' ?>>Đặt cọc</option>
-                <option value="paid" <?= $booking['payment_status']=='paid'?'selected':'' ?>>Đã thanh toán</option>
+                <option value="unpaid" <?= $booking['payment_status'] == 'unpaid' ? 'selected' : '' ?>>Chưa thanh toán</option>
+                <option value="deposit" <?= $booking['payment_status'] == 'deposit' ? 'selected' : '' ?>>Đặt cọc</option>
+                <option value="paid" <?= $booking['payment_status'] == 'paid' ? 'selected' : '' ?>>Đã thanh toán</option>
               </select>
               <button id="btnUpdatePayment" class="btn btn-primary">Cập nhật</button>
             </div>
@@ -118,12 +118,17 @@
           <table class="table mb-0">
             <thead class="table-light">
               <tr>
-                <th>#</th><th>Họ tên</th><th>SĐT</th><th>Email</th>
-                <th>Phòng</th><th>Điểm danh</th>
+                <th>#</th>
+                <th>Họ tên</th>
+                <th>SĐT</th>
+                <th>Email</th>
+                <th>Phòng</th>
+                <th>Điểm danh</th>
               </tr>
             </thead>
             <tbody id="customersTableBody">
-              <?php $i=1; foreach ($customers as $c): ?>
+              <?php $i = 1;
+              foreach ($customers as $c): ?>
                 <tr>
                   <td><?= $i++ ?></td>
                   <td><?= htmlspecialchars($c['fullname']) ?></td>
@@ -144,76 +149,82 @@
 </div>
 
 <script>
-/* UPDATE PAYMENT */
-document.getElementById('btnUpdatePayment').addEventListener('click', ()=>{
-  const ps = document.getElementById('paymentStatus').value;
-  const fd = new FormData();
-  fd.append('booking_id', '<?= $booking['booking_id'] ?>');
-  fd.append('payment_status', ps);
+  /* UPDATE PAYMENT */
+  document.getElementById('btnUpdatePayment').addEventListener('click', () => {
+    const ps = document.getElementById('paymentStatus').value;
+    const fd = new FormData();
+    fd.append('booking_id', '<?= $booking['booking_id'] ?>');
+    fd.append('payment_status', ps);
 
-  fetch('admin.php?act=booking-update-payment', {
-    method: 'POST', body: fd
-  })
-  .then(r=>r.json()).then(res=>{
-    if (res.ok) { alert('Cập nhật thành công'); location.reload(); }
-    else alert('Cập nhật thất bại');
-  })
-  .catch(()=> alert('Lỗi kết nối'));
-});
+    fetch('admin.php?act=booking-update-payment', {
+        method: 'POST',
+        body: fd
+      })
+      .then(r => r.json()).then(res => {
+        if (res.ok) {
+          alert('Cập nhật thành công');
+          location.reload();
+        } else alert('Cập nhật thất bại');
+      })
+      .catch(() => alert('Lỗi kết nối'));
+  });
 
-/* SEARCH CUSTOMER */
-let selectedCustomerToAdd = null;
+  /* SEARCH CUSTOMER */
+  let selectedCustomerToAdd = null;
 
-document.getElementById('searchAddCustomer').addEventListener('input', function(){
-  const q = this.value.trim();
-  const results = document.getElementById('searchResults');
+  document.getElementById('searchAddCustomer').addEventListener('input', function() {
+    const q = this.value.trim();
+    const results = document.getElementById('searchResults');
 
-  results.innerHTML = '';
-  if (q.length < 2) return;
+    results.innerHTML = '';
+    if (q.length < 2) return;
 
-  fetch('admin.php?act=customer&query=' + encodeURIComponent(q))
-    .then(r=>r.json())
-    .then(data=>{
-      if (!Array.isArray(data)) return results.innerHTML = '<small>Không có kết quả</small>';
+    fetch('admin.php?act=customer&query=' + encodeURIComponent(q))
+      .then(r => r.json())
+      .then(data => {
+        if (!Array.isArray(data)) return results.innerHTML = '<small>Không có kết quả</small>';
 
-      let html = '<div class="list-group">';
-      data.forEach(c=>{
-        html += `<button type="button" class="list-group-item list-group-item-action" data-id="${c.customer_id}">
+        let html = '<div class="list-group">';
+        data.forEach(c => {
+          html += `<button type="button" class="list-group-item list-group-item-action" data-id="${c.customer_id}">
                    ${escapeHtml(c.fullname)} — ${escapeHtml(c.phone)}
                  </button>`;
-      });
-      html += '</div>';
-      results.innerHTML = html;
-
-      results.querySelectorAll('.list-group-item').forEach(btn=>{
-        btn.addEventListener('click', function(){
-          results.querySelectorAll('.list-group-item').forEach(x=>x.classList.remove('active'));
-          this.classList.add('active');
-          selectedCustomerToAdd = this.getAttribute('data-id');
         });
-      });
+        html += '</div>';
+        results.innerHTML = html;
 
-    }).catch(()=> results.innerHTML = '<small>Lỗi</small>');
-});
+        results.querySelectorAll('.list-group-item').forEach(btn => {
+          btn.addEventListener('click', function() {
+            results.querySelectorAll('.list-group-item').forEach(x => x.classList.remove('active'));
+            this.classList.add('active');
+            selectedCustomerToAdd = this.getAttribute('data-id');
+          });
+        });
 
-/* ADD CUSTOMER */
-document.getElementById('btnAddToBooking').addEventListener('click', function(){
-  if (!selectedCustomerToAdd) return alert('Chọn khách trước');
+      }).catch(() => results.innerHTML = '<small>Lỗi</small>');
+  });
 
-  const fd = new FormData();
-  fd.append('schedule_id', '<?= $booking["schedule_id"] ?>');
-  fd.append('customer_id', selectedCustomerToAdd);
+  /* ADD CUSTOMER */
+  document.getElementById('btnAddToBooking').addEventListener('click', function() {
+    if (!selectedCustomerToAdd) return alert('Chọn khách trước');
 
-  fetch('admin.php?act=booking-add-customer', { method:'POST', body: fd })
-    .then(r=>r.json())
-    .then(res=>{
-      if (!res.ok) return alert(res.msg || 'Lỗi');
+    const fd = new FormData();
+    fd.append('schedule_id', '<?= $booking["schedule_id"] ?>');
+    fd.append('customer_id', selectedCustomerToAdd);
 
-      const tbody = document.getElementById('customersTableBody');
-      tbody.innerHTML = '';
+    fetch('admin.php?act=booking-add-customer', {
+        method: 'POST',
+        body: fd
+      })
+      .then(r => r.json())
+      .then(res => {
+        if (!res.ok) return alert(res.msg || 'Lỗi');
 
-      res.data.forEach((c,i)=>{
-        tbody.insertAdjacentHTML('beforeend', `
+        const tbody = document.getElementById('customersTableBody');
+        tbody.innerHTML = '';
+
+        res.data.forEach((c, i) => {
+          tbody.insertAdjacentHTML('beforeend', `
           <tr>
             <td>${i+1}</td>
             <td>${escapeHtml(c.fullname)}</td>
@@ -223,24 +234,24 @@ document.getElementById('btnAddToBooking').addEventListener('click', function(){
             <td>${escapeHtml(c.attendance_status||'')}</td>
           </tr>
         `);
-      });
+        });
 
-      alert('Thêm khách thành công');
-      document.getElementById('searchResults').innerHTML = '';
-      document.getElementById('searchAddCustomer').value = '';
-      selectedCustomerToAdd = null;
+        alert('Thêm khách thành công');
+        document.getElementById('searchResults').innerHTML = '';
+        document.getElementById('searchAddCustomer').value = '';
+        selectedCustomerToAdd = null;
 
-    })
-    .catch(()=> alert('Lỗi kết nối'));
-});
+      })
+      .catch(() => alert('Lỗi kết nối'));
+  });
 
-function escapeHtml(s){ 
-  if(!s) return ''; 
-  return s.replaceAll('&','&amp;')
-          .replaceAll('<','&lt;')
-          .replaceAll('>','&gt;')
-          .replaceAll('"','&quot;');
-}
+  function escapeHtml(s) {
+    if (!s) return '';
+    return s.replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;');
+  }
 </script>
 
 <?php footerAdmin(); ?>
