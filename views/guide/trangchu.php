@@ -12,7 +12,6 @@
     <div class="col-lg-4 mb-3">
         <div class="stat-box bg-blue">
             <h4>📅 Lịch hôm nay</h4>
-            <div class="stat-value"><?= isset($todaySchedules) ? count($todaySchedules) : 0 ?></div>
             <div class="mt-3"><a href="index.php?act=today" class="btn btn-light btn-sm">Xem chi tiết</a></div>
         </div>
     </div>
@@ -20,7 +19,6 @@
     <div class="col-lg-4 mb-3">
         <div class="stat-box bg-green">
             <h4>🧭 Tour trong tháng</h4>
-            <div class="stat-value"><?= isset($monthly_unique_count) ? $monthly_unique_count : (isset($monthlySchedules) ? count($monthlySchedules) : 0) ?></div>
             <div class="mt-3"><a href="index.php?act=my-tours" class="btn btn-light btn-sm">Xem tour</a></div>
         </div>
     </div>
