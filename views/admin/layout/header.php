@@ -39,7 +39,7 @@
           href="admin.php?act=attendance">Điểm danh</a>
         <a
           class="list-group-item list-group-item-action list-group-item-light p-3"
-          href="#">Thống Kê Tour</a>
+          href="admin.php?act=statistical">Thống Kê Tour</a>
         <a
           class="list-group-item list-group-item-action list-group-item-light p-3"
           href="admin.php?act=customer">Danh sách khách hàng</a>

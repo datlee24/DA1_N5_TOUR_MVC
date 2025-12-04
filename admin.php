@@ -105,6 +105,7 @@ match ($act) {
         ATTENDANCE (Admin)
     =============================== */
     'attendance'   => (new AttendanceController())->index(),
+    'statistical'  => (new StatisticalController())->index(),
 
 
     default        => (new AdminController())->dashboard()
