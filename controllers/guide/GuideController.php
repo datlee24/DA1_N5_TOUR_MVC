@@ -16,6 +16,8 @@ class GuideController
             exit;
         }
 
+        $guide = $_SESSION['guide'];
+
         require_once PATH_GUIDE . "trangchu.php";
     }
 }

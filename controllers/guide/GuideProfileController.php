@@ -14,7 +14,7 @@ class GuideProfileController
     public function edit()
     {
         $guide = $_SESSION['guide'];
-        require_once PATH_GUIDE . "profile_edit.php";
+        require_once PATH_GUIDE . "profile/edit.php";
     }
 
     public function update()

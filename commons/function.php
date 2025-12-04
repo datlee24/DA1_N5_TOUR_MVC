@@ -57,7 +57,14 @@ function footerAdmin()
 {
     include PATH_ADMIN . "layout/footer.php";
 }
-
+function headerGuide()
+{
+    include PATH_GUIDE . "layout/header.php";
+}
+function footerGuide()
+{
+    include PATH_GUIDE . "layout/footer.php";
+}
 /*
  * Kiểm tra quyền - Admin
  * Nếu không phải admin -> redirect về trang admin login
