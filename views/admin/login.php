@@ -92,7 +92,7 @@
 </head>
 <body>
     <header>
-        <h1>Quản Lý Tour Du Lịch</h1>
+        <h1>Hệ Thống ADMIN</h1>
     </header>   
     <main>
     <form class="login-form" action="admin.php?act=login" method="POST">

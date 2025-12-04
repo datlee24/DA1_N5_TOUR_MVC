@@ -94,8 +94,8 @@ class AuthController
     {
         // Xóa session người dùng
         unset($_SESSION['admin']);
-        // Chuyển hướng về trang đăng nhập
-        header('Location: index.php');
+        // Chuyển hướng về trang đăng nhập admin
+        header('Location: admin.php?act=login');
         exit;
     }
 

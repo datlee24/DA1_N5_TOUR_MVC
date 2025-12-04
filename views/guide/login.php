@@ -1,80 +1,117 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
-    <title>Đăng nhập Hướng dẫn viên</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng Nhập Hướng Dẫn Viên</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
-            background: linear-gradient(135deg, #3b82f6, #06b6d4);
-            font-family: Arial;
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: #fff;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            font-size: 20px;
+            margin: 0;
+        }
+
+        main {
+            flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            padding: 20px;
         }
 
-        .login-box {
-            width: 360px;
-            background: #fff;
-            padding: 28px;
-            border-radius: 10px;
-            box-shadow: 0 5px 18px rgba(0,0,0,0.2);
+        .login-form {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 320px;
         }
 
-        h2 {
-            text-align: center;
+        .login-form h2 {
             margin-bottom: 20px;
-            color: #1e3a8a;
+            text-align: center;
         }
 
-        input {
+        .login-form input[type="email"],
+        .login-form input[type="password"] {
             width: 100%;
-            padding: 12px;
-            margin-bottom: 14px;
+            padding: 10px;
+            margin: 8px 0 16px;
             border: 1px solid #ccc;
-            border-radius: 6px;
+            border-radius: 4px;
         }
 
-        button {
+        .login-form button {
             width: 100%;
-            padding: 12px;
-            background: #2563eb;
+            padding: 10px;
+            background: #4285f4;
             color: white;
             border: none;
-            border-radius: 6px;
-            cursor: pointer;
+            border-radius: 4px;
             font-size: 16px;
-            transition: 0.2s;
         }
 
-        button:hover {
-            background: #1e40af;
+        .login-form button:hover {
+            background: #3367d6;
         }
 
         .error {
-            text-align: center;
             color: red;
-            margin-bottom: 12px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        footer {
+            background-color: #fff;
+            text-align: center;
+            padding: 15px;
+            font-size: 14px;
+            color: #666;
+            border-top: 1px solid #e0e0e0;
         }
     </style>
 </head>
+
 <body>
-
-<div class="login-box">
-    <h2>Đăng nhập Hướng Dẫn Viên</h2>
-
-    <?php if (isset($_SESSION['error'])): ?>
-        <div class="error"><?= $_SESSION['error']; unset($_SESSION['error']); ?></div>
-    <?php endif; ?>
-
-    <form method="POST" action="index.php?act=login">
-        <input type="email" name="email" placeholder="Nhập email" required>
-        <input type="password" name="password" placeholder="Nhập mật khẩu" required>
-        <button type="submit">Đăng nhập</button>
-    </form>
-</div>
-
+    <header>
+        <h1>Hệ Thống Hướng Dẫn Viên</h1>
+    </header>
+    <main>
+        <form class="login-form" method="POST" action="index.php?act=login">
+            <h2>Đăng nhập</h2>
+            <?php if (isset($_SESSION['error'])): ?>
+                <div class="error"><?= $_SESSION['error'];
+                                    unset($_SESSION['error']); ?></div>
+            <?php endif; ?>
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="password" name="password" placeholder="Mật khẩu" required>
+            <button type="submit">Đăng nhập</button>
+        </form>
+    </main>
+    <footer>
+        &copy; <?= date('Y') ?> Công Ty Quản Lý Tour Du Lịch.
+    </footer>
 </body>
+
 </html>
