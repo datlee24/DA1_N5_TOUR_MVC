@@ -31,20 +31,26 @@ match ($act) {
     'logout' => (new GuideAuthController())->logout(),
 
      // Hồ sơ HDV
-    'profile'         => (new GuideProfileController())->edit(),
-    'update-profile'  => (new GuideProfileController())->update(),
+      'profile'         => (new GuideProfileController())->detail(),
+      'profile-edit'    => (new GuideProfileController())->edit(),
+      'profile-update'  => (new GuideProfileController())->update(),
+
 
      // LỊCH LÀM VIỆC
     'schedule-month' => (new GuideScheduleController())->month(),   // lịch 1 tháng
     'today'          => (new GuideScheduleController())->today(),   // lịch hôm nay
     'my-tours'       => (new GuideScheduleController())->myToursMonth(), // tour của tôi trong tháng
+    'schedule-detail' => (new GuideScheduleController())->detail(),
 
-     // DANH SÁCH KHÁCH HÀNG
-    'customers'       => (new GuideCustomerController())->index(),
+        // LỊCH SỬ DẪN TOUR + PHẢN HỒI
+        'history'         => (new GuideHistoryController())->index(),
+        'history-detail'  => (new GuideHistoryController())->detail(),
 
      // ĐIỂM DANH KHÁCH HÀNG
-    'attendance'        => (new GuideAttendanceController())->index(), // giao diện điểm danh
-    'attendance-save'   => (new GuideAttendanceController())->save(),  // xử lý lưu điểm danh (POST)
+    'attendance' => (new GuideAttendanceController())->index(),
+    'attendance-save' => (new GuideAttendanceController())->save(),
+
+    
 
 
 

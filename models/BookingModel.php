@@ -25,6 +25,46 @@ class BookingModel
         return $this->conn->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    // Lấy tất cả booking liên quan đến hướng dẫn viên (bằng user_id của users)
+    public function getByGuideUserId($user_id)
+    {
+        $sql = "SELECT b.*, c.fullname AS customer_name,
+                       t.name AS tour_name, ds.start_date, ds.end_date,
+                       u.fullname AS guide_name, d.fullname AS driver_name,
+                       ds.schedule_id
+                FROM booking b
+                LEFT JOIN customer c ON b.customer_id = c.customer_id
+                LEFT JOIN tour t ON b.tour_id = t.tour_id
+                LEFT JOIN departure_schedule ds ON b.schedule_id = ds.schedule_id
+                LEFT JOIN guide g ON ds.guide_id = g.guide_id
+                LEFT JOIN users u ON g.user_id = u.user_id
+                LEFT JOIN driver d ON ds.driver_id = d.driver_id
+                WHERE u.user_id = :uid
+                ORDER BY ds.start_date DESC, b.booking_id DESC";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute(['uid' => $user_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // Lấy booking theo schedule id
+    public function getByScheduleId($schedule_id)
+    {
+        $sql = "SELECT b.*, c.fullname AS customer_name, c.phone AS customer_phone, c.email AS customer_email,
+                       t.name AS tour_name, ds.start_date, ds.end_date, ds.meeting_point,
+                       u.fullname AS guide_name
+                FROM booking b
+                LEFT JOIN customer c ON b.customer_id = c.customer_id
+                LEFT JOIN tour t ON b.tour_id = t.tour_id
+                LEFT JOIN departure_schedule ds ON b.schedule_id = ds.schedule_id
+                LEFT JOIN guide g ON ds.guide_id = g.guide_id
+                LEFT JOIN users u ON g.user_id = u.user_id
+                WHERE b.schedule_id = :sid AND b.status != 'cancelled'
+                ORDER BY b.booking_id ASC";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute(['sid' => $schedule_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function find($id)
     {
         $sql = "SELECT b.*, c.fullname AS customer_name, t.name AS tour_name,

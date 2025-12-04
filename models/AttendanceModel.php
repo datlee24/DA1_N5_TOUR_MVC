@@ -9,50 +9,83 @@ class AttendanceModel
         $this->conn = connectDB();
     }
 
-    public function create($data)
+    /**
+     * Upsert điểm danh: nếu đã có record (schedule_id + tour_customer_id) thì update (status,note,marked_at),
+     * ngược lại insert mới.
+     */
+    public function upsert($data)
     {
-        $sql = "INSERT INTO attendance 
-                (schedule_id, tour_customer_id, customer_id, guide_id, status, note, marked_at)
-                VALUES (:schedule_id, :tour_customer_id, :customer_id, :guide_id, :status, :note, NOW())";
+        // check tồn tại bản ghi gần nhất cho tour_customer_id trong schedule
+        $sqlCheck = "SELECT attendance_id FROM attendance 
+                     WHERE schedule_id = :schedule_id AND tour_customer_id = :tcid
+                     ORDER BY attendance_id DESC LIMIT 1";
+        $stmt = $this->conn->prepare($sqlCheck);
+        $stmt->execute(['schedule_id' => $data['schedule_id'], 'tcid' => $data['tour_customer_id']]);
+        $existing = $stmt->fetchColumn();
 
-        $stmt = $this->conn->prepare($sql);
-        return $stmt->execute([
-            ':schedule_id' => $data['schedule_id'],
-            ':tour_customer_id' => $data['tour_customer_id'],
-            ':customer_id' => $data['customer_id'],
-            ':guide_id' => $data['guide_id'],
-            ':status' => $data['status'],
-            ':note' => $data['note'] ?? null
-        ]);
+        if ($existing) {
+            $sql = "UPDATE attendance SET status = :status, note = :note, guide_id = :guide_id, marked_at = NOW()
+                    WHERE attendance_id = :aid";
+            $stmt2 = $this->conn->prepare($sql);
+            return $stmt2->execute([
+                ':status' => $data['status'],
+                ':note' => $data['note'] ?? null,
+                ':guide_id' => $data['guide_id'],
+                ':aid' => $existing
+            ]);
+        } else {
+            $sql = "INSERT INTO attendance 
+                    (schedule_id, tour_customer_id, customer_id, guide_id, status, note, marked_at)
+                    VALUES (:schedule_id, :tour_customer_id, :customer_id, :guide_id, :status, :note, NOW())";
+            $stmt3 = $this->conn->prepare($sql);
+            return $stmt3->execute([
+                ':schedule_id' => $data['schedule_id'],
+                ':tour_customer_id' => $data['tour_customer_id'],
+                ':customer_id' => $data['customer_id'],
+                ':guide_id' => $data['guide_id'],
+                ':status' => $data['status'],
+                ':note' => $data['note'] ?? null
+            ]);
+        }
     }
 
-    // Lấy danh sách khách của schedule kèm trạng thái điểm danh gần nhất (nếu có)
-    public function listBySchedule($schedule_id)
-    {
-        $sql = "SELECT 
-                    tc.id as tour_customer_id, c.customer_id,
-                    c.fullname, c.phone, tc.room_number,
-                    a.status, a.note, a.marked_at
-                FROM tour_customer tc
-                JOIN customer c ON c.customer_id = tc.customer_id
-                LEFT JOIN (
-                    SELECT a1.*
-                    FROM attendance a1
-                    JOIN (
-                        SELECT tour_customer_id, MAX(attendance_id) AS maxid
-                        FROM attendance
-                        WHERE schedule_id = :sid
-                        GROUP BY tour_customer_id
-                    ) ag ON ag.maxid = a1.attendance_id
-                ) a ON a.tour_customer_id = tc.id
-                WHERE tc.schedule_id = :sid
-                ORDER BY c.fullname ASC";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute([':sid' => $schedule_id]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
+    /**
+     * Lấy danh sách khách của schedule kèm trạng thái điểm danh gần nhất (nếu có)
+     */
+   public function listBySchedule($schedule_id)
+{
+    $sql = "SELECT 
+                tc.id as tour_customer_id, 
+                c.customer_id,
+                c.fullname, 
+                c.phone, 
+                c.email,             -- FIX: thêm email
+                tc.room_number,
+                a.status, 
+                a.note, 
+                a.marked_at
+            FROM tour_customer tc
+            JOIN customer c ON c.customer_id = tc.customer_id
+            LEFT JOIN (
+                SELECT a1.*
+                FROM attendance a1
+                JOIN (
+                    SELECT tour_customer_id, MAX(attendance_id) AS maxid
+                    FROM attendance
+                    WHERE schedule_id = :sid
+                    GROUP BY tour_customer_id
+                ) ag ON ag.maxid = a1.attendance_id
+            ) a ON a.tour_customer_id = tc.id
+            WHERE tc.schedule_id = :sid
+            ORDER BY c.fullname ASC";
 
-    // Tìm / liệt kê các bản ghi điểm danh với bộ lọc (dành cho admin)
+    $stmt = $this->conn->prepare($sql);
+    $stmt->execute(['sid' => $schedule_id]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+
+    // Các hàm search (nếu cần) giữ nguyên hoặc mở rộng
     public function search($filters = [])
     {
         $sql = "SELECT a.*, c.fullname AS customer_name, c.phone AS customer_phone,
@@ -80,7 +113,6 @@ class AttendanceModel
             $params[':customer_id'] = $filters['customer_id'];
         }
         if (!empty($filters['date'])) {
-            // lọc theo ngày marked_at
             $sql .= " AND DATE(a.marked_at) = :date";
             $params[':date'] = $filters['date'];
         }
@@ -92,3 +124,4 @@ class AttendanceModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
+?>
