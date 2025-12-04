@@ -34,7 +34,7 @@
         <div class="logo">HD</div>
         <div>
             <h1>Đăng nhập Hướng dẫn viên</h1>
-            <p class="lead">Quản lý lịch, điểm danh và phản hồi tour</p>
+            <p class="lead">Quản lý lịch, điểm danh</p>
         </div>
     </div>
 
