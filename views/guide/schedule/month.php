@@ -18,6 +18,12 @@
     .card {
         border-radius: 12px;
     }
+    .action-btn {
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: .85rem;
+        font-weight: 600;
+    }
 </style>
 
 <div class="container mt-4">
@@ -46,17 +52,13 @@
                 <label class="form-label fw-semibold">Chọn năm</label>
                 <select name="year" class="form-select">
                     <?php for($y=date("Y")-1;$y<=date("Y")+1;$y++): ?>
-                        <option value="<?= $y ?>" <?= $y==$year?'selected':'' ?>>
-                            <?= $y ?>
-                        </option>
+                        <option value="<?= $y ?>" <?= $y==$year?'selected':'' ?>><?= $y ?></option>
                     <?php endfor; ?>
                 </select>
             </div>
 
             <div class="col-md-3">
-                <button class="btn btn-primary w-100">
-                    🔎 Xem lịch
-                </button>
+                <button class="btn btn-primary w-100">🔎 Xem lịch</button>
             </div>
         </form>
     </div>
@@ -67,7 +69,7 @@
             <table class="table table-hover mb-0 align-middle">
                 <thead class="table-dark">
                     <tr>
-                        <th style="width: 50px;">#</th>
+                        <th style="width: 40px;">#</th>
                         <th>Tour</th>
                         <th>Ngày đi</th>
                         <th>Ngày về</th>
@@ -75,6 +77,7 @@
                         <th>Tài xế</th>
                         <th>Khách sạn</th>
                         <th>Trạng thái</th>
+                        <th style="width: 120px;">Hành động</th>
                     </tr>
                 </thead>
 
@@ -82,7 +85,7 @@
                     <?php if (empty($schedules)): ?>
                         <tr>
                             <td colspan="9" class="text-center py-4 text-muted">
-                                Không có tour nào trong tháng này.
+                                ❗ Không có tour nào trong tháng này.
                             </td>
                         </tr>
                     <?php endif; ?>
@@ -113,13 +116,8 @@
                                 </div>
                             </td>
 
-                            <td>
-                                📅 <?= date('d/m/Y', strtotime($s['start_date'])) ?>
-                            </td>
-
-                            <td>
-                                📅 <?= date('d/m/Y', strtotime($s['end_date'])) ?>
-                            </td>
+                            <td>📅 <?= date('d/m/Y', strtotime($s['start_date'])) ?></td>
+                            <td>📅 <?= date('d/m/Y', strtotime($s['end_date'])) ?></td>
 
                             <td>
                                 <span class="badge bg-info px-3 py-2">
@@ -129,13 +127,13 @@
 
                             <td>
                                 <?= $s['driver_name'] 
-                                    ? '<span class="text-dark fw-semibold">🚐 '.$s['driver_name'].'</span>'
+                                    ? '<strong>🚐 '.$s['driver_name'].'</strong>'
                                     : '<span class="text-muted">Chưa gán</span>' ?>
                             </td>
 
                             <td>
                                 <?= $s['hotel_name'] 
-                                    ? '<span class="text-dark fw-semibold">🏨 '.$s['hotel_name'].'</span>'
+                                    ? '<strong>🏨 '.$s['hotel_name'].'</strong>'
                                     : '<span class="text-muted">Chưa có</span>' ?>
                             </td>
 
@@ -144,6 +142,14 @@
                                     <?= $badgeText ?>
                                 </span>
                             </td>
+
+                            <td>
+                                <a href="index.php?act=schedule-detail&schedule_id=<?= $s['schedule_id'] ?>"
+                                   class="btn btn-outline-primary btn-sm action-btn">
+                                    👁 Chi tiết
+                                </a>
+                            </td>
+
                         </tr>
 
                     <?php endforeach; ?>

@@ -118,9 +118,9 @@
           <table class="table mb-0">
             <thead class="table-light">
               <tr>
-                <th>#</th>
-                <th>Họ tên</th>
-                <th>SĐT</th>
+                <th>STT</th>
+                <th>Họ và tên</th>
+                <th>Điện thoại</th>
                 <th>Email</th>
                 <th>Phòng</th>
                 <th>Điểm danh</th>
@@ -135,7 +135,20 @@
                   <td><?= htmlspecialchars($c['phone']) ?></td>
                   <td><?= htmlspecialchars($c['email']) ?></td>
                   <td><?= htmlspecialchars($c['room_number'] ?? '-') ?></td>
-                  <td><?= htmlspecialchars($c['attendance_status'] ?? 'Chưa') ?></td>
+                  <td>
+  <?php
+    $status = $c['attendance_status'] ?? 'unknown';
+
+    $translate = [
+        'unknown' => 'Chưa điểm danh',
+        'absent'  => 'Vắng',
+        'present' => 'Đã điểm danh',
+    ];
+
+    echo $translate[$status] ?? 'Chưa điểm danh';
+  ?>
+</td>
+
                 </tr>
               <?php endforeach; ?>
             </tbody>
