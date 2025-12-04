@@ -13,25 +13,25 @@
 
 <div class="row mt-4">
     <div class="col-md-3 mb-3">
-        <div class="card p-3">
+        <div class="stat-box bg-blue">
             <h5>Tổng Tour</h5>
             <p class="h3"><?= $totalTours ?? 0 ?></p>
         </div>
     </div>
     <div class="col-md-3 mb-3">
-        <div class="card p-3">
+        <div class="stat-box bg-green">
             <h5>Tour đang hoạt động</h5>
             <p class="h3"><?= $activeTours ?? 0 ?></p>
         </div>
     </div>
     <div class="col-md-3 mb-3">
-        <div class="card p-3">
+        <div class="stat-box bg-orange">
             <h5>Tổng booking</h5>
             <p class="h3"><?= $totalBookings ?? 0 ?></p>
         </div>
     </div>
     <div class="col-md-3 mb-3">
-        <div class="card p-3">
+        <div class="stat-box bg-blue">
             <h5>Booking tháng này</h5>
             <p class="h3"><?= $bookingsThisMonth ?? 0 ?></p>
         </div>
