@@ -76,7 +76,6 @@
 
             <a href="index.php?act=today" class="btn btn-success btn-sm w-100 mb-2">Điểm danh hôm nay</a>
             <a href="index.php?act=schedule-month" class="btn btn-warning btn-sm w-100 mb-2">Xem lịch tháng</a>
-            <a href="index.php?act=my-tours" class="btn btn-info btn-sm w-100">Tour của tôi</a>
         </div>
     </div>
 

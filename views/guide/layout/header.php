@@ -34,10 +34,10 @@ $guide = $_SESSION['guide'] ?? null;
            ⏳ Lịch hôm nay
         </a>
 
-        <a href="index.php?act=customers" 
-           class="<?= ($_GET['act'] ?? '') == 'customers' ? 'active' : '' ?>">
-           👥 Danh sách khách hàng
-        </a>
+          <a href="index.php?act=history" 
+              class="<?= ($_GET['act'] ?? '') == 'history' ? 'active' : '' ?>">
+              👥 Lịch sử dẫn tour
+          </a>
 
         <a href="index.php?act=profile" 
            class="<?= ($_GET['act'] ?? '') == 'profile' ? 'active' : '' ?>">

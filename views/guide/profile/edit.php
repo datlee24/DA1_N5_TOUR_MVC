@@ -1,60 +1,65 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <title>Chỉnh sửa hồ sơ</title>
+<?php 
+headerGuide(); 
+$pageTitle = "Cập nhật hồ sơ";
+?>
 
-    <style>
-        body {
-            margin: 0;
-            background: #f2f4f8;
-            font-family: Arial;
-            padding: 20px;
-        }
+<div class="container mt-4" style="max-width: 700px;">
 
-        .profile-box {
-            width: 450px;
-            margin: auto;
-            background: #fff;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.15);
-        }
+    <div class="card shadow-sm p-4">
 
-        h2 { text-align: center; color: #1e3a8a; }
-        label { font-weight: bold; margin-bottom: 5px; display: block; }
-        input { width: 100%; padding: 12px; margin-bottom: 14px; border-radius: 6px; }
-        button { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; }
-    </style>
-</head>
-<body>
+        <h3 class="mb-3">👤 Cập nhật hồ sơ cá nhân</h3>
 
-<div class="profile-box">
+        <?php if (!empty($_SESSION['success'])): ?>
+            <div class="alert alert-success">
+                <?= $_SESSION['success']; unset($_SESSION['success']); ?>
+            </div>
+        <?php endif; ?>
 
-    <h2>Chỉnh sửa hồ sơ</h2>
+        <?php if (!empty($_SESSION['error'])): ?>
+            <div class="alert alert-danger">
+                <?= $_SESSION['error']; unset($_SESSION['error']); ?>
+            </div>
+        <?php endif; ?>
 
-    <?php if (isset($_SESSION['success'])): ?>
-        <div style="color: green; text-align:center;">
-            <?= $_SESSION['success']; unset($_SESSION['success']); ?>
-        </div>
-    <?php endif; ?>
+        <form action="index.php?act=profile-update" method="post">
 
-    <form action="index.php?act=update-profile" method="POST">
-        <label>Họ tên</label>
-        <input type="text" name="fullname" required value="<?= $guide['fullname'] ?>">
+            <!-- HỌ VÀ TÊN -->
+            <div class="mb-3">
+                <label class="form-label">Họ và tên</label>
+                <input type="text" name="fullname" required class="form-control"
+                    value="<?= htmlspecialchars($guide['fullname'] ?? '') ?>">
+            </div>
 
-        <label>Số điện thoại</label>
-        <input type="text" name="phone" required value="<?= $guide['phone'] ?>">
+            <!-- SỐ ĐIỆN THOẠI -->
+            <div class="mb-3">
+                <label class="form-label">Số điện thoại</label>
+                <input type="text" name="phone" required class="form-control"
+                    value="<?= htmlspecialchars($guide['phone'] ?? '') ?>">
+            </div>
 
-        <label>Email</label>
-        <input type="email" name="email" required value="<?= $guide['email'] ?>">
+            <!-- EMAIL -->
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="email" name="email" required class="form-control"
+                    value="<?= htmlspecialchars($guide['email'] ?? '') ?>">
+            </div>
 
-        <label>Mật khẩu</label>
-        <input type="text" name="password" required value="<?= $guide['password'] ?>">
+            <!-- PASSWORD MỚI -->
+            <div class="mb-3">
+                <label class="form-label">Mật khẩu (để trống nếu không đổi)</label>
+                <input type="password" name="password" class="form-control" placeholder="Nhập mật khẩu mới (tùy chọn)">
+            </div>
 
-        <button type="submit">Lưu thay đổi</button>
-    </form>
+            <hr>
+
+            <div class="d-flex justify-content-between">
+                <a href="index.php?act=profile" class="btn btn-secondary">⬅ Quay lại hồ sơ</a>
+                <button class="btn btn-primary">💾 Lưu thay đổi</button>
+            </div>
+
+        </form>
+
+    </div>
 </div>
 
-</body>
-</html>
+<?php footerGuide(); ?>

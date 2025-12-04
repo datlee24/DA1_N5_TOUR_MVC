@@ -52,30 +52,38 @@ class AttendanceModel
     /**
      * Lấy danh sách khách của schedule kèm trạng thái điểm danh gần nhất (nếu có)
      */
-    public function listBySchedule($schedule_id)
-    {
-        $sql = "SELECT 
-                    tc.id as tour_customer_id, c.customer_id,
-                    c.fullname, c.phone, tc.room_number,
-                    a.status, a.note, a.marked_at
-                FROM tour_customer tc
-                JOIN customer c ON c.customer_id = tc.customer_id
-                LEFT JOIN (
-                    SELECT a1.*
-                    FROM attendance a1
-                    JOIN (
-                        SELECT tour_customer_id, MAX(attendance_id) AS maxid
-                        FROM attendance
-                        WHERE schedule_id = :sid
-                        GROUP BY tour_customer_id
-                    ) ag ON ag.maxid = a1.attendance_id
-                ) a ON a.tour_customer_id = tc.id
-                WHERE tc.schedule_id = :sid
-                ORDER BY c.fullname ASC";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute([':sid' => $schedule_id]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
+   public function listBySchedule($schedule_id)
+{
+    $sql = "SELECT 
+                tc.id as tour_customer_id, 
+                c.customer_id,
+                c.fullname, 
+                c.phone, 
+                c.email,             -- FIX: thêm email
+                tc.room_number,
+                a.status, 
+                a.note, 
+                a.marked_at
+            FROM tour_customer tc
+            JOIN customer c ON c.customer_id = tc.customer_id
+            LEFT JOIN (
+                SELECT a1.*
+                FROM attendance a1
+                JOIN (
+                    SELECT tour_customer_id, MAX(attendance_id) AS maxid
+                    FROM attendance
+                    WHERE schedule_id = :sid
+                    GROUP BY tour_customer_id
+                ) ag ON ag.maxid = a1.attendance_id
+            ) a ON a.tour_customer_id = tc.id
+            WHERE tc.schedule_id = :sid
+            ORDER BY c.fullname ASC";
+
+    $stmt = $this->conn->prepare($sql);
+    $stmt->execute(['sid' => $schedule_id]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
 
     // Các hàm search (nếu cần) giữ nguyên hoặc mở rộng
     public function search($filters = [])
