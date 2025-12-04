@@ -120,6 +120,56 @@ body {
     background: linear-gradient(135deg, #f97316, #ea580c);
 }
 
+/* Stat box enhancements */
+.stat-box .stat-value {
+    font-size: 28px;
+    font-weight: 700;
+    margin-top: 6px;
+}
+
+.stat-box .stat-label {
+    font-size: 13px;
+    opacity: 0.95;
+}
+
+/* Today's schedule list */
+.today-list li {
+    background: rgba(255, 255, 255, 0.06);
+    padding: 10px 12px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+
+.today-list li a {
+    background: transparent;
+    margin-bottom: 8px;
+}
+
+.today-list-item {
+    background: #fff;
+    padding: 10px 12px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(2, 6, 23, 0.06);
+    transition: transform .12s ease, box-shadow .12s ease;
+}
+
+.today-list-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(2, 6, 23, 0.08);
+}
+
+.today-list-item a {
+    color: #0f172a;
+    display: block;
+    text-decoration: none
+}
+
+.today-list-item .muted {
+    color: #64748b;
+    font-size: 13px
+}
+
+
 /* ===== PROFILE CARD ===== */
 .card p {
     margin-bottom: 6px;

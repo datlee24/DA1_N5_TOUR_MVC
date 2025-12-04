@@ -18,6 +18,24 @@ class GuideController
 
         $guide = $_SESSION['guide'];
 
+        // Prepare dashboard data: schedules today and month
+        $guide_user_id = $guide['user_id'] ?? null;
+        $scheduleModel = new ScheduleModel();
+
+        $today = date('Y-m-d');
+        $todaySchedules = $scheduleModel->getByDate($guide_user_id, $today);
+
+        $year = date('Y');
+        $month = date('m');
+        $monthlySchedules = $scheduleModel->getGuideMonthSchedules($guide_user_id, $year, $month);
+
+        // number of unique tours in month
+        $monthly_unique_tours = [];
+        foreach ($monthlySchedules as $ms) {
+            $monthly_unique_tours[$ms['tour_name']] = true;
+        }
+        $monthly_unique_count = count($monthly_unique_tours);
+
         require_once PATH_GUIDE . "trangchu.php";
     }
 }
