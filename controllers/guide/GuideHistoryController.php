@@ -1,15 +1,18 @@
 <?php
 // controllers/guide/GuideHistoryController.php
-class GuideHistoryController {
+class GuideHistoryController
+{
     protected $bookingModel;
     protected $feedbackModel;
-    public function __construct() {
+    public function __construct()
+    {
         if (!isset($_SESSION)) session_start();
         $this->bookingModel = new BookingModel();
     }
 
     // List schedules (history) that this guide has led (grouped by schedule)
-    public function index() {
+    public function index()
+    {
         if (!isset($_SESSION['guide'])) {
             header('Location: index.php?act=login');
             exit;
@@ -21,7 +24,7 @@ class GuideHistoryController {
         $bookings = $this->bookingModel->getByGuideUserId($user_id);
 
         // Filter to completed bookings only
-        $completed = array_filter($bookings, function($b) {
+        $completed = array_filter($bookings, function ($b) {
             return isset($b['status']) && $b['status'] === 'completed';
         });
 
@@ -59,11 +62,13 @@ class GuideHistoryController {
         }
 
         // Sorting tours by count desc
-        usort($tours, function($a, $b) { return $b['count'] <=> $a['count']; });
+        usort($tours, function ($a, $b) {
+            return $b['count'] <=> $a['count'];
+        });
 
         // Convert schedules to indexed and sort by date desc
         $schedules = array_values($schedules);
-        usort($schedules, function($a,$b){
+        usort($schedules, function ($a, $b) {
             $da = $a['start_date'] ?? '';
             $db = $b['start_date'] ?? '';
             return strcmp($db, $da);
@@ -76,7 +81,8 @@ class GuideHistoryController {
     }
 
     // Show details (bookings) for a schedule
-    public function detail() {
+    public function detail()
+    {
         if (!isset($_SESSION['guide'])) {
             header('Location: index.php?act=login');
             exit;
@@ -95,7 +101,8 @@ class GuideHistoryController {
     }
 
     // AJAX save feedback (POST)
-    public function saveFeedback() {
+    public function saveFeedback()
+    {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Content-Type: application/json');
             echo json_encode(['success' => false, 'message' => 'Invalid method']);

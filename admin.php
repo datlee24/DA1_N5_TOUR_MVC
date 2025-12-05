@@ -48,6 +48,7 @@ match ($act) {
 
     // AJAX (đã đồng bộ theo view)
     'ajax-hotels'             => (new BookingController())->ajaxHotels(),
+    'booking-ajax-create-customer' => (new BookingController())->ajaxCreateCustomer(),
     'booking-add-customer'    => (new BookingController())->addCustomerToBooking(),
     'booking-update-payment'  => (new BookingController())->updatePaymentStatus(),
 
