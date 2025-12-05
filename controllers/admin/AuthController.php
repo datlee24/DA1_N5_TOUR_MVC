@@ -92,10 +92,11 @@ class AuthController
      */
     public function logout()
     {
-        // Xóa session người dùng
-        unset($_SESSION['admin']);
-        // Chuyển hướng về trang đăng nhập
-        header('Location: index.php');
+        // Xóa session người dùng (và các dữ liệu session liên quan)
+        if (isset($_SESSION['admin'])) unset($_SESSION['admin']);
+        // Nếu muốn xóa toàn bộ session có thể dùng session_unset()/session_destroy().
+        // Ở đây chỉ đảm bảo đưa người dùng về trang đăng nhập admin
+        header('Location: admin.php?act=login');
         exit;
     }
 
