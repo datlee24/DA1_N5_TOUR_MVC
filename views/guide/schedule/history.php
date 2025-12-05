@@ -24,7 +24,6 @@
               <h5><?= htmlspecialchars($sch['tour_name'] ?? '-') ?></h5>
               <p class="mb-1"><?= htmlspecialchars($sch['start_date'] ?? '-') ?> → <?= htmlspecialchars($sch['end_date'] ?? '-') ?></p>
               <p class="mb-1">Số booking: <?= count($sch['bookings']) ?></p>
-              <a href="index.php?act=history-detail&schedule_id=<?= htmlspecialchars($sch['schedule_id']) ?>" class="btn btn-primary btn-sm">Xem chi tiết</a>
             </div>
           </div>
         <?php endforeach; ?>
