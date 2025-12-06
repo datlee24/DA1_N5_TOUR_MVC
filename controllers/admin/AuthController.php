@@ -48,32 +48,38 @@ class AuthController
             $user = $this->userModel->checkEmail($email);
 
             if ($user) {
-                /**
-                 * ⚠️ Ở phiên bản hiện tại, mật khẩu trong DB đang lưu dạng thuần (VD: 123456)
-                 * => chỉ cần so sánh trực tiếp.
-                 * Sau này sẽ chuyển qua mật khẩu mã hóa bằng password_hash(),
-                 * thì thay dòng dưới bằng password_verify($password, $user['password']);
-                 */
-                if ($password === $user['password']) {
-
-                    // Kiểm tra quyền truy cập (chỉ cho phép role = 'admin')
-                    if ($user['role'] !== 'admin') {
-                        $_SESSION['error'] = "Tài khoản không có quyền truy cập vào trang quản trị";
-                        header('Location: admin.php?act=login');
-                        exit;
-                    }
-
-                    // ✅ Đăng nhập thành công
-                    $_SESSION['admin'] = $user;
-                    $_SESSION['success'] = "Đăng nhập thành công!";
-                    header('Location: admin.php?act=dashboard');
-                    exit;
+                // Verify password using password_verify. If DB still has plaintext, migrate it.
+                $pwOk = false;
+                if (!empty($user['password']) && password_verify($password, $user['password'])) {
+                    $pwOk = true;
                 } else {
-                    // Sai mật khẩu
+                    if ($user['password'] === $password) {
+                        $pwOk = true;
+                        // migrate to hash
+                        $newHash = password_hash($password, PASSWORD_DEFAULT);
+                        $this->userModel->setPassword($user['user_id'], $newHash);
+                        $user['password'] = $newHash;
+                    }
+                }
+
+                if (!$pwOk) {
                     $_SESSION['error'] = "Sai mật khẩu";
                     header('Location: admin.php?act=login');
                     exit;
                 }
+
+                // Kiểm tra quyền truy cập (chỉ cho phép role = 'admin')
+                if ($user['role'] !== 'admin') {
+                    $_SESSION['error'] = "Tài khoản không có quyền truy cập vào trang quản trị";
+                    header('Location: admin.php?act=login');
+                    exit;
+                }
+
+                // ✅ Đăng nhập thành công
+                $_SESSION['admin'] = $user;
+                $_SESSION['success'] = "Đăng nhập thành công!";
+                header('Location: admin.php?act=dashboard');
+                exit;
             } else {
                 // Không tìm thấy tài khoản theo email
                 $_SESSION['error'] = "Tài khoản không tồn tại";
@@ -124,24 +130,36 @@ class AuthController
 
             $user = $this->userModel->checkEmail($email);
             if ($user) {
-                if ($password === $user['password']) {
-                    // Chỉ cho phép role = 'hdv' đăng nhập vào cổng hdv
-                    if ($user['role'] !== 'hdv') {
-                        $_SESSION['error'] = "Tài khoản không phải hướng dẫn viên";
-                        header('Location: admin.php?act=hdv-login');
-                        exit;
-                    }
-
-                    // Đăng nhập thành công cho hdv
-                    $_SESSION['hdv'] = $user;
-                    $_SESSION['success'] = "Đăng nhập thành công!";
-                    header('Location: admin.php?act=hdv-dashboard');
-                    exit;
+                $pwOk = false;
+                if (!empty($user['password']) && password_verify($password, $user['password'])) {
+                    $pwOk = true;
                 } else {
+                    if ($user['password'] === $password) {
+                        $pwOk = true;
+                        $newHash = password_hash($password, PASSWORD_DEFAULT);
+                        $this->userModel->setPassword($user['user_id'], $newHash);
+                        $user['password'] = $newHash;
+                    }
+                }
+
+                if (!$pwOk) {
                     $_SESSION['error'] = "Sai mật khẩu";
                     header('Location: admin.php?act=hdv-login');
                     exit;
                 }
+
+                // Chỉ cho phép role = 'hdv' đăng nhập vào cổng hdv
+                if ($user['role'] !== 'hdv') {
+                    $_SESSION['error'] = "Tài khoản không phải hướng dẫn viên";
+                    header('Location: admin.php?act=hdv-login');
+                    exit;
+                }
+
+                // Đăng nhập thành công cho hdv
+                $_SESSION['hdv'] = $user;
+                $_SESSION['success'] = "Đăng nhập thành công!";
+                header('Location: admin.php?act=hdv-dashboard');
+                exit;
             } else {
                 $_SESSION['error'] = "Tài khoản không tồn tại";
                 header('Location: admin.php?act=hdv-login');

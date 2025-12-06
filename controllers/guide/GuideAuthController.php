@@ -30,14 +30,22 @@ class GuideAuthController
             exit;
         }
 
-        // Lưu ý: nếu password đã hash trong DB, cần dùng password_verify
-        if (isset($user['password']) && password_needs_rehash($user['password'], PASSWORD_DEFAULT) === false) {
-            // Trường hợp DB lưu password plain (không khuyến nghị) - so sánh trực tiếp
-            // Nhưng tốt hơn nên kiểm tra hashed:
-            // if (!password_verify($password, $user['password'])) ...
+        // Verify password: prefer password_verify for hashed passwords.
+        $pwOk = false;
+        if (!empty($user['password']) && password_verify($password, $user['password'])) {
+            $pwOk = true;
+        } else {
+            // If stored password is plaintext (legacy), allow login and migrate to hash
+            if ($user['password'] === $password) {
+                $pwOk = true;
+                // migrate: hash and update DB
+                $newHash = password_hash($password, PASSWORD_DEFAULT);
+                $this->userModel->setPassword($user['user_id'], $newHash);
+                $user['password'] = $newHash;
+            }
         }
 
-        if ($user['password'] != $password) {
+        if (!$pwOk) {
             $_SESSION['error'] = "Mật khẩu không đúng!";
             header("Location: index.php?act=login");
             exit;
