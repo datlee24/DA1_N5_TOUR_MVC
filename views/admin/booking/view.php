@@ -118,7 +118,7 @@
           <table class="table mb-0">
             <thead class="table-light">
               <tr>
-                <th>#</th>
+                <th>ID</th>
                 <th>Họ tên</th>
                 <th>SĐT</th>
                 <th>Email</th>
