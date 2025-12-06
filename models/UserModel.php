@@ -39,7 +39,7 @@ class UserModel
             return null; // Không tìm thấy người dùng
         }
     }
-        // Lấy thông tin user theo email
+    // Lấy thông tin user theo email
     public function findByEmail($email)
     {
         $sql = "SELECT * FROM users WHERE email = :email LIMIT 1";
@@ -48,22 +48,35 @@ class UserModel
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
     public function updateProfile($user_id, $data)
-{
-    $sql = "UPDATE users 
+    {
+        $sql = "UPDATE users 
             SET fullname = :fullname,
                 phone    = :phone,
                 email    = :email,
                 password = :password
             WHERE user_id = :id";
 
-    $stmt = $this->conn->prepare($sql);
-    return $stmt->execute([
-        'fullname' => $data['fullname'],
-        'phone'    => $data['phone'],
-        'email'    => $data['email'],
-        'password' => $data['password'],
-        'id'       => $user_id
-    ]);
-}
+        $stmt = $this->conn->prepare($sql);
+        return $stmt->execute([
+            'fullname' => $data['fullname'],
+            'phone'    => $data['phone'],
+            'email'    => $data['email'],
+            // If password appears to be plain text (not a hash), hash it before storing
+            'password' => (function ($p) {
+                if (empty($p)) return '';
+                $info = password_get_info($p);
+                if ($info['algo'] === 0) return password_hash($p, PASSWORD_DEFAULT);
+                return $p;
+            })($data['password']),
+            'id'       => $user_id
+        ]);
+    }
 
+    // Set password hash directly for a user_id
+    public function setPassword($user_id, $hash)
+    {
+        $sql = "UPDATE users SET password = :pw WHERE user_id = :id";
+        $stmt = $this->conn->prepare($sql);
+        return $stmt->execute(['pw' => $hash, 'id' => $user_id]);
+    }
 }

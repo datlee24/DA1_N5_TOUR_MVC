@@ -10,6 +10,7 @@ class BookingController
     protected $driverModel;
     protected $customerModel;
     protected $tourCustomerModel;
+    protected $attendanceModel;
     protected $hotelModel;
 
     public function __construct()
@@ -24,6 +25,7 @@ class BookingController
         $this->driverModel       = new DriverModel();
         $this->customerModel     = new CustomerModel();
         $this->tourCustomerModel = new TourCustomerModel();
+        $this->attendanceModel   = new AttendanceModel();
         $this->hotelModel        = new HotelModel();
 
         // Auto update booking status on each controller init
@@ -366,7 +368,14 @@ class BookingController
             $driver = $this->driverModel->find($schedule['driver_id']);
         }
 
-        $customers = $this->tourCustomerModel->getBySchedule($booking['schedule_id']);
+        // Use attendance records (latest) when available so admin sees guide's marks
+        $customers = $this->attendanceModel->listBySchedule($booking['schedule_id']);
+        // normalize field name expected by views
+        foreach ($customers as &$c) {
+            if (isset($c['status'])) $c['attendance_status'] = $c['status'];
+            $c['attendance_status'] = $c['attendance_status'] ?? 'unknown';
+        }
+        unset($c);
         $assignedHotel = null;
         if (!empty($schedule['hotel_id'])) {
             $assignedHotel = $this->hotelModel->find($schedule['hotel_id']);
