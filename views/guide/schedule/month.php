@@ -5,16 +5,19 @@
         background: #f7faff !important;
         cursor: pointer;
     }
+
     .status-badge {
         padding: 6px 12px;
         border-radius: 30px;
         font-size: .85rem;
         font-weight: 600;
     }
+
     .card-title {
         font-weight: 700;
         font-size: 1.4rem;
     }
+
     .card {
         border-radius: 12px;
     }
@@ -34,8 +37,8 @@
             <div class="col-md-3">
                 <label class="form-label fw-semibold">Chọn tháng</label>
                 <select name="month" class="form-select">
-                    <?php for($m=1;$m<=12;$m++): ?>
-                        <option value="<?= $m ?>" <?= $m==$month?'selected':'' ?>>
+                    <?php for ($m = 1; $m <= 12; $m++): ?>
+                        <option value="<?= $m ?>" <?= $m == $month ? 'selected' : '' ?>>
                             Tháng <?= $m ?>
                         </option>
                     <?php endfor; ?>
@@ -45,8 +48,8 @@
             <div class="col-md-3">
                 <label class="form-label fw-semibold">Chọn năm</label>
                 <select name="year" class="form-select">
-                    <?php for($y=date("Y")-1;$y<=date("Y")+1;$y++): ?>
-                        <option value="<?= $y ?>" <?= $y==$year?'selected':'' ?>>
+                    <?php for ($y = date("Y") - 1; $y <= date("Y") + 1; $y++): ?>
+                        <option value="<?= $y ?>" <?= $y == $year ? 'selected' : '' ?>>
                             <?= $y ?>
                         </option>
                     <?php endfor; ?>
@@ -67,7 +70,7 @@
             <table class="table table-hover mb-0 align-middle">
                 <thead class="table-dark">
                     <tr>
-                        <th style="width: 50px;">#</th>
+                        <th style="width: 50px;">ID</th>
                         <th>Tour</th>
                         <th>Ngày đi</th>
                         <th>Ngày về</th>
@@ -87,24 +90,24 @@
                         </tr>
                     <?php endif; ?>
 
-                    <?php foreach($schedules as $i => $s): ?>
+                    <?php foreach ($schedules as $i => $s): ?>
 
-                        <?php 
-                            $badgeColor = [
-                                'upcoming' => 'warning',
-                                'ongoing'  => 'success',
-                                'completed'=> 'secondary'
-                            ][$s['schedule_status']];
+                        <?php
+                        $badgeColor = [
+                            'upcoming' => 'warning',
+                            'ongoing'  => 'success',
+                            'completed' => 'secondary'
+                        ][$s['schedule_status']];
 
-                            $badgeText = [
-                                'upcoming' => 'Sắp diễn ra',
-                                'ongoing'  => 'Đang diễn ra',
-                                'completed'=> 'Đã kết thúc'
-                            ][$s['schedule_status']];
+                        $badgeText = [
+                            'upcoming' => 'Sắp diễn ra',
+                            'ongoing'  => 'Đang diễn ra',
+                            'completed' => 'Đã kết thúc'
+                        ][$s['schedule_status']];
                         ?>
 
                         <tr class="tour-row">
-                            <td class="fw-bold"><?= $i+1 ?></td>
+                            <td class="fw-bold"><?= $i + 1 ?></td>
 
                             <td>
                                 <div class="fw-bold text-primary"><?= htmlspecialchars($s['tour_name']) ?></div>
@@ -128,14 +131,14 @@
                             </td>
 
                             <td>
-                                <?= $s['driver_name'] 
-                                    ? '<span class="text-dark fw-semibold">🚐 '.$s['driver_name'].'</span>'
+                                <?= $s['driver_name']
+                                    ? '<span class="text-dark fw-semibold">🚐 ' . $s['driver_name'] . '</span>'
                                     : '<span class="text-muted">Chưa gán</span>' ?>
                             </td>
 
                             <td>
-                                <?= $s['hotel_name'] 
-                                    ? '<span class="text-dark fw-semibold">🏨 '.$s['hotel_name'].'</span>'
+                                <?= $s['hotel_name']
+                                    ? '<span class="text-dark fw-semibold">🏨 ' . $s['hotel_name'] . '</span>'
                                     : '<span class="text-muted">Chưa có</span>' ?>
                             </td>
 

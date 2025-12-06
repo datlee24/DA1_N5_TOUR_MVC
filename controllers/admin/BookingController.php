@@ -176,8 +176,8 @@ class BookingController
 
         foreach ($guides as &$g) {
             $g['available'] = !$this->guideModel->isBusy($g['guide_id'], $schedule['start_date'], $schedule['end_date']);
-            // load guide schedules optionally
-            $g['schedules'] = $this->guideModel->getSchedule($g['guide_id']);
+            // load guide schedules optionally (hiện chỉ các lịch có booking)
+            $g['schedules'] = $this->guideModel->getSchedule($g['guide_id'], true);
         }
         unset($g);
 

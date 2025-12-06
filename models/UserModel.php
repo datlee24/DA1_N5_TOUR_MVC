@@ -47,6 +47,41 @@ class UserModel
         $stmt->execute(['email' => $email]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+    // Create new user and return inserted user_id
+    public function create($data)
+    {
+        $sql = "INSERT INTO users (username, password, fullname, email, phone, role, status, created_at)
+                VALUES (:username, :password, :fullname, :email, :phone, :role, :status, NOW())";
+
+        // ensure password is hashed
+        $pw = $data['password'] ?? bin2hex(random_bytes(4));
+        $hash = password_hash($pw, PASSWORD_DEFAULT);
+
+        // ensure username exists
+        $username = trim($data['username'] ?? '');
+        if ($username === '') {
+            if (!empty($data['email'])) {
+                $username = preg_replace('/[^a-z0-9_\.]/i', '', strstr($data['email'], '@', true) ?: 'user') . rand(10, 99);
+            } else {
+                $username = 'hdv_' . time();
+            }
+        }
+
+        $stmt = $this->conn->prepare($sql);
+        $ok = $stmt->execute([
+            'username' => $username,
+            'password' => $hash,
+            'fullname' => $data['fullname'] ?? null,
+            'email'    => $data['email'] ?? null,
+            'phone'    => $data['phone'] ?? null,
+            'role'     => $data['role'] ?? 'hdv',
+            'status'   => $data['status'] ?? 1
+        ]);
+
+        if ($ok) return $this->conn->lastInsertId();
+        return false;
+    }
     public function updateProfile($user_id, $data)
     {
         $sql = "UPDATE users 

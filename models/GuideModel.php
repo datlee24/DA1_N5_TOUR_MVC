@@ -53,12 +53,27 @@ class GuideModel
         return $stmt->fetchColumn() > 0;
     }
 
-    public function getSchedule($guide_id)
+    public function getSchedule($guide_id, $only_with_bookings = false)
     {
-        $sql = "SELECT * FROM departure_schedule WHERE guide_id = :gid ORDER BY start_date ASC";
+        if (!$only_with_bookings) {
+            $sql = "SELECT * FROM departure_schedule WHERE guide_id = :gid ORDER BY start_date ASC";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute(['gid' => $guide_id]);
+            return $stmt->fetchAll();
+        }
+
+        // Trả về các schedule của guide chỉ khi còn booking (status != 'cancelled')
+        $sql = "SELECT ds.*
+                FROM departure_schedule ds
+                LEFT JOIN booking b ON b.schedule_id = ds.schedule_id AND b.status != 'cancelled'
+                WHERE ds.guide_id = :gid
+                GROUP BY ds.schedule_id
+                HAVING COALESCE(SUM(b.num_people), 0) > 0
+                ORDER BY ds.start_date ASC";
+
         $stmt = $this->conn->prepare($sql);
         $stmt->execute(['gid' => $guide_id]);
-        return $stmt->fetchAll();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     public function findById($id)
     {
@@ -86,16 +101,32 @@ class GuideModel
 
     public function update($id, $data)
     {
-        $data['id'] = $id;
-        $sql = "UPDATE guide 
-                SET user_id = :user_id,
-                    language = :language,
-                    certificate = :certificate,
-                    experience = :experience,
-                    specialization = :specialization
-                WHERE guide_id = :id";
+        // Build dynamic SET clause so we don't overwrite user_id with NULL
+        $params = [];
+        $sets = [];
+
+        if (array_key_exists('user_id', $data) && $data['user_id'] !== null) {
+            $sets[] = 'user_id = :user_id';
+            $params['user_id'] = $data['user_id'];
+        }
+
+        $sets[] = 'language = :language';
+        $params['language'] = $data['language'] ?? null;
+
+        $sets[] = 'certificate = :certificate';
+        $params['certificate'] = $data['certificate'] ?? null;
+
+        $sets[] = 'experience = :experience';
+        $params['experience'] = $data['experience'] ?? null;
+
+        $sets[] = 'specialization = :specialization';
+        $params['specialization'] = $data['specialization'] ?? null;
+
+        $params['id'] = $id;
+
+        $sql = "UPDATE guide SET " . implode(', ', $sets) . " WHERE guide_id = :id";
         $stmt = $this->conn->prepare($sql);
-        return $stmt->execute($data);
+        return $stmt->execute($params);
     }
 
     public function delete($id)
