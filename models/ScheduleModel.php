@@ -76,7 +76,7 @@ class ScheduleModel
     }
 
     // Lấy lịch theo tháng cho guide (năm, tháng) — giữ nguyên nhưng thêm vehicle/driver/hotel chọn
-    public function getByMonth($guide_user_id, $year, $month)
+    public function getByMonth($guide_user_id, $year, $month, $only_with_bookings = false)
     {
         // Tính ngày bắt đầu và kết thúc của tháng
         $first = sprintf('%04d-%02d-01', (int)$year, (int)$month);
@@ -103,8 +103,13 @@ class ScheduleModel
             $sql .= " AND g.user_id = :uid";
         }
 
-        $sql .= " GROUP BY ds.schedule_id
-                  ORDER BY ds.start_date ASC";
+        $sql .= " GROUP BY ds.schedule_id";
+
+        if ($only_with_bookings) {
+            $sql .= " HAVING COALESCE(SUM(b.num_people), 0) > 0";
+        }
+
+        $sql .= "\n                  ORDER BY ds.start_date ASC";
 
         $stmt = $this->conn->prepare($sql);
         $params = [':first' => $first, ':last' => $last];
@@ -156,7 +161,8 @@ class ScheduleModel
      */
     public function getGuideMonthSchedules($guide_user_id, $year, $month)
     {
-        return $this->getByMonth($guide_user_id, $year, $month);
+        // Mặc định khi hiển thị lịch cho guide: ẩn các schedule không có khách
+        return $this->getByMonth($guide_user_id, $year, $month, true);
     }
 
     /**
@@ -232,6 +238,4 @@ class ScheduleModel
         $stmt->execute(['sid' => $schedule_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
 }
-?>
