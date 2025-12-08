@@ -64,7 +64,7 @@
             <table class="table table-sm mt-2">
                 <thead>
                     <tr>
-                        <th>#</th>
+                        <th>ID</th>
                         <th>Tên tour</th>
                         <th>Số booking</th>
                     </tr>
@@ -97,7 +97,7 @@
             <table class="table table-sm mt-2">
                 <thead>
                     <tr>
-                        <th>#</th>
+                        <th>ID</th>
                         <th>Tên tour</th>
                         <th>Doanh thu</th>
                     </tr>
