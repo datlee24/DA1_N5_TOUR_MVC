@@ -33,27 +33,28 @@
                     <div class="invalid-feedback">Vui lòng chọn một tour.</div>
                 </div>
 
-                <!-- Chọn khách sạn -->
+                <!-- Chọn khách sạn (bắt buộc) -->
                 <div class="mb-3">
-                    <label class="fw-semibold mb-1">Chọn Khách Sạn</label>
-                    <select name="hotel_id" id="hotelSelect" class="form-select">
+                    <label class="fw-semibold mb-1">Chọn Khách Sạn <span class="text-danger">*</span></label>
+                    <select name="hotel_id" id="hotelSelect" class="form-select" required>
                         <option value="">-- Chọn khách sạn --</option>
                     </select>
                     <small id="hotelLoading" class="text-muted d-none">Đang tải khách sạn...</small>
-                    <div class="invalid-feedback">Nếu có khách sạn, vui lòng chọn một khách sạn hợp lệ.</div>
+                    <div class="invalid-feedback">Vui lòng chọn một khách sạn hợp lệ.</div>
                 </div>
 
-                <!-- Chọn tài xế (nếu có) -->
+                <!-- Chọn tài xế (bắt buộc) -->
                 <div class="mb-4">
-                    <label class="fw-semibold mb-1">Chọn Tài Xế</label>
-                    <select name="driver_id" class="form-select">
-                        <option value="">-- Không chọn tài xế --</option>
+                    <label class="fw-semibold mb-1">Chọn Tài Xế <span class="text-danger">*</span></label>
+                    <select name="driver_id" id="driverSelect" class="form-select" required>
+                        <option value="">-- Chọn tài xế --</option>
                         <?php foreach ($drivers as $d): ?>
                             <option value="<?= $d['driver_id'] ?>">
-                                <?= $d['fullname'] ?> — <?= $d['license_plate'] ?>
+                                <?= htmlspecialchars($d['fullname']) ?> — <?= htmlspecialchars($d['license_plate']) ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
+                    <div class="invalid-feedback">Vui lòng chọn một tài xế.</div>
                 </div>
 
                 <div class="d-flex justify-content-end">
@@ -112,6 +113,14 @@
         const submitBtn = document.getElementById('step1Submit');
 
         form.addEventListener('submit', function(e) {
+            // reset custom validity UI
+            const hotelSelect = document.getElementById('hotelSelect');
+            const driverSelect = document.getElementById('driverSelect');
+            hotelSelect.classList.remove('is-invalid');
+            hotelSelect.setCustomValidity('');
+            driverSelect.classList.remove('is-invalid');
+            driverSelect.setCustomValidity('');
+
             // Use HTML5 validation
             if (!form.checkValidity()) {
                 e.preventDefault();
@@ -120,18 +129,55 @@
                 return;
             }
 
-            // If hotel select has a non-empty value ensure it's a number
-            const hotelSelect = document.getElementById('hotelSelect');
-            if (hotelSelect.value && isNaN(parseInt(hotelSelect.value))) {
+            // Ensure selected hotel option exists (loaded via AJAX)
+            if (hotelSelect.value) {
+                const optExists = Array.from(hotelSelect.options).some(opt => opt.value === hotelSelect.value);
+                if (!optExists) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    hotelSelect.classList.add('is-invalid');
+                    hotelSelect.setCustomValidity('invalid');
+                    form.classList.add('was-validated');
+                    return;
+                }
+            } else {
+                // required attribute will handle empty value, but extra guard
                 e.preventDefault();
                 e.stopPropagation();
                 hotelSelect.classList.add('is-invalid');
+                form.classList.add('was-validated');
                 return;
             }
 
-            // disable submit to prevent double submits
+            // Ensure selected driver option exists
+            if (driverSelect.value) {
+                const optExists = Array.from(driverSelect.options).some(opt => opt.value === driverSelect.value);
+                if (!optExists) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    driverSelect.classList.add('is-invalid');
+                    driverSelect.setCustomValidity('invalid');
+                    form.classList.add('was-validated');
+                    return;
+                }
+            } else {
+                e.preventDefault();
+                e.stopPropagation();
+                driverSelect.classList.add('is-invalid');
+                form.classList.add('was-validated');
+                return;
+            }
+
+            // All client-side checks passed -> disable submit to prevent double submits
             submitBtn.disabled = true;
             submitBtn.innerHTML = 'Đang xử lý...';
+
+            // safety re-enable after 10s
+            setTimeout(() => {
+                if (!submitBtn.disabled) return;
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Tiếp tục <i class="fa fa-arrow-right ms-1"></i>';
+            }, 10000);
         });
     })();
 </script>

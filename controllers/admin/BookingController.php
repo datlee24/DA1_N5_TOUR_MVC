@@ -58,6 +58,32 @@ class BookingController
         $driver_id = intval($_POST['driver_id'] ?? 0);
         $hotel_id = intval($_POST['hotel_id'] ?? 0); // mới
 
+        // Server-side: require hotel and driver
+        if (!$hotel_id) {
+            $_SESSION['error'] = "Vui lòng chọn khách sạn.";
+            header("Location: admin.php?act=booking-step1");
+            exit;
+        }
+        if (!$driver_id) {
+            $_SESSION['error'] = "Vui lòng chọn tài xế.";
+            header("Location: admin.php?act=booking-step1");
+            exit;
+        }
+
+        // validate hotel and driver exist
+        $hotel = $this->hotelModel->find($hotel_id);
+        if (!$hotel) {
+            $_SESSION['error'] = "Khách sạn không tồn tại.";
+            header("Location: admin.php?act=booking-step1");
+            exit;
+        }
+        $driver = $this->driverModel->find($driver_id);
+        if (!$driver) {
+            $_SESSION['error'] = "Tài xế không tồn tại.";
+            header("Location: admin.php?act=booking-step1");
+            exit;
+        }
+
         if (!$tour_id) {
             $_SESSION['error'] = "Vui lòng chọn tour.";
             header("Location: admin.php?act=booking-step1");
