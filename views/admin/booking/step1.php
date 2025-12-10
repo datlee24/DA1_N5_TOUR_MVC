@@ -96,7 +96,8 @@
                 json.data.forEach(h => {
                     let opt = document.createElement('option');
                     opt.value = h.hotel_id;
-                    opt.textContent = h.name + " — " + h.location;
+                    // hotel model provides 'address' field, not 'location'
+                    opt.textContent = (h.name || '') + " — " + (h.address || '');
                     hotelSelect.appendChild(opt);
                 });
             })
