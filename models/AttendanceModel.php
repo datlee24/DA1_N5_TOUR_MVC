@@ -52,9 +52,9 @@ class AttendanceModel
     /**
      * Lấy danh sách khách của schedule kèm trạng thái điểm danh gần nhất (nếu có)
      */
-    public function listBySchedule($schedule_id)
-    {
-        $sql = "SELECT 
+   public function listBySchedule($schedule_id)
+{
+    $sql = "SELECT 
                 tc.id as tour_customer_id, 
                 c.customer_id,
                 c.fullname, 
@@ -79,26 +79,25 @@ class AttendanceModel
             WHERE tc.schedule_id = :sid
             ORDER BY c.fullname ASC";
 
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute(['sid' => $schedule_id]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
+    $stmt = $this->conn->prepare($sql);
+    $stmt->execute(['sid' => $schedule_id]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 
 
     // Các hàm search (nếu cần) giữ nguyên hoặc mở rộng
     public function search($filters = [])
     {
         $sql = "SELECT a.*, c.fullname AS customer_name, c.phone AS customer_phone,
-                   ds.schedule_id, ds.start_date, ds.end_date, t.name AS tour_name,
-                   u.fullname AS guide_name
-            FROM attendance a
-            LEFT JOIN customer c ON a.customer_id = c.customer_id
-            LEFT JOIN departure_schedule ds ON a.schedule_id = ds.schedule_id
-            LEFT JOIN tour t ON ds.tour_id = t.tour_id
-            -- guide_id in attendance stores the users.user_id (the guide's user account),
-            -- so join directly to users to get the guide's fullname
-            LEFT JOIN users u ON a.guide_id = u.user_id
-            WHERE 1=1";
+                       ds.schedule_id, ds.start_date, ds.end_date, t.name AS tour_name,
+                       u.fullname AS guide_name
+                FROM attendance a
+                LEFT JOIN customer c ON a.customer_id = c.customer_id
+                LEFT JOIN departure_schedule ds ON a.schedule_id = ds.schedule_id
+                LEFT JOIN tour t ON ds.tour_id = t.tour_id
+                LEFT JOIN guide g ON a.guide_id = g.guide_id
+                LEFT JOIN users u ON g.user_id = u.user_id
+                WHERE 1=1";
 
         $params = [];
         if (!empty($filters['schedule_id'])) {
@@ -125,3 +124,4 @@ class AttendanceModel
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
+?>

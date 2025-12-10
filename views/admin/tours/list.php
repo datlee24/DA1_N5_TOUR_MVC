@@ -34,7 +34,7 @@ headerAdmin();
                 <table class="table table-bordered table-hover mb-0 align-middle">
                     <thead class="table-light">
                         <tr>
-                            <th style="width:60px">ID</th>
+                            <th style="width:60px">#</th>
                             <th>Tên tour</th>
                             <th>Danh mục</th>
                             <th>Nhà cung cấp</th>

@@ -1,6 +1,4 @@
-<?php headerAdmin();
-$step = 5;
-include __DIR__ . '/progress.php'; ?>
+<?php headerAdmin(); $step = 5; include __DIR__ . '/progress.php'; ?>
 
 <div class="card shadow-sm p-4">
   <h4>Bước 5 — Xác nhận & Thanh toán</h4>
@@ -30,18 +28,7 @@ include __DIR__ . '/progress.php'; ?>
                 </div>
                 <div class="text-end">
                   <div><?= htmlspecialchars($c['room_number'] ?? '-') ?></div>
-                  <?php
-                  $status = $c['attendance_status'] ?? 'unknown';
-                  $statusLabels = [
-                    'present' => 'Có mặt',
-                    'absent'  => 'Vắng',
-                    'late'    => 'Đi muộn',
-                    'unknown' => 'Chưa điểm danh'
-                  ];
-                  $label = $statusLabels[$status] ?? $status;
-                  $statusClass = $status === 'present' ? 'text-success' : 'text-muted';
-                  ?>
-                  <div class="small <?= $statusClass ?>"><?= htmlspecialchars($label) ?></div>
+                  <div class="small <?= ($c['attendance_status'] ?? 'unknown') === 'present' ? 'text-success' : 'text-muted' ?>"><?= ucfirst($c['attendance_status'] ?? 'unknown') ?></div>
                 </div>
               </li>
             <?php endforeach; ?>
@@ -83,17 +70,17 @@ include __DIR__ . '/progress.php'; ?>
       </div>
 
       <div class="card p-3">
-        <h6>Khách sạn được chọn</h6>
-        <?php if (!empty($assignedHotel)): ?>
-          <div class="small">
-            <strong><?= htmlspecialchars($assignedHotel['name']) ?></strong><br>
-            <?= htmlspecialchars($assignedHotel['address'] ?? '') ?><br>
-            Người đại diện: <?= htmlspecialchars($assignedHotel['manager_name'] ?? '-') ?> — <?= htmlspecialchars($assignedHotel['manager_phone'] ?? '-') ?>
-          </div>
-        <?php else: ?>
-          <div class="text-muted small">Chưa chọn khách sạn cho lịch này.</div>
-        <?php endif; ?>
-      </div>
+  <h6>Khách sạn được chọn</h6>
+  <?php if (!empty($assignedHotel)): ?>
+    <div class="small">
+      <strong><?= htmlspecialchars($assignedHotel['name']) ?></strong><br>
+      <?= htmlspecialchars($assignedHotel['address'] ?? '') ?><br>
+      Người đại diện: <?= htmlspecialchars($assignedHotel['manager_name'] ?? '-') ?> — <?= htmlspecialchars($assignedHotel['manager_phone'] ?? '-') ?>
+    </div>
+  <?php else: ?>
+    <div class="text-muted small">Chưa chọn khách sạn cho lịch này.</div>
+  <?php endif; ?>
+</div>
     </div>
   </div>
 </div>
