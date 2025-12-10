@@ -33,6 +33,7 @@
                         <th>Email</th>
                         <th>CMND/CCCD</th>
                         <th>Ghi chú</th>
+                        <th>Thao tác</th>
                     </tr>
                 </thead>
 
@@ -48,12 +49,15 @@
                                 <td><?= htmlspecialchars($c['email'] ?? '—'); ?></td>
                                 <td><?= htmlspecialchars($c['id_number'] ?? '—'); ?></td>
                                 <td><?= htmlspecialchars($c['notes'] ?? '—'); ?></td>
+                                <td class="text-center">
+                                    <a href="admin.php?act=customer-edit&id=<?= $c['customer_id']; ?>" class="btn btn-sm btn-warning">Sửa</a>
+                                </td>
                             </tr>
                         <?php endforeach; ?>
 
                     <?php else: ?>
                         <tr>
-                            <td colspan="8" class="text-center py-4 text-muted">
+                            <td colspan="9" class="text-center py-4 text-muted">
                                 <i>Không có khách hàng nào</i>
                             </td>
                         </tr>
