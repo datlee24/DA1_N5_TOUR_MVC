@@ -59,7 +59,8 @@ match ($act) {
     'customer'         => (new CustomerController())->index(),
     'customer-create'  => (new CustomerController())->create(),
     'customer-store'   => (new CustomerController())->store(),
-
+    'customer-edit'    => (new CustomerController())->edit(),
+    'customer-update'  => (new CustomerController())->update(),
     // AJAX search đúng route VIEW đang gọi
     // 'customer-search'  => (new CustomerController())->searchAjax(),
 
