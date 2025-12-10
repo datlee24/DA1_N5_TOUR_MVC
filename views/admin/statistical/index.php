@@ -50,7 +50,7 @@
     </div>
     <div class="col-md-3 mb-3">
         <div class="stat-box bg-orange">
-            <h5>Tổng booking</h5>
+            <h5>Tổng booking 1 năm</h5>
             <p class="h3"><?= $totalBookings ?? 0 ?></p>
         </div>
     </div>
@@ -67,18 +67,18 @@
         <div class="card p-3">
             <h5>Tổng khách</h5>
             <p class="h3"><?= $totalCustomers ?? 0 ?></p>
+            <?php if (isset($totalCustomersFiltered)): ?>
+                <div class="small text-muted">Khách đặt trong tháng <?= htmlspecialchars($selectedMonth ?? date('n')) ?> / <?= htmlspecialchars($selectedYear ?? date('Y')) ?>: <?= $totalCustomersFiltered ?></div>
+            <?php endif; ?>
         </div>
     </div>
     <div class="col-md-3 mb-3">
         <div class="card p-3">
-            <h5>Tổng doanh thu</h5>
+            <h5>Tổng doanh thu 1 năm</h5>
             <p class="h3"><?= number_format($totalRevenue ?? 0, 0, ',', '.') ?> đ</p>
-        </div>
-    </div>
-    <div class="col-md-3 mb-3">
-        <div class="card p-3">
-            <h5>Doanh thu (<?= isset($selectedMonth, $selectedYear) ? 'Tháng ' . $selectedMonth . ' / ' . $selectedYear : 'Tháng này' ?>)</h5>
-            <p class="h3"><?= number_format($revenueThisMonth ?? 0, 0, ',', '.') ?> đ</p>
+            <?php if (isset($revenueThisMonth)): ?>
+                <div class="small text-muted">(Tháng <?= htmlspecialchars($selectedMonth ?? date('n')) ?> / <?= htmlspecialchars($selectedYear ?? date('Y')) ?>): <?= number_format($revenueThisMonth ?? 0, 0, ',', '.') ?> đ</div>
+            <?php endif; ?>
         </div>
     </div>
 
