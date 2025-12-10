@@ -106,6 +106,7 @@ class BookingController
             // nếu chọn driver và driver bận -> lỗi
             if ($driver_id) {
                 if ($this->driverModel->isBusy($driver_id, $s['start_date'], $s['end_date'])) {
+        
                     $_SESSION['error'] = "Tài xế đã có lịch trùng vào khoảng thời gian này. Vui lòng chọn tài xế khác.";
                     header("Location: admin.php?act=booking-step2");
                     exit;
