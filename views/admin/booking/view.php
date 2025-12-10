@@ -122,20 +122,23 @@
                 <th>Họ tên</th>
                 <th>SĐT</th>
                 <th>Email</th>
-                <th>Phòng</th>
                 <th>Điểm danh</th>
               </tr>
             </thead>
             <tbody id="customersTableBody">
               <?php $i = 1;
+              $statusLabels = [
+                'present' => 'Có mặt',
+                'absent'  => 'Vắng',
+              ];
+
               foreach ($customers as $c): ?>
                 <tr>
                   <td><?= $i++ ?></td>
                   <td><?= htmlspecialchars($c['fullname']) ?></td>
                   <td><?= htmlspecialchars($c['phone']) ?></td>
                   <td><?= htmlspecialchars($c['email']) ?></td>
-                  <td><?= htmlspecialchars($c['room_number'] ?? '-') ?></td>
-                  <td><?= htmlspecialchars($c['attendance_status'] ?? 'Chưa') ?></td>
+                  <td><?= htmlspecialchars($statusLabels[$c['attendance_status']] ?? ($c['attendance_status'] ? $c['attendance_status'] : 'Chưa')) ?></td>
                 </tr>
               <?php endforeach; ?>
             </tbody>
@@ -224,14 +227,14 @@
         tbody.innerHTML = '';
 
         res.data.forEach((c, i) => {
+          const statusText = translateAttendanceStatus(c.attendance_status);
           tbody.insertAdjacentHTML('beforeend', `
           <tr>
             <td>${i+1}</td>
             <td>${escapeHtml(c.fullname)}</td>
             <td>${escapeHtml(c.phone)}</td>
             <td>${escapeHtml(c.email||'')}</td>
-            <td>${escapeHtml(c.room_number||'-')}</td>
-            <td>${escapeHtml(c.attendance_status||'')}</td>
+            <td>${escapeHtml(statusText)}</td>
           </tr>
         `);
         });
@@ -251,6 +254,18 @@
       .replaceAll('<', '&lt;')
       .replaceAll('>', '&gt;')
       .replaceAll('"', '&quot;');
+  }
+
+  // Dịch trạng thái điểm danh sang tiếng Việt
+  function translateAttendanceStatus(s) {
+    if (!s) return 'Chưa';
+    const map = {
+      'present': 'Có mặt',
+      'absent': 'Vắng',
+      'late': 'Đi muộn',
+      'unknown': 'Chưa'
+    };
+    return map[s] || s;
   }
 </script>
 
