@@ -130,6 +130,8 @@
               $statusLabels = [
                 'present' => 'Có mặt',
                 'absent'  => 'Vắng',
+                'late'    => 'Đi muộn',
+                'unknown' => 'Chưa điểm danh'
               ];
 
               foreach ($customers as $c): ?>
@@ -138,7 +140,7 @@
                   <td><?= htmlspecialchars($c['fullname']) ?></td>
                   <td><?= htmlspecialchars($c['phone']) ?></td>
                   <td><?= htmlspecialchars($c['email']) ?></td>
-                  <td><?= htmlspecialchars($statusLabels[$c['attendance_status']] ?? ($c['attendance_status'] ? $c['attendance_status'] : 'Chưa')) ?></td>
+                  <td><?= htmlspecialchars($statusLabels[$c['attendance_status']] ?? 'Chưa điểm danh') ?></td>
                 </tr>
               <?php endforeach; ?>
             </tbody>
@@ -258,12 +260,12 @@
 
   // Dịch trạng thái điểm danh sang tiếng Việt
   function translateAttendanceStatus(s) {
-    if (!s) return 'Chưa';
+    if (!s) return 'Chưa điểm danh';
     const map = {
       'present': 'Có mặt',
       'absent': 'Vắng',
       'late': 'Đi muộn',
-      'unknown': 'Chưa'
+      'unknown': 'Chưa điểm danh'
     };
     return map[s] || s;
   }
