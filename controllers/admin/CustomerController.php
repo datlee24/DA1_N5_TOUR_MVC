@@ -63,5 +63,51 @@ class CustomerController
         header("Location: admin.php?act=customer");
         exit;
     }
+
+    public function edit()
+    {
+        $id = $_GET['id'] ?? null;
+        $customer = $this->customerModel->find($id);
+
+        if (!$customer) {
+            $_SESSION['error'] = "Khách hàng không tồn tại";
+            header("Location: admin.php?act=customer");
+            exit;
+        }
+
+        require_once PATH_ADMIN . "customer/edit.php";
+    }
+
+    public function update()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header("Location: admin.php?act=customer");
+            exit;
+        }
+
+        $id = $_GET['id'] ?? null;
+        
+        if (!$id) {
+            $_SESSION['error'] = "Không tìm thấy ID khách hàng";
+            header("Location: admin.php?act=customer");
+            exit;
+        }
+
+        $data = [
+            'fullname'   => $_POST['fullname'] ?? '',
+            'gender'     => $_POST['gender'] ?? '',
+            'birthdate'  => $_POST['birthdate'] ?? null,
+            'phone'      => $_POST['phone'] ?? '',
+            'email'      => $_POST['email'] ?? '',
+            'id_number'  => $_POST['id_number'] ?? '',
+            'notes'      => $_POST['notes'] ?? '',
+        ];
+
+        $this->customerModel->update($id, $data);
+
+        $_SESSION['success'] = "Cập nhật khách hàng thành công!";
+        header("Location: admin.php?act=customer");
+        exit;
+    }
 }
 ?>
