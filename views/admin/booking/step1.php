@@ -10,13 +10,14 @@
     </div>
 
     <?php if (isset($_SESSION['error'])): ?>
-        <div class="alert alert-danger"><?= $_SESSION['error']; unset($_SESSION['error']); ?></div>
+        <div class="alert alert-danger"><?= $_SESSION['error'];
+                                        unset($_SESSION['error']); ?></div>
     <?php endif; ?>
 
     <div class="card shadow-sm">
         <div class="card-body">
 
-            <form method="POST" action="admin.php?act=booking-step1-save" id="step1Form">
+            <form method="POST" action="admin.php?act=booking-step1-save" id="step1Form" novalidate>
 
                 <!-- Chọn tour -->
                 <div class="mb-3">
@@ -29,6 +30,7 @@
                             </option>
                         <?php endforeach; ?>
                     </select>
+                    <div class="invalid-feedback">Vui lòng chọn một tour.</div>
                 </div>
 
                 <!-- Chọn khách sạn -->
@@ -38,6 +40,7 @@
                         <option value="">-- Chọn khách sạn --</option>
                     </select>
                     <small id="hotelLoading" class="text-muted d-none">Đang tải khách sạn...</small>
+                    <div class="invalid-feedback">Nếu có khách sạn, vui lòng chọn một khách sạn hợp lệ.</div>
                 </div>
 
                 <!-- Chọn tài xế (nếu có) -->
@@ -54,7 +57,7 @@
                 </div>
 
                 <div class="d-flex justify-content-end">
-                    <button class="btn btn-primary btn-lg px-4">
+                    <button class="btn btn-primary btn-lg px-4" id="step1Submit">
                         Tiếp tục <i class="fa fa-arrow-right ms-1"></i>
                     </button>
                 </div>
@@ -66,41 +69,71 @@
 
 
 <script>
-// Khi chọn tour → load khách sạn qua AJAX
-document.getElementById("tourSelect").addEventListener("change", function () {
-    let tourId = this.value;
-    let hotelSelect = document.getElementById("hotelSelect");
-    let loading = document.getElementById("hotelLoading");
+    // Khi chọn tour → load khách sạn qua AJAX
+    // Khi chọn tour → load khách sạn qua AJAX
+    document.getElementById("tourSelect").addEventListener("change", function() {
+        let tourId = this.value;
+        let hotelSelect = document.getElementById("hotelSelect");
+        let loading = document.getElementById("hotelLoading");
 
-    hotelSelect.innerHTML = '<option value="">-- Chọn khách sạn --</option>';
+        hotelSelect.innerHTML = '<option value="">-- Chọn khách sạn --</option>';
 
-    if (!tourId) return;
+        if (!tourId) return;
 
-    loading.classList.remove('d-none');
+        loading.classList.remove('d-none');
 
-    fetch("admin.php?act=ajax-hotels&tour_id=" + tourId)
-        .then(res => res.json())
-        .then(json => {
-            loading.classList.add('d-none');
+        fetch("admin.php?act=ajax-hotels&tour_id=" + tourId)
+            .then(res => res.json())
+            .then(json => {
+                loading.classList.add('d-none');
 
-            if (!json.ok || json.data.length === 0) {
-                hotelSelect.innerHTML = '<option value="">Không có khách sạn</option>';
+                if (!json.ok || json.data.length === 0) {
+                    hotelSelect.innerHTML = '<option value="">Không có khách sạn</option>';
+                    return;
+                }
+
+                json.data.forEach(h => {
+                    let opt = document.createElement('option');
+                    opt.value = h.hotel_id;
+                    opt.textContent = h.name + " — " + h.location;
+                    hotelSelect.appendChild(opt);
+                });
+            })
+            .catch(err => {
+                console.error(err);
+                hotelSelect.innerHTML = '<option value="">Lỗi tải dữ liệu</option>';
+                loading.classList.add('d-none');
+            });
+    });
+
+    // Client-side validation (Bootstrap style) + prevent double submit
+    (() => {
+        const form = document.getElementById('step1Form');
+        const submitBtn = document.getElementById('step1Submit');
+
+        form.addEventListener('submit', function(e) {
+            // Use HTML5 validation
+            if (!form.checkValidity()) {
+                e.preventDefault();
+                e.stopPropagation();
+                form.classList.add('was-validated');
                 return;
             }
 
-            json.data.forEach(h => {
-                let opt = document.createElement('option');
-                opt.value = h.hotel_id;
-                opt.textContent = h.name + " — " + h.location;
-                hotelSelect.appendChild(opt);
-            });
-        })
-        .catch(err => {
-            console.error(err);
-            hotelSelect.innerHTML = '<option value="">Lỗi tải dữ liệu</option>';
-            loading.classList.add('d-none');
+            // If hotel select has a non-empty value ensure it's a number
+            const hotelSelect = document.getElementById('hotelSelect');
+            if (hotelSelect.value && isNaN(parseInt(hotelSelect.value))) {
+                e.preventDefault();
+                e.stopPropagation();
+                hotelSelect.classList.add('is-invalid');
+                return;
+            }
+
+            // disable submit to prevent double submits
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = 'Đang xử lý...';
         });
-});
+    })();
 </script>
 
 <?php require_once PATH_ADMIN . "layout/footer.php"; ?>
