@@ -55,6 +55,38 @@ class CustomerModel {
         return $this->conn->lastInsertId();
     }
 
+    public function update($id, $data) {
+        $fullname = $data['fullname'] ?? '';
+        $phone = $data['phone'] ?? null;
+        $email = $data['email'] ?? null;
+        $gender = $data['gender'] ?? null;
+        $birthdate = $data['birthdate'] ?? null;
+        $id_number = $data['id_number'] ?? null;
+        $notes = $data['notes'] ?? null;
+
+        $sql = "UPDATE customer 
+                SET fullname = :fullname, 
+                    gender = :gender, 
+                    birthdate = :birthdate, 
+                    phone = :phone, 
+                    email = :email, 
+                    id_number = :id_number, 
+                    notes = :notes 
+                WHERE customer_id = :id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute([
+            'id' => $id,
+            'fullname' => $fullname,
+            'gender' => $gender,
+            'birthdate' => $birthdate,
+            'phone' => $phone,
+            'email' => $email,
+            'id_number' => $id_number,
+            'notes' => $notes
+        ]);
+        return $stmt->rowCount();
+    }
+
     public function getBySchedule($schedule_id) {
         $sql = "SELECT c.* FROM tour_customer tc JOIN customer c ON tc.customer_id = c.customer_id WHERE tc.schedule_id = :sid";
         $stmt = $this->conn->prepare($sql);
