@@ -11,6 +11,30 @@
 
 <h1 class="mt-4">Báo Cáo Thống Kê</h1>
 
+<form method="get" class="row g-2 align-items-end mt-3 mb-3">
+    <input type="hidden" name="act" value="statistical">
+    <div class="col-auto">
+        <label class="form-label small">Tháng</label>
+        <select name="month" class="form-select form-select-sm">
+            <?php foreach (($monthOptions ?? range(1, 12)) as $m): ?>
+                <option value="<?= $m ?>" <?= (isset($selectedMonth) && $selectedMonth == $m) ? 'selected' : '' ?>>Tháng <?= $m ?></option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+    <div class="col-auto">
+        <label class="form-label small">Năm</label>
+        <select name="year" class="form-select form-select-sm">
+            <?php foreach (($yearOptions ?? [date('Y')]) as $y): ?>
+                <option value="<?= $y ?>" <?= (isset($selectedYear) && $selectedYear == $y) ? 'selected' : '' ?>><?= $y ?></option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+    <div class="col-auto">
+        <button class="btn btn-primary btn-sm" type="submit">Lọc</button>
+        <a class="btn btn-outline-secondary btn-sm" href="admin.php?act=statistical">Reset</a>
+    </div>
+</form>
+
 <div class="row mt-4">
     <div class="col-md-3 mb-3">
         <div class="stat-box bg-blue">
@@ -32,7 +56,7 @@
     </div>
     <div class="col-md-3 mb-3">
         <div class="stat-box bg-blue">
-            <h5>Booking tháng này</h5>
+            <h5>Booking (<?= isset($selectedMonth, $selectedYear) ? 'Tháng ' . $selectedMonth . ' / ' . $selectedYear : 'Tháng này' ?>)</h5>
             <p class="h3"><?= $bookingsThisMonth ?? 0 ?></p>
         </div>
     </div>
@@ -53,7 +77,7 @@
     </div>
     <div class="col-md-3 mb-3">
         <div class="card p-3">
-            <h5>Doanh thu tháng này</h5>
+            <h5>Doanh thu (<?= isset($selectedMonth, $selectedYear) ? 'Tháng ' . $selectedMonth . ' / ' . $selectedYear : 'Tháng này' ?>)</h5>
             <p class="h3"><?= number_format($revenueThisMonth ?? 0, 0, ',', '.') ?> đ</p>
         </div>
     </div>
